@@ -1,6 +1,5 @@
 package com.krish.headsup.services
 
-
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.krish.headsup.services.api.ApiService
@@ -46,9 +45,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             } catch (e: Exception) {
                 // Handle any other exceptions
             }
-
         }
     }
-
-
 }

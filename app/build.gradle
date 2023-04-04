@@ -5,6 +5,8 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
+apply plugin: "org.jlleitschuh.gradle.ktlint"
+
 android {
     namespace 'com.krish.headsup'
     compileSdk 33
@@ -47,7 +49,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     implementation "com.google.dagger:hilt-android:2.44"
     kapt "com.google.dagger:hilt-compiler:2.44"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:2.44"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
     kapt "androidx.hilt:hilt-compiler:2.44"
     implementation "androidx.work:work-runtime-ktx:2.8.1"
     implementation "androidx.hilt:hilt-work:1.0.0"

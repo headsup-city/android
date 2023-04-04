@@ -4,9 +4,9 @@ import android.content.Context
 import com.krish.headsup.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import org.json.JSONObject
 
 private fun getBaseUrl(context: Context): String {
     val configJson = context.assets.open("config.json").bufferedReader().use { it.readText() }
@@ -15,14 +15,15 @@ private fun getBaseUrl(context: Context): String {
     return jsonObject.getJSONObject(environment).getString("baseUrl")
 }
 
-
 object ApiService {
     private lateinit var baseUrl: String
 
     private val httpClient = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        })
+        .addInterceptor(
+            HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+        )
         .build()
 
     private lateinit var retrofit: Retrofit
@@ -42,4 +43,3 @@ object ApiService {
             .build()
     }
 }
-
