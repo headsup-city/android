@@ -1,0 +1,8 @@
+{
+  "dev": {
+    "baseUrl": "https://dev.example.com/api/"
+  },
+  "prod": {
+    "baseUrl": "https://prod.example.com/api/"
+  }
+}
