@@ -3,49 +3,40 @@ package com.krish.headsup.model
 import com.google.gson.annotations.SerializedName
 
 data class Post(
+    val id: String,
+
     @SerializedName("postType")
-    val postType: String,
+    val postType: String?,
 
     @SerializedName("caption")
     val caption: String?,
 
     @SerializedName("attachment")
-    val attachment: Attachment?,
+    val attachment: ApiImage?,
 
     @SerializedName("author")
-    val author: String,
+    val author: User?,
 
     @SerializedName("event")
-    val event: String?,
+    val event: Event?,
 
     @SerializedName("commentCount")
-    val commentCount: Int,
+    val commentCount: Int?,
 
     @SerializedName("likeCount")
-    val likeCount: Int,
+    val likeCount: Int?,
 
     @SerializedName("location")
-    val location: Location,
+    val location: Location?,
 
     @SerializedName("expires")
     val expires: String?
 )
 
-data class Attachment(
-    @SerializedName("name")
-    val name: String?,
-
-    @SerializedName("width")
-    val width: Int?,
-
-    @SerializedName("height")
-    val height: Int?
-)
-
 data class Location(
     @SerializedName("type")
-    val type: String,
+    val type: String?,
 
     @SerializedName("coordinates")
-    val coordinates: List<Double>
+    val coordinates: List<Double>?
 )

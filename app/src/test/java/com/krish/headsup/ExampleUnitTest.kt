@@ -1,6 +1,6 @@
 package com.krish.headsup
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /**

@@ -1,8 +1,8 @@
 {
   "dev": {
-    "baseUrl": "https://dev.example.com/api/"
+    "baseUrl": "https://dev.api.headsup.city/"
   },
   "prod": {
-    "baseUrl": "https://prod.example.com/api/"
+    "baseUrl": "https://prod.api.headsup.city/"
   }
 }
