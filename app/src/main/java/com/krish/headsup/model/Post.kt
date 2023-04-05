@@ -14,6 +14,9 @@ data class Post(
     @SerializedName("attachment")
     val attachment: ApiImage?,
 
+    @SerializedName("attachment")
+    val imageUri: String?,
+
     @SerializedName("author")
     val author: User?,
 

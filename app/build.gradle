@@ -6,6 +6,7 @@ plugins {
 }
 
 apply plugin: "org.jlleitschuh.gradle.ktlint"
+apply plugin: 'kotlin-kapt'
 
 android {
     namespace 'com.krish.headsup'
@@ -63,6 +64,14 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.firebase:firebase-messaging:23.1.2'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
+
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.4.0'
+    kapt 'com.github.bumptech.glide:compiler:4.4.0'
+
+    // Navigation
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 }
 
 kapt {
