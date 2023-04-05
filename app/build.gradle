@@ -75,6 +75,22 @@ dependencies {
     // Navigation
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+
+
+    // The core Iconics library (without any widgets)
+    implementation "com.mikepenz:iconics-core:5.4.0"
+    implementation "androidx.appcompat:appcompat:1.6.1"
+
+    implementation 'com.mikepenz:google-material-typeface:4.0.0.2-kotlin@aar'
+    implementation 'com.mikepenz:google-material-typeface-{outlined|rounded|sharp}:4.0.0.1-kotlin@aar'
+    implementation 'com.mikepenz:material-design-iconic-typeface:2.2.0.8-kotlin@aar'
+    implementation 'com.mikepenz:fontawesome-typeface:5.9.0.2-kotlin@aar'
+    implementation 'com.mikepenz:octicons-typeface:11.1.0.0-kotlin@aar'
+    implementation 'com.mikepenz:community-material-typeface:7.0.96.0-kotlin@aar' // note 5.3.45.1 and newer alphabetically sorts, and merges in 3 sections
+    implementation 'com.mikepenz:entypo-typeface:1.0.0.7-kotlin@aar'
+    implementation 'com.mikepenz:ionicons-typeface:2.0.1.7-kotlin@aar'
+    implementation 'com.mikepenz:material-design-icons-dx-typeface:5.0.1.2-kotlin@aar'
+
 }
 
 kapt {

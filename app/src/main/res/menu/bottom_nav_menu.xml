@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/homeTab"
+        android:title="Home"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/searchTab"
+        android:title="Search"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/createPostTab"
+        android:title="Create Post"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/activityTab"
+        android:title="Activity"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/profileTab"
+        android:title="Profile"
+        app:showAsAction="ifRoom" />
+</menu>
