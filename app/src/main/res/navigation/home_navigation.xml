@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_navigation"
+    app:startDestination="@+id/homeFragment">
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.krish.headsup.views.HomeFragment"
+        android:label="Home" />
+    <fragment
+        android:id="@+id/conversationFragment"
+        android:name="com.krish.headsup.views.ConversationFragment"
+        android:label="Conversation" />
+    <fragment
+        android:id="@+id/conversationListFragment"
+        android:name="com.krish.headsup.views.ConversationListFragment"
+        android:label="ConversationList" />
+    <fragment
+        android:id="@+id/imagePostFragment"
+        android:name="com.krish.headsup.views.ImagePostFragment"
+        android:label="ImagePost" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.krish.headsup.views.ProfileFragment"
+        android:label="Profile" />
+    <fragment
+        android:id="@+id/textPostFragment"
+        android:name="com.krish.headsup.views.TextPostFragment"
+        android:label="TextPost" />
+    <fragment
+        android:id="@+id/videoPostFragment"
+        android:name="com.krish.headsup.views.VideoPostFragment"
+        android:label="VideoPost" />
+</navigation>

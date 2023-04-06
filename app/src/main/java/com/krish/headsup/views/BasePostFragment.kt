@@ -1,10 +1,10 @@
 package com.krish.headsup.views
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
 
@@ -29,11 +29,9 @@ abstract class BasePostFragment : Fragment() {
 
         // Set up common UI elements like header, author info, and comment button
 
-
         // Set up content specific to the post type
         setupPostContent(view, post)
 
         return view
     }
 }
-

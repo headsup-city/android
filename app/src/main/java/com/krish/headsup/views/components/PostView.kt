@@ -23,7 +23,6 @@ class PostView(context: Context, attrs: AttributeSet) : FrameLayout(context, att
         commentButton = findViewById(R.id.commentButton)
     }
 
-
     fun setPost(post: Post) {
         postType = post.postType ?: "text"
         when (postType) {

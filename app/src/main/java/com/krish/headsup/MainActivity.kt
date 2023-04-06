@@ -1,12 +1,14 @@
 package com.krish.headsup
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.messaging.FirebaseMessaging
+import com.krish.headsup.model.AuthState
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.typeface.library.ionicons.Ionicons
@@ -15,19 +17,50 @@ import com.mikepenz.iconics.utils.sizeDp
 class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
+    private lateinit var authState: AuthState
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        subscribeToTopic()
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController = navHostFragment.navController
+        // TODO: Check the current authentication state
+        // Set the initial authState based on your actual authentication state
+        authState = AuthState.AUTHENTICATED // Replace with your actual auth state checking
 
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        when (authState) {
+            AuthState.AUTHENTICATED -> setContentView(R.layout.activity_main)
+            AuthState.NO_USER -> setContentView(R.layout.fragment_greetings)
+            AuthState.LOADING -> setContentView(R.layout.fragment_loading)
+        }
 
-        setupIcons(bottomNavigationView)
-        setupNavigation(bottomNavigationView, navController)
+        if (authState == AuthState.AUTHENTICATED) {
+            subscribeToTopic()
+
+            val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            navController = navHostFragment.navController
+
+            val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+            setupIcons(bottomNavigationView)
+            setupNavigation(bottomNavigationView, navController)
+
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                when (destination.id) {
+                    R.id.conversationFragment,
+                    R.id.profileFragment,
+                    R.id.textPostFragment,
+                    R.id.imagePostFragment,
+                    R.id.videoPostFragment -> {
+                        bottomNavigationView.visibility = View.GONE
+                    }
+                    else -> {
+                        bottomNavigationView.visibility = View.VISIBLE
+                    }
+                }
+            }
+        }
+
+
+
     }
 
     private fun setupIcons(bottomNavigationView: BottomNavigationView) {

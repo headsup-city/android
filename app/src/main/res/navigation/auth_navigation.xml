@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/auth_navigation"
+    app:startDestination="@id/greetingsFragment">
+
+    <fragment
+        android:id="@+id/forgotPasswordFragment"
+        android:name="com.krish.headsup.views.ForgotPasswordFragment"
+        android:label="ForgotPassword" />
+    <fragment
+        android:id="@+id/greetingsFragment"
+        android:name="com.krish.headsup.views.GreetingsFragment"
+        android:label="Greetings" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.krish.headsup.views.LoginFragment"
+        android:label="Login" />
+    <fragment
+        android:id="@+id/privacyFragment"
+        android:name="com.krish.headsup.views.PrivacyFragment"
+        android:label="Privacy" />
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.krish.headsup.views.RegisterFragment"
+        android:label="Register" />
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.krish.headsup.views.ResetPasswordFragment"
+        android:label="ResetPassword" />
+    <fragment
+        android:id="@+id/termsFragment"
+        android:name="com.krish.headsup.views.TermsFragment"
+        android:label="Terms" />
+
+</navigation>

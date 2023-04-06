@@ -1,6 +1,5 @@
 package com.krish.headsup.views.components
 
-
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -24,4 +23,3 @@ class ConversationItemViewHolder(private val binding: ConversationItemBinding) :
         }
     }
 }
-
