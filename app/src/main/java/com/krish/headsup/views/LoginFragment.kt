@@ -1,11 +1,14 @@
 package com.krish.headsup.views
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.krish.headsup.R
+import com.krish.headsup.model.AuthState
+import com.krish.headsup.utils.AuthStateChangeListener
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,11 +25,34 @@ class LoginFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private lateinit var authStateChangeListener: AuthStateChangeListener
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is AuthStateChangeListener) {
+            authStateChangeListener = context
+        } else {
+            throw RuntimeException("$context must implement AuthStateChangeListener")
+        }
+    }
+
+    private fun loginUser() {
+        // TODO: Perform actual login request
+        authStateChangeListener.onAuthStateChanged(AuthState.LOADING)
+
+        // After receiving the response from the backend
+        if (true) {
+            authStateChangeListener.onAuthStateChanged(AuthState.AUTHENTICATED)
+        } else {
+            authStateChangeListener.onAuthStateChanged(AuthState.NO_USER)
         }
     }
 

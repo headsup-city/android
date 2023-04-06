@@ -9,12 +9,14 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.messaging.FirebaseMessaging
 import com.krish.headsup.model.AuthState
+import com.krish.headsup.utils.AuthStateChangeListener
+import com.krish.headsup.utils.TokenManager
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.typeface.library.ionicons.Ionicons
 import com.mikepenz.iconics.utils.sizeDp
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AuthStateChangeListener {
 
     private lateinit var navController: NavController
     private lateinit var authState: AuthState
@@ -22,9 +24,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // TODO: Check the current authentication state
-        // Set the initial authState based on your actual authentication state
-        authState = AuthState.AUTHENTICATED // Replace with your actual auth state checking
+        // Check the current authentication state
+        authState = getAuthState()
 
         when (authState) {
             AuthState.AUTHENTICATED -> setContentView(R.layout.activity_main)
@@ -58,9 +59,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
+    private fun getAuthState(): AuthState {
+        val tokenManager = TokenManager(this)
+        val accessToken = tokenManager.getAccessToken()
+        val refreshToken = tokenManager.getRefreshToken()
 
-
+        return if (accessToken != null && refreshToken != null) {
+            AuthState.AUTHENTICATED
+        } else {
+            AuthState.NO_USER
+        }
     }
 
     private fun setupIcons(bottomNavigationView: BottomNavigationView) {
@@ -96,5 +106,16 @@ class MainActivity : AppCompatActivity() {
                     // Failed to subscribe to the topic
                 }
             }
+    }
+
+    override fun onAuthStateChanged(authState: AuthState) {
+        this.authState = authState
+        when (authState) {
+            AuthState.AUTHENTICATED -> {
+                // TODO: Perform necessary actions to initialize the authenticated state
+            }
+            AuthState.NO_USER -> setContentView(R.layout.fragment_greetings)
+            AuthState.LOADING -> setContentView(R.layout.fragment_loading)
+        }
     }
 }
