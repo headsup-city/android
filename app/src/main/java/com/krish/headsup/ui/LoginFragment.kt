@@ -1,11 +1,14 @@
-package com.krish.headsup.views
+package com.krish.headsup.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.krish.headsup.R
+import com.krish.headsup.model.AuthState
+import com.krish.headsup.utils.AuthStateChangeListener
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -14,13 +17,15 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [ForgotPasswordFragment.newInstance] factory method to
+ * Use the [LoginFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ForgotPasswordFragment : Fragment() {
+class LoginFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private lateinit var authStateChangeListener: AuthStateChangeListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,13 +35,34 @@ class ForgotPasswordFragment : Fragment() {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is AuthStateChangeListener) {
+            authStateChangeListener = context
+        } else {
+            throw RuntimeException("$context must implement AuthStateChangeListener")
+        }
+    }
+
+    private fun loginUser() {
+        // TODO: Perform actual login request
+        authStateChangeListener.onAuthStateChanged(AuthState.LOADING)
+
+        // After receiving the response from the backend
+        if (true) {
+            authStateChangeListener.onAuthStateChanged(AuthState.AUTHENTICATED)
+        } else {
+            authStateChangeListener.onAuthStateChanged(AuthState.NO_USER)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_forgot_password, container, false)
+        return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
     companion object {
@@ -46,12 +72,12 @@ class ForgotPasswordFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment ForgotPasswordFragment.
+         * @return A new instance of fragment LoginFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            ForgotPasswordFragment().apply {
+            LoginFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

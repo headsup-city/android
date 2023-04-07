@@ -16,13 +16,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.krish.headsup.views.components.LikeButtonView
+        <com.krish.headsup.ui.components.LikeButtonView
             android:id="@+id/likeButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <com.krish.headsup.views.components.CommentButtonView
+        <com.krish.headsup.ui.components.CommentButtonView
             android:id="@+id/commentButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package com.krish.headsup.views
+package com.krish.headsup.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater

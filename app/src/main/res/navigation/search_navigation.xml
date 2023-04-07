@@ -5,30 +5,30 @@
     app:startDestination="@+id/searchFragment">
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.krish.headsup.views.SearchFragment"
+        android:name="com.krish.headsup.ui.SearchFragment"
         android:label="Search" />
     <fragment
         android:id="@+id/conversationFragment"
-        android:name="com.krish.headsup.views.ConversationFragment"
+        android:name="com.krish.headsup.ui.ConversationFragment"
         android:label="Conversation" />
     <fragment
         android:id="@+id/conversationListFragment"
-        android:name="com.krish.headsup.views.ConversationListFragment"
+        android:name="com.krish.headsup.ui.ConversationListFragment"
         android:label="ConversationList" />
     <fragment
         android:id="@+id/imagePostFragment"
-        android:name="com.krish.headsup.views.ImagePostFragment"
+        android:name="com.krish.headsup.ui.ImagePostFragment"
         android:label="ImagePost" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.krish.headsup.views.ProfileFragment"
+        android:name="com.krish.headsup.ui.ProfileFragment"
         android:label="Profile" />
     <fragment
         android:id="@+id/textPostFragment"
-        android:name="com.krish.headsup.views.TextPostFragment"
+        android:name="com.krish.headsup.ui.TextPostFragment"
         android:label="TextPost" />
     <fragment
         android:id="@+id/videoPostFragment"
-        android:name="com.krish.headsup.views.VideoPostFragment"
+        android:name="com.krish.headsup.ui.VideoPostFragment"
         android:label="VideoPost" />
 </navigation>

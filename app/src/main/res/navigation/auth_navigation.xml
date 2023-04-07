@@ -6,31 +6,31 @@
 
     <fragment
         android:id="@+id/forgotPasswordFragment"
-        android:name="com.krish.headsup.views.ForgotPasswordFragment"
+        android:name="com.krish.headsup.ui.ForgotPasswordFragment"
         android:label="ForgotPassword" />
     <fragment
         android:id="@+id/greetingsFragment"
-        android:name="com.krish.headsup.views.GreetingsFragment"
+        android:name="com.krish.headsup.ui.GreetingsFragment"
         android:label="Greetings" />
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.krish.headsup.views.LoginFragment"
+        android:name="com.krish.headsup.ui.LoginFragment"
         android:label="Login" />
     <fragment
         android:id="@+id/privacyFragment"
-        android:name="com.krish.headsup.views.PrivacyFragment"
+        android:name="com.krish.headsup.ui.PrivacyFragment"
         android:label="Privacy" />
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.krish.headsup.views.RegisterFragment"
+        android:name="com.krish.headsup.ui.RegisterFragment"
         android:label="Register" />
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="com.krish.headsup.views.ResetPasswordFragment"
+        android:name="com.krish.headsup.ui.ResetPasswordFragment"
         android:label="ResetPassword" />
     <fragment
         android:id="@+id/termsFragment"
-        android:name="com.krish.headsup.views.TermsFragment"
+        android:name="com.krish.headsup.ui.TermsFragment"
         android:label="Terms" />
 
 </navigation>

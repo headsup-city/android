@@ -1,4 +1,4 @@
-package com.krish.headsup.views.components
+package com.krish.headsup.ui.components
 
 import android.content.Context
 import android.util.AttributeSet

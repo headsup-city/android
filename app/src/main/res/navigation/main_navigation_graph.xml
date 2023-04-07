@@ -6,106 +6,106 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.krish.headsup.views.HomeFragment"
+        android:name="com.krish.headsup.ui.HomeFragment"
         android:label="Home">
     </fragment>
     <fragment
         android:id="@+id/basePostFragment"
-        android:name="com.krish.headsup.views.BasePostFragment"
+        android:name="com.krish.headsup.ui.BasePostFragment"
         android:label="BasePost">
     </fragment>
     <fragment
         android:id="@+id/conversationFragment"
-        android:name="com.krish.headsup.views.ConversationFragment"
+        android:name="com.krish.headsup.ui.ConversationFragment"
         android:label="Conversation">
     </fragment>
     <fragment
         android:id="@+id/conversationListFragment"
-        android:name="com.krish.headsup.views.ConversationListFragment"
+        android:name="com.krish.headsup.ui.ConversationListFragment"
         android:label="ConversationList">
     </fragment>
     <fragment
         android:id="@+id/createPostFragment"
-        android:name="com.krish.headsup.views.CreatePostFragment"
+        android:name="com.krish.headsup.ui.CreatePostFragment"
         android:label="CreatePost">
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
-        android:name="com.krish.headsup.views.EditProfileFragment"
+        android:name="com.krish.headsup.ui.EditProfileFragment"
         android:label="EditProfile">
     </fragment>
     <fragment
         android:id="@+id/forgotPasswordFragment"
-        android:name="com.krish.headsup.views.ForgotPasswordFragment"
+        android:name="com.krish.headsup.ui.ForgotPasswordFragment"
         android:label="ForgotPassword">
     </fragment>
     <fragment
         android:id="@+id/greetingsFragment"
-        android:name="com.krish.headsup.views.GreetingsFragment"
+        android:name="com.krish.headsup.ui.GreetingsFragment"
         android:label="Greetings">
     </fragment>
     <fragment
         android:id="@+id/imagePostFragment"
-        android:name="com.krish.headsup.views.ImagePostFragment"
+        android:name="com.krish.headsup.ui.ImagePostFragment"
         android:label="ImagePost">
     </fragment>
     <fragment
         android:id="@+id/loadingFragment"
-        android:name="com.krish.headsup.views.LoadingFragment"
+        android:name="com.krish.headsup.ui.LoadingFragment"
         android:label="Loading">
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.krish.headsup.views.LoginFragment"
+        android:name="com.krish.headsup.ui.LoginFragment"
         android:label="Login">
     </fragment>
     <fragment
         android:id="@+id/notificationsFragment"
-        android:name="com.krish.headsup.views.NotificationsFragment"
+        android:name="com.krish.headsup.ui.NotificationsFragment"
         android:label="Notifications">
     </fragment>
     <fragment
         android:id="@+id/privacyFragment"
-        android:name="com.krish.headsup.views.PrivacyFragment"
+        android:name="com.krish.headsup.ui.PrivacyFragment"
         android:label="Privacy">
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.krish.headsup.views.ProfileFragment"
+        android:name="com.krish.headsup.ui.ProfileFragment"
         android:label="Profile">
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.krish.headsup.views.RegisterFragment"
+        android:name="com.krish.headsup.ui.RegisterFragment"
         android:label="Register">
     </fragment>
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="com.krish.headsup.views.ResetPasswordFragment"
+        android:name="com.krish.headsup.ui.ResetPasswordFragment"
         android:label="ResetPassword">
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.krish.headsup.views.SearchFragment"
+        android:name="com.krish.headsup.ui.SearchFragment"
         android:label="Search">
     </fragment>
     <fragment
         android:id="@+id/settingFragment"
-        android:name="com.krish.headsup.views.SettingFragment"
+        android:name="com.krish.headsup.ui.SettingFragment"
         android:label="Setting" />
     <fragment
         android:id="@+id/termsFragment"
-        android:name="com.krish.headsup.views.TermsFragment"
+        android:name="com.krish.headsup.ui.TermsFragment"
         android:label="Terms">
     </fragment>
     <fragment
         android:id="@+id/textPostFragment"
-        android:name="com.krish.headsup.views.TextPostFragment"
+        android:name="com.krish.headsup.ui.TextPostFragment"
         android:label="TextPost">
     </fragment>
     <fragment
         android:id="@+id/videoPostFragment"
-        android:name="com.krish.headsup.views.VideoPostFragment"
+        android:name="com.krish.headsup.ui.VideoPostFragment"
         android:label="VideoPost">
     </fragment>
 

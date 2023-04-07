@@ -4,9 +4,9 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.krish.headsup.model.ApiImage
-import com.krish.headsup.model.User
 import com.krish.headsup.model.Event
 import com.krish.headsup.model.Location
+import com.krish.headsup.model.User
 
 class Converter {
     private val gson = Gson()

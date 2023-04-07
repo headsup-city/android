@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/yourStartDestinationFragment"
-        android:name="com.krish.headsup.views.HomeFragment"
+        android:name="com.krish.headsup.ui.HomeFragment"
         android:label="Start Destination"
         tools:layout="@layout/fragment_home" />
 </navigation>
