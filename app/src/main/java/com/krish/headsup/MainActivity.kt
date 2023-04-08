@@ -2,12 +2,12 @@ package com.krish.headsup
 
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.messaging.FirebaseMessaging
 import com.krish.headsup.model.AuthState
 import com.krish.headsup.utils.AuthStateChangeListener
 import com.krish.headsup.utils.TokenManager
@@ -23,40 +23,33 @@ class MainActivity : AppCompatActivity(), AuthStateChangeListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
         // Check the current authentication state
         authState = getAuthState()
 
+        val authNavHostFragment = supportFragmentManager.findFragmentById(R.id.authNavigation) as NavHostFragment
+        val authNavController = authNavHostFragment.navController
+        val loadingFragmentContainer = findViewById<FrameLayout>(R.id.loadingFragment)
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+
         when (authState) {
-            AuthState.AUTHENTICATED -> setContentView(R.layout.activity_main)
-            AuthState.NO_USER -> setContentView(R.layout.fragment_greetings)
-            AuthState.LOADING -> setContentView(R.layout.fragment_loading)
-        }
+            AuthState.NO_USER -> {
+                authNavController.navigate(R.id.action_global_greetingFragment) // Navigate to loginFragment
+                loadingFragmentContainer.visibility = View.GONE
+                bottomNavigationView.visibility = View.GONE
+            }
+            AuthState.LOADING -> {
+                loadingFragmentContainer.visibility = View.VISIBLE
+                bottomNavigationView.visibility = View.GONE
+            }
+            AuthState.AUTHENTICATED -> {
+                loadingFragmentContainer.visibility = View.GONE
+                bottomNavigationView.visibility = View.VISIBLE
 
-        if (authState == AuthState.AUTHENTICATED) {
-            subscribeToTopic()
-
-            val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-            navController = navHostFragment.navController
-
-            val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-
-            setupIcons(bottomNavigationView)
-            setupNavigation(bottomNavigationView, navController)
-
-            navController.addOnDestinationChangedListener { _, destination, _ ->
-                when (destination.id) {
-                    R.id.conversationFragment,
-                    R.id.profileFragment,
-                    R.id.textPostFragment,
-                    R.id.imagePostFragment,
-                    R.id.videoPostFragment -> {
-                        bottomNavigationView.visibility = View.GONE
-                    }
-                    else -> {
-                        bottomNavigationView.visibility = View.VISIBLE
-                    }
-                }
+                setupBottomNavigationView()
+                // Set up the navigation with the bottom navigation view
+                bottomNavigationView.setupWithNavController(navController)
             }
         }
     }
@@ -66,10 +59,34 @@ class MainActivity : AppCompatActivity(), AuthStateChangeListener {
         val accessToken = tokenManager.getAccessToken()
         val refreshToken = tokenManager.getRefreshToken()
 
-        return if (accessToken != null && refreshToken != null) {
+        return if (accessToken != null) {
             AuthState.AUTHENTICATED
         } else {
             AuthState.NO_USER
+        }
+    }
+
+    private fun setupBottomNavigationView() {
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+
+        // Connect the NavController with the BottomNavigationView
+        bottomNavigationView.setupWithNavController(navController)
+
+        setupIcons(bottomNavigationView)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.conversationFragment,
+                R.id.profileFragment,
+                R.id.textPostFragment,
+                R.id.imagePostFragment,
+                R.id.videoPostFragment -> {
+                    bottomNavigationView.visibility = View.GONE
+                }
+                else -> {
+                    bottomNavigationView.visibility = View.VISIBLE
+                }
+            }
         }
     }
 
@@ -90,22 +107,6 @@ class MainActivity : AppCompatActivity(), AuthStateChangeListener {
         bottomNavigationView.menu.findItem(R.id.profileTab).icon = IconicsDrawable(this, FontAwesome.Icon.faw_user).apply {
             sizeDp = 24
         }
-    }
-
-    private fun setupNavigation(bottomNavigationView: BottomNavigationView, navController: NavController) {
-        // Connect the NavController with the BottomNavigationView
-        bottomNavigationView.setupWithNavController(navController)
-    }
-
-    private fun subscribeToTopic() {
-        FirebaseMessaging.getInstance().subscribeToTopic("your_topic")
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // Successfully subscribed to the topic
-                } else {
-                    // Failed to subscribe to the topic
-                }
-            }
     }
 
     override fun onAuthStateChanged(authState: AuthState) {

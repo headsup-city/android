@@ -1,4 +1,8 @@
 <resources>
+    <!-- Add this AppTheme style -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+    </style>
 
     <style name="Widget.Theme.HeadsUp.MyView" parent="">
         <item name="android:background">@color/gray_400</item>

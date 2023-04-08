@@ -1,36 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/auth_navigation"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/authNavigation"
     app:startDestination="@id/greetingsFragment">
 
     <fragment
         android:id="@+id/forgotPasswordFragment"
         android:name="com.krish.headsup.ui.ForgotPasswordFragment"
-        android:label="ForgotPassword" />
+        android:label="ForgotPassword"
+        tools:layout="@layout/fragment_forgot_password" />
+
     <fragment
         android:id="@+id/greetingsFragment"
         android:name="com.krish.headsup.ui.GreetingsFragment"
-        android:label="Greetings" />
+        android:label="Greetings"
+        tools:layout="@layout/fragment_greetings">
+        <action
+            android:id="@+id/action_greetingsFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_greetingsFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+    </fragment>
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.krish.headsup.ui.LoginFragment"
-        android:label="Login" />
+        android:label="Login"
+        tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/privacyFragment"
         android:name="com.krish.headsup.ui.PrivacyFragment"
-        android:label="Privacy" />
+        android:label="Privacy"
+        tools:layout="@layout/fragment_privacy" />
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.krish.headsup.ui.RegisterFragment"
-        android:label="Register" />
+        android:label="Register"
+        tools:layout="@layout/fragment_register" />
     <fragment
         android:id="@+id/resetPasswordFragment"
         android:name="com.krish.headsup.ui.ResetPasswordFragment"
-        android:label="ResetPassword" />
+        android:label="ResetPassword"
+        tools:layout="@layout/fragment_reset_password" />
     <fragment
         android:id="@+id/termsFragment"
         android:name="com.krish.headsup.ui.TermsFragment"
-        android:label="Terms" />
+        android:label="Terms"
+        tools:layout="@layout/fragment_terms" />
+
+    <action
+        android:id="@+id/action_global_greetingFragment"
+        app:destination="@id/greetingsFragment" />
 
 </navigation>
