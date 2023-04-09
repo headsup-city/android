@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import com.krish.headsup.R
 import com.krish.headsup.model.AuthState
 import com.krish.headsup.utils.AuthStateChangeListener
+import com.mikepenz.iconics.Iconics
+import com.mikepenz.iconics.typeface.library.ionicons.Ionicons
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +31,8 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Register Ionicons font
+        Iconics.registerFont(Ionicons)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)

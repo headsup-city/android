@@ -5,49 +5,99 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.GreetingsFragment">
+    android:background="#181A1C">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@drawable/greetings_image"
-        android:contentDescription="@string/background_image_description" />
-
-    <Button
-        android:id="@+id/buttonLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:textStyle="bold"
-        android:backgroundTint="@color/purple_200"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRegister"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/background_image_description"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8" />
-
-    <Button
-        android:id="@+id/buttonRegister"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:textStyle="bold"
-        android:backgroundTint="@color/purple_200"
-        app:layout_constraintBottom_toTopOf="@+id/buttonGoogleSignIn"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/buttons_layout" />
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/buttonGoogleSignIn"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#D6181A1C"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-151dp" />
+
+    <ImageView
+        android:id="@+id/logoImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/icon"
+        android:contentDescription="@string/logo_description"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/buttons_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+
+        <com.krish.headsup.ui.components.RoundedButton
+            android:id="@+id/buttonRegister"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:text="@string/register"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:buttonColor="@color/black"
+            app:cornerRadius="3dp"
+            app:layout_constraintTop_toTopOf="@id/buttons_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.92"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+
+        <com.krish.headsup.ui.components.RoundedButton
+            android:id="@+id/buttonLogin"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:text="@string/login"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:buttonColor="@color/white"
+            app:cornerRadius="3dp"
+            app:layout_constraintTop_toBottomOf="@id/buttonRegister"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.92"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/buttonGoogleSignIn"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toBottomOf="@+id/buttonLogin"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.94"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
