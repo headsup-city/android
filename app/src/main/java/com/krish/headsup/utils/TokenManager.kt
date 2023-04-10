@@ -2,24 +2,29 @@ package com.krish.headsup.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.gson.Gson
+import com.krish.headsup.model.TokenStore
 
 class TokenManager(context: Context) {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
+    private val gson = Gson()
 
-    fun saveTokens(accessToken: String, refreshToken: String) {
+    fun saveTokens(tokenStore: TokenStore) {
+        val jsonTokenStore = gson.toJson(tokenStore)
         with(sharedPreferences.edit()) {
-            putString("accessToken", accessToken)
-            putString("refreshToken", refreshToken)
+            putString("tokenStore", jsonTokenStore)
             apply()
         }
     }
 
-    fun getAccessToken(): String? = sharedPreferences.getString("accessToken", null)
-    fun getRefreshToken(): String? = sharedPreferences.getString("refreshToken", null)
+    fun getTokenStore(): TokenStore? {
+        val jsonTokenStore = sharedPreferences.getString("tokenStore", null)
+        return if (jsonTokenStore != null) gson.fromJson(jsonTokenStore, TokenStore::class.java) else null
+    }
+
     fun clearTokens() {
         with(sharedPreferences.edit()) {
-            remove("accessToken")
-            remove("refreshToken")
+            remove("tokenStore")
             apply()
         }
     }

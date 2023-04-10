@@ -3,5 +3,6 @@
     <declare-styleable name="RoundedButton">
         <attr name="buttonColor" format="color" />
         <attr name="cornerRadius" format="dimension" />
+        <attr name="icon" format="reference" />
     </declare-styleable>
 </resources>

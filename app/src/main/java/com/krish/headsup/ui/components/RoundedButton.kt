@@ -2,6 +2,7 @@ package com.krish.headsup.ui.components
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
@@ -26,6 +27,7 @@ class RoundedButton : AppCompatButton {
             val a: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedButton)
             val buttonColor: Int = a.getColor(R.styleable.RoundedButton_buttonColor, context.resources.getColor(R.color.purple_200))
             val cornerRadius: Int = a.getDimensionPixelSize(R.styleable.RoundedButton_cornerRadius, 12)
+            val icon: Drawable? = a.getDrawable(R.styleable.RoundedButton_icon)
             a.recycle()
 
             val backgroundDrawable = GradientDrawable()
@@ -33,6 +35,13 @@ class RoundedButton : AppCompatButton {
             backgroundDrawable.cornerRadius = cornerRadius.toFloat()
 
             background = backgroundDrawable
+
+            // Set the icon to the left of the text
+            icon?.let {
+                val drawablePadding = 8 // You can adjust this value as needed
+                setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+                compoundDrawablePadding = drawablePadding
+            }
         }
     }
 }

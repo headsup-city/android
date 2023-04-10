@@ -1,5 +1,6 @@
 package com.krish.headsup.ui
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -29,7 +30,7 @@ class GreetingsFragment : Fragment() {
         return binding.root
     }
 
-
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -48,14 +49,14 @@ class GreetingsFragment : Fragment() {
         // Customize the SignInButton
         val signInButton = binding.buttonGoogleSignIn
         signInButton.setSize(SignInButton.SIZE_WIDE)
-        signInButton.setColorScheme(SignInButton.COLOR_DARK)
+        signInButton.setColorScheme(SignInButton.COLOR_LIGHT)
 
         for (i in 0 until signInButton.childCount) {
             val childView = signInButton.getChildAt(i)
             if (childView is TextView) {
                 childView.text = getString(R.string.sign_in_with_google)
                 childView.textSize = 18f
-                childView.setTextColor(Color.WHITE)
+                childView.setTextColor(Color.BLACK)
                 childView.setTypeface(Typeface.DEFAULT_BOLD)
             }
         }

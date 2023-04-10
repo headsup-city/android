@@ -28,16 +28,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // For example, using Retrofit
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val userId = "your_user_id" // Replace with the actual user ID
-                val response = ApiService.userApi.sendToken(userId, token)
-                val responseMessage = response.string()
 
-                if (responseMessage == "Successfully added") {
-                    // Successfully sent the token to your server
-                } else {
-                    // Failed to send the token to your server
-                    // You can log the responseMessage to see the error details
-                }
+
+
             } catch (e: IOException) {
                 // Handle network exceptions
             } catch (e: HttpException) {

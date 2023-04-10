@@ -27,7 +27,7 @@
 
     <ImageView
         android:id="@+id/logoImageView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:src="@drawable/icon"
         android:contentDescription="@string/logo_description"
@@ -35,7 +35,10 @@
         app:layout_constraintBottom_toTopOf="@id/buttons_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintWidth_percent="0.75"
+        app:layout_constraintVertical_bias="0.3"
+        android:maxHeight="200dp" />
+
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,6 +51,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         >
 
+        <TextView
+            android:id="@+id/textViewDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/greeting_screen_message"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:gravity="start"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/buttons_layout"
+            app:layout_constraintEnd_toEndOf="@id/buttons_layout"
+            app:layout_constraintWidth_percent="0.92"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.7"
+            />
+
 
         <com.krish.headsup.ui.components.RoundedButton
             android:id="@+id/buttonRegister"
@@ -58,7 +77,8 @@
             android:textColor="@color/white"
             app:buttonColor="@color/black"
             app:cornerRadius="3dp"
-            app:layout_constraintTop_toTopOf="@id/buttons_layout"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/textViewDescription"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintWidth_percent="0.92"
@@ -84,6 +104,8 @@
             android:textAllCaps="false"
             android:textSize="18sp"
             app:layout_constraintVertical_chainStyle="spread" />
+
+
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/buttonGoogleSignIn"

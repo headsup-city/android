@@ -1,42 +1,32 @@
 package com.krish.headsup.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
-import com.krish.headsup.R
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.NavHostFragment
+import com.krish.headsup.databinding.FragmentLoginBinding
 import com.krish.headsup.model.AuthState
 import com.krish.headsup.utils.AuthStateChangeListener
-import com.mikepenz.iconics.Iconics
-import com.mikepenz.iconics.typeface.library.ionicons.Ionicons
+import com.krish.headsup.viewmodel.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
     private lateinit var authStateChangeListener: AuthStateChangeListener
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() = _binding!!
+    private val loginViewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Register Ionicons font
-        Iconics.registerFont(Ionicons)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onAttach(context: Context) {
@@ -48,44 +38,111 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun loginUser() {
-        // TODO: Perform actual login request
-        authStateChangeListener.onAuthStateChanged(AuthState.LOADING)
-
-        // After receiving the response from the backend
-        if (true) {
-            authStateChangeListener.onAuthStateChanged(AuthState.AUTHENTICATED)
-        } else {
-            authStateChangeListener.onAuthStateChanged(AuthState.NO_USER)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false)
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val navController = NavHostFragment.findNavController(this)
+
+        binding.root.setOnTouchListener { _, _ ->
+            hideKeyboardAndClearFocus()
+            true
+        }
+
+        binding.passwordEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                loginUser()
+                true
+            } else {
+                false
+            }
+        }
+
+
+
+        binding.arrowCircleButton.setOnClickListener {
+            navController.navigateUp()
+        }
+
+        binding.forgotPasswordButton.setOnClickListener {
+            // TODO: Navigate to Forgot Password Fragment
+        }
+
+        binding.loginButton.setOnClickListener {
+            hideKeyboardAndClearFocus()
+            loginUser()
+        }
+
+        binding.registerNowClickableButton.setOnClickListener {
+            // TODO: Navigate to Register Fragment
+        }
+
+        binding.termsButton.setOnClickListener {
+            // TODO: Navigate to Terms and Conditions Fragment
+        }
+
+        binding.privacyPolicyButton.setOnClickListener {
+            // TODO: Navigate to Privacy Policy Fragment
+        }
+
+        // Observe the ViewModel's authentication state
+        loginViewModel.authState.observe(viewLifecycleOwner) { authState ->
+            authStateChangeListener.onAuthStateChanged(authState)
+
+            when (authState) {
+                AuthState.LOADING -> {
+                    // Show loading indicator
+                }
+                AuthState.AUTHENTICATED -> {
+                    // Perform authenticated actions
+                }
+                else -> {
+                    // Handle other states, such as error messages
+                }
+            }
+        }
+    }
+
+    private fun loginUser() {
+        val emailOrPhone = binding.usernameEditText.text.toString()
+        val password = binding.passwordEditText.text.toString()
+
+        if (emailOrPhone.isBlank() || password.isBlank()) {
+            binding.errorMessageTextView.visibility = View.VISIBLE
+            binding.errorMessageTextView.text = "Email/Phone and password cannot be empty."
+            return
+        }
+
+        // Call the ViewModel's loginUser method instead
+        loginViewModel.loginUser(emailOrPhone, password)
+    }
+
+    private fun hideKeyboardAndClearFocus() {
+        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val focusedView = requireActivity().currentFocus
+
+        focusedView?.let {
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+            it.clearFocus()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LoginFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LoginFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        fun newInstance() = LoginFragment()
     }
 }

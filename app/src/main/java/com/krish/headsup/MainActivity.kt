@@ -15,7 +15,9 @@ import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.typeface.library.ionicons.Ionicons
 import com.mikepenz.iconics.utils.sizeDp
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), AuthStateChangeListener {
 
     private lateinit var navController: NavController
@@ -56,8 +58,8 @@ class MainActivity : AppCompatActivity(), AuthStateChangeListener {
 
     private fun getAuthState(): AuthState {
         val tokenManager = TokenManager(this)
-        val accessToken = tokenManager.getAccessToken()
-        val refreshToken = tokenManager.getRefreshToken()
+        val accessToken = tokenManager.getTokenStore()?.access
+        val refreshToken = tokenManager.getTokenStore()?.refresh
 
         return if (accessToken != null) {
             AuthState.AUTHENTICATED
