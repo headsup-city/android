@@ -2,7 +2,6 @@ package com.krish.headsup.services
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.krish.headsup.services.api.ApiService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,9 +27,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // For example, using Retrofit
         CoroutineScope(Dispatchers.IO).launch {
             try {
-
-
-
             } catch (e: IOException) {
                 // Handle network exceptions
             } catch (e: HttpException) {

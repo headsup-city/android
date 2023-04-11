@@ -8,8 +8,8 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.krish.headsup.managers.AuthManager
 import com.krish.headsup.model.AuthState
-import com.krish.headsup.utils.AuthStateChangeListener
 import com.krish.headsup.utils.TokenManager
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
@@ -18,40 +18,41 @@ import com.mikepenz.iconics.utils.sizeDp
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), AuthStateChangeListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
     private lateinit var authState: AuthState
 
+    private val authManager: AuthManager by lazy { (application as MyApplication).authManager }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // Check the current authentication state
-        authState = getAuthState()
 
         val authNavHostFragment = supportFragmentManager.findFragmentById(R.id.authNavigation) as NavHostFragment
         val authNavController = authNavHostFragment.navController
         val loadingFragmentContainer = findViewById<FrameLayout>(R.id.loadingFragment)
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigation)
 
-        when (authState) {
-            AuthState.NO_USER -> {
-                authNavController.navigate(R.id.action_global_greetingFragment) // Navigate to loginFragment
-                loadingFragmentContainer.visibility = View.GONE
-                bottomNavigationView.visibility = View.GONE
-            }
-            AuthState.LOADING -> {
-                loadingFragmentContainer.visibility = View.VISIBLE
-                bottomNavigationView.visibility = View.GONE
-            }
-            AuthState.AUTHENTICATED -> {
-                loadingFragmentContainer.visibility = View.GONE
-                bottomNavigationView.visibility = View.VISIBLE
+        authManager.authState.observe(this) { authState ->
+            when (authState) {
+                AuthState.NO_USER -> {
+                    authNavController.navigate(R.id.action_global_greetingFragment) // Navigate to loginFragment
+                    loadingFragmentContainer.visibility = View.GONE
+                    bottomNavigationView.visibility = View.GONE
+                }
+                AuthState.LOADING -> {
+                    loadingFragmentContainer.visibility = View.VISIBLE
+                    bottomNavigationView.visibility = View.GONE
+                }
+                AuthState.AUTHENTICATED -> {
+                    loadingFragmentContainer.visibility = View.GONE
+                    bottomNavigationView.visibility = View.VISIBLE
 
-                setupBottomNavigationView()
-                // Set up the navigation with the bottom navigation view
-                bottomNavigationView.setupWithNavController(navController)
+                    setupBottomNavigationView()
+                    // Set up the navigation with the bottom navigation view
+                    bottomNavigationView.setupWithNavController(navController)
+                }
             }
         }
     }
@@ -108,17 +109,6 @@ class MainActivity : AppCompatActivity(), AuthStateChangeListener {
         }
         bottomNavigationView.menu.findItem(R.id.profileTab).icon = IconicsDrawable(this, FontAwesome.Icon.faw_user).apply {
             sizeDp = 24
-        }
-    }
-
-    override fun onAuthStateChanged(authState: AuthState) {
-        this.authState = authState
-        when (authState) {
-            AuthState.AUTHENTICATED -> {
-                // TODO: Perform necessary actions to initialize the authenticated state
-            }
-            AuthState.NO_USER -> setContentView(R.layout.fragment_greetings)
-            AuthState.LOADING -> setContentView(R.layout.fragment_loading)
         }
     }
 }

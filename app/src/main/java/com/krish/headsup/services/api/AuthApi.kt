@@ -1,9 +1,21 @@
 package com.krish.headsup.services.api
 
-import com.krish.headsup.model.*
+import com.krish.headsup.model.AppleSignInRequestBody
+import com.krish.headsup.model.ForgotPasswordRequestBody
+import com.krish.headsup.model.GoogleSignInRequestBody
+import com.krish.headsup.model.LoginRequestBody
+import com.krish.headsup.model.LogoutRequestBody
+import com.krish.headsup.model.RefreshTokensRequestBody
+import com.krish.headsup.model.RegisterRequestBody
+import com.krish.headsup.model.ResetPasswordRequestBody
+import com.krish.headsup.model.TokenStore
+import com.krish.headsup.model.UserLoginResponse
+import com.krish.headsup.model.UserRegisterResponse
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface AuthApi {
     @POST("/v1/auth/register")

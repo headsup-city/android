@@ -22,4 +22,10 @@
     <string name="please_enter_your_name">Please enter your name</string>
     <string name="enter_your_email_id">Enter your email ID</string>
     <string name="please_enter_a_password">Please enter a password</string>
+    <string name="back_button">Back Button</string>
+    <string name="and">and</string>
+    <string name="by_registering_you_accept_our">By registering, you accept our</string>
+    <string name="already_registered">Already registered?</string>
+    <string name="login_here">Login here</string>
+    <string name="register_input_blank_message">Name, Email, and Password cannot be empty.</string>
 </resources>

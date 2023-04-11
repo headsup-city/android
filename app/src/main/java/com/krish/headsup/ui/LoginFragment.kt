@@ -1,6 +1,5 @@
 package com.krish.headsup.ui
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,31 +10,20 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
+import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentLoginBinding
 import com.krish.headsup.model.AuthState
-import com.krish.headsup.utils.AuthStateChangeListener
 import com.krish.headsup.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
-    private lateinit var authStateChangeListener: AuthStateChangeListener
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
     private val loginViewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is AuthStateChangeListener) {
-            authStateChangeListener = context
-        } else {
-            throw RuntimeException("$context must implement AuthStateChangeListener")
-        }
     }
 
     override fun onCreateView(
@@ -47,15 +35,13 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val navController = NavHostFragment.findNavController(this)
 
-        binding.root.setOnTouchListener { _, _ ->
+        binding.root.setOnClickListener {
             hideKeyboardAndClearFocus()
-            true
         }
 
         binding.passwordEditText.setOnEditorActionListener { _, actionId, _ ->
@@ -66,8 +52,6 @@ class LoginFragment : Fragment() {
                 false
             }
         }
-
-
 
         binding.arrowCircleButton.setOnClickListener {
             navController.navigateUp()
@@ -83,31 +67,24 @@ class LoginFragment : Fragment() {
         }
 
         binding.registerNowClickableButton.setOnClickListener {
-            // TODO: Navigate to Register Fragment
+            navController.navigate(R.id.action_loginFragment_to_registerFragment)
         }
 
         binding.termsButton.setOnClickListener {
-            // TODO: Navigate to Terms and Conditions Fragment
+            navController.navigate(R.id.action_loginFragment_to_termsFragment)
         }
 
         binding.privacyPolicyButton.setOnClickListener {
-            // TODO: Navigate to Privacy Policy Fragment
+            navController.navigate(R.id.action_loginFragment_to_privacyFragment)
         }
 
-        // Observe the ViewModel's authentication state
-        loginViewModel.authState.observe(viewLifecycleOwner) { authState ->
-            authStateChangeListener.onAuthStateChanged(authState)
-
-            when (authState) {
-                AuthState.LOADING -> {
-                    // Show loading indicator
-                }
-                AuthState.AUTHENTICATED -> {
-                    // Perform authenticated actions
-                }
-                else -> {
-                    // Handle other states, such as error messages
-                }
+        loginViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                binding.loginButton.isEnabled = false
+                // Show loading indicator
+            } else {
+                binding.loginButton.isEnabled = true
+                // Hide loading indicator
             }
         }
     }

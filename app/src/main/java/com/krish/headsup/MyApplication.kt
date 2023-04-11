@@ -1,6 +1,7 @@
 package com.krish.headsup
 
 import android.app.Application
+import com.krish.headsup.managers.AuthManager
 import com.krish.headsup.services.api.ApiService
 import com.krish.headsup.utils.AppDatabase
 import dagger.hilt.android.HiltAndroidApp
@@ -12,9 +13,10 @@ class MyApplication : Application() {
 
     @Inject
     lateinit var database: AppDatabase
-
     @Inject
     lateinit var retrofit: Retrofit
+    @Inject
+    lateinit var authManager: AuthManager
 
     override fun onCreate() {
         super.onCreate()

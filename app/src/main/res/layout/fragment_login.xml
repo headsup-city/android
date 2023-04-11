@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/black"
+    android:clickable="true">
 
     <ImageButton
         android:id="@+id/arrow_circle_button"
@@ -15,8 +16,8 @@
         android:background="@drawable/white_circle"
         android:padding="6dp"
         android:src="@drawable/arrow_back_outline_white"
+        android:contentDescription="@string/back_button"
         android:scaleType="fitCenter" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,6 +36,7 @@
 
         <EditText
             android:id="@+id/usernameEditText"
+            style="@style/CustomEditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
@@ -46,6 +48,7 @@
 
         <EditText
             android:id="@+id/passwordEditText"
+            style="@style/CustomEditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -54,6 +57,7 @@
             android:imeOptions="actionDone"
             android:textColor="@android:color/white"
             android:textColorHint="@color/gray_600" />
+
 
         <TextView
             android:id="@+id/errorMessageTextView"
@@ -138,7 +142,7 @@
                 android:background="?android:attr/selectableItemBackground"
                 android:text="@string/terms"
                 android:textAllCaps="false"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/blue" />
 
             <View
                 android:layout_width="8dp"
@@ -155,10 +159,9 @@
                 android:background="?android:attr/selectableItemBackground"
                 android:text="@string/privacy_policy"
                 android:textAllCaps="false"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/blue" />
 
         </LinearLayout>
-
 
     </LinearLayout>
 

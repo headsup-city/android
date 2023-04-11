@@ -9,4 +9,3 @@ data class TokenStore(
     val access: Token,
     val refresh: Token
 )
-
