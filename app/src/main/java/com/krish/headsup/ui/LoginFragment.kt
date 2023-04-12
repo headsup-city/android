@@ -12,7 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentLoginBinding
-import com.krish.headsup.model.AuthState
 import com.krish.headsup.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

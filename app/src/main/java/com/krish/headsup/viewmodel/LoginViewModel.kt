@@ -1,6 +1,5 @@
 package com.krish.headsup.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,11 +28,8 @@ class LoginViewModel @Inject constructor(
         isLoading.value = true
         viewModelScope.launch {
             try {
-                Log.d("loginUser", "Request: \nemailOrPhone:$emailOrPhone, password:$password")
                 val loginRequestBody = LoginRequestBody(emailOrPhone, password)
                 val response = authApi.login(loginRequestBody)
-
-                Log.d("loginUser", "Response: $response")
 
                 if (response.isSuccessful) {
                     response.body()?.let { loginResponse ->

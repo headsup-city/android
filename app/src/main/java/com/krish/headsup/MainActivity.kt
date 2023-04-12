@@ -29,10 +29,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        updateAuthStateFromToken()
+
         val authNavHostFragment = supportFragmentManager.findFragmentById(R.id.authNavigation) as NavHostFragment
         val authNavController = authNavHostFragment.navController
         val loadingFragmentContainer = findViewById<FrameLayout>(R.id.loadingFragment)
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+
+        // Initialize the navController
+        val mainNavHostFragment = supportFragmentManager.findFragmentById(R.id.mainNavigation) as NavHostFragment
+        navController = mainNavHostFragment.navController
 
         authManager.authState.observe(this) { authState ->
             when (authState) {
@@ -48,31 +54,54 @@ class MainActivity : AppCompatActivity() {
                 AuthState.AUTHENTICATED -> {
                     loadingFragmentContainer.visibility = View.GONE
                     bottomNavigationView.visibility = View.VISIBLE
-
-                    setupBottomNavigationView()
-                    // Set up the navigation with the bottom navigation view
-                    bottomNavigationView.setupWithNavController(navController)
+                    setupBottomNavigationView(bottomNavigationView)
                 }
             }
         }
     }
 
-    private fun getAuthState(): AuthState {
+    private fun updateAuthStateFromToken() {
         val tokenManager = TokenManager(this)
         val accessToken = tokenManager.getTokenStore()?.access
         val refreshToken = tokenManager.getTokenStore()?.refresh
 
-        return if (accessToken != null) {
+        val newState = if (accessToken != null) {
             AuthState.AUTHENTICATED
         } else {
             AuthState.NO_USER
         }
+
+        authManager.updateAuthState(newState)
     }
 
-    private fun setupBottomNavigationView() {
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+    private fun setupBottomNavigationView(bottomNavigationView: BottomNavigationView) {
+        // Set up the navigation with the bottom navigation view
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.homeTab -> {
+                    navController.navigate(R.id.homeTab)
+                    true
+                }
+                R.id.searchTab -> {
+                    navController.navigate(R.id.searchTab)
+                    true
+                }
+                R.id.createPostTab -> {
+                    // Handle your createPostTab logic
+                    true
+                }
+                R.id.activityTab -> {
+                    // Handle your activityTab logic
+                    true
+                }
+                R.id.profileTab -> {
+                    navController.navigate(R.id.profileTab)
+                    true
+                }
+                else -> false
+            }
+        }
 
-        // Connect the NavController with the BottomNavigationView
         bottomNavigationView.setupWithNavController(navController)
 
         setupIcons(bottomNavigationView)
@@ -92,6 +121,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
     private fun setupIcons(bottomNavigationView: BottomNavigationView) {
         // Set icons for BottomNavigationView menu items

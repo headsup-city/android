@@ -9,7 +9,7 @@ import javax.inject.Singleton
 @Singleton
 class AuthManager @Inject constructor() {
     private val _authState = MutableLiveData<AuthState>().apply {
-        value = AuthState.NO_USER
+        value = AuthState.LOADING
     }
 
     val authState: LiveData<AuthState> = _authState
