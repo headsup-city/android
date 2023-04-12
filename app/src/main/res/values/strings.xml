@@ -28,4 +28,9 @@
     <string name="already_registered">Already registered?</string>
     <string name="login_here">Login here</string>
     <string name="register_input_blank_message">Name, Email, and Password cannot be empty.</string>
+    <string name="home_screen">Home screen</string>
+    <string name="search_screen">Search screen</string>
+    <string name="create_post_screen">Create post screen</string>
+    <string name="activity_screen">Activity screen</string>
+    <string name="profile_screen">Profile screen</string>
 </resources>
