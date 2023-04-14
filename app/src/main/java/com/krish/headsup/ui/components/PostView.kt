@@ -9,14 +9,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.krish.headsup.R
-import com.krish.headsup.model.Post
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.krish.headsup.R
+import com.krish.headsup.model.Post
 
 class PostView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
     private val authorName: TextView

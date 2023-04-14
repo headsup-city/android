@@ -5,8 +5,9 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.coroutines.resume
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 import kotlin.coroutines.suspendCoroutine
 
 class AuthInterceptor(private val tokenManager: TokenManager) : Interceptor {

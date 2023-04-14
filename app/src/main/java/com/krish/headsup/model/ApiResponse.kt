@@ -2,7 +2,6 @@ package com.krish.headsup.model
 
 import com.google.gson.annotations.SerializedName
 
-
 data class RegistrationRequest(
     @SerializedName("name")
     val name: String,
@@ -24,7 +23,6 @@ data class RegistrationResponse(
     val user: User
 )
 
-
 data class LoginRequest(
     @SerializedName("loginId")
     val loginId: String,
@@ -39,10 +37,6 @@ data class LoginResponse(
     @SerializedName("user")
     val user: User
 )
-
-
-
-
 
 data class GoogleSignInRequest(
     @SerializedName("accessToken")
@@ -281,4 +275,3 @@ data class LogoutRequest(
     @SerializedName("refreshToken")
     val refreshToken: String
 )
-

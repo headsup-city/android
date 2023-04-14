@@ -4,6 +4,14 @@ import android.content.Context
 import com.krish.headsup.BuildConfig
 import com.krish.headsup.services.api.ApiService
 import com.krish.headsup.services.api.AuthApi
+import com.krish.headsup.services.api.CommentApi
+import com.krish.headsup.services.api.ConversationApi
+import com.krish.headsup.services.api.FollowApi
+import com.krish.headsup.services.api.MediaApi
+import com.krish.headsup.services.api.MessageApi
+import com.krish.headsup.services.api.PostApi
+import com.krish.headsup.services.api.ReportApi
+import com.krish.headsup.services.api.UserApi
 import com.krish.headsup.utils.TokenManager
 import com.krish.headsup.utils.UserPreferences
 import dagger.Module
@@ -49,19 +57,69 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, context: Context): Retrofit {
-        return Retrofit.Builder()
+    fun provideRetrofit(okHttpClient: OkHttpClient, context: Context, tokenManager: TokenManager): Retrofit {
+        val retrofit = Retrofit.Builder()
             .baseUrl(getBaseUrl(context))
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
+
+        ApiService.init(retrofit, tokenManager)
+        return retrofit
     }
 
     @Provides
     @Singleton
     fun provideAuthApi(retrofit: Retrofit): AuthApi {
-        ApiService.init(retrofit)
         return ApiService.authApi
+    }
+
+    @Provides
+    @Singleton
+    fun provideCommentApi(retrofit: Retrofit): CommentApi {
+        return ApiService.commentApi
+    }
+
+    @Provides
+    @Singleton
+    fun provideConversationApi(retrofit: Retrofit): ConversationApi {
+        return ApiService.conversationApi
+    }
+
+    @Provides
+    @Singleton
+    fun provideFollowApi(retrofit: Retrofit): FollowApi {
+        return ApiService.followApi
+    }
+
+    @Provides
+    @Singleton
+    fun provideMediaApi(retrofit: Retrofit): MediaApi {
+        return ApiService.mediaApi
+    }
+
+    @Provides
+    @Singleton
+    fun provideMessageApi(retrofit: Retrofit): MessageApi {
+        return ApiService.messageApi
+    }
+
+    @Provides
+    @Singleton
+    fun providePostApi(retrofit: Retrofit): PostApi {
+        return ApiService.postApi
+    }
+
+    @Provides
+    @Singleton
+    fun provideReportApi(retrofit: Retrofit): ReportApi {
+        return ApiService.reportApi
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserApi(retrofit: Retrofit): UserApi {
+        return ApiService.userApi
     }
 
     @Provides

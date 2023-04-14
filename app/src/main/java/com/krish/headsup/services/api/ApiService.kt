@@ -1,6 +1,6 @@
 package com.krish.headsup.services.api
 
-import com.krish.headsup.utils.AuthInterceptor
+import AuthInterceptor
 import com.krish.headsup.utils.TokenManager
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -13,6 +13,30 @@ object ApiService {
 
     val authApi: AuthApi
         get() = retrofit.create(AuthApi::class.java)
+
+    val commentApi: CommentApi
+        get() = retrofit.create(CommentApi::class.java)
+
+    val conversationApi: ConversationApi
+        get() = retrofit.create(ConversationApi::class.java)
+
+    val followApi: FollowApi
+        get() = retrofit.create(FollowApi::class.java)
+
+    val mediaApi: MediaApi
+        get() = retrofit.create(MediaApi::class.java)
+
+    val messageApi: MessageApi
+        get() = retrofit.create(MessageApi::class.java)
+
+    val postApi: PostApi
+        get() = retrofit.create(PostApi::class.java)
+
+    val reportApi: ReportApi
+        get() = retrofit.create(ReportApi::class.java)
+
+    val userApi: UserApi
+        get() = retrofit.create(UserApi::class.java)
 
     fun init(retrofit: Retrofit, tokenManager: TokenManager) {
         this.tokenManager = tokenManager

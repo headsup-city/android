@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krish.headsup.managers.AuthManager
 import com.krish.headsup.model.AuthState
-import com.krish.headsup.model.LoginRequestBody
+import com.krish.headsup.model.LoginRequest
 import com.krish.headsup.services.api.AuthApi
 import com.krish.headsup.utils.TokenManager
 import com.krish.headsup.utils.UserPreferences
@@ -28,7 +28,7 @@ class LoginViewModel @Inject constructor(
         isLoading.value = true
         viewModelScope.launch {
             try {
-                val loginRequestBody = LoginRequestBody(emailOrPhone, password)
+                val loginRequestBody = LoginRequest(emailOrPhone, password)
                 val response = authApi.login(loginRequestBody)
 
                 if (response.isSuccessful) {

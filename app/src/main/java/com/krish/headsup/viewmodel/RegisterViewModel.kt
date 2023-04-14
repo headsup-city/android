@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krish.headsup.model.AuthState
-import com.krish.headsup.model.RegisterRequestBody
+import com.krish.headsup.model.RegistrationRequest
 import com.krish.headsup.services.api.AuthApi
 import com.krish.headsup.utils.TokenManager
 import com.krish.headsup.utils.UserPreferences
@@ -28,7 +28,7 @@ class RegisterViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val registerRequestBody = RegisterRequestBody(name, email, password, signUpSource)
+                val registerRequestBody = RegistrationRequest(name, email, password, signUpSource)
                 val response = authApi.register(registerRequestBody)
 
                 if (response.isSuccessful) {
