@@ -1,6 +1,13 @@
+package com.krish.headsup.utils
+
+import com.krish.headsup.managers.AuthManager
+import com.krish.headsup.model.AuthState
+import com.krish.headsup.model.RefreshTokensRequest
 import com.krish.headsup.model.TokenStore
-import com.krish.headsup.utils.TokenManager
+import com.krish.headsup.services.api.ApiService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -8,13 +15,23 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
-import kotlin.coroutines.suspendCoroutine
 
-class AuthInterceptor(private val tokenManager: TokenManager) : Interceptor {
+class AuthInterceptor(private val tokenManager: TokenManager, private val authManager: AuthManager) : Interceptor {
+    // Add the excluded API patterns here
+    private val excludedApiPatterns = listOf(
+        Regex("/v1/auth/.*"),
+    )
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        val tokenStore = tokenManager.getTokenStore()
         val request = chain.request()
+        val requestPath = request.url.encodedPath
+
+        // Check if the request path matches any of the excluded patterns
+        if (excludedApiPatterns.any { pattern -> pattern.matches(requestPath) }) {
+            return chain.proceed(request)
+        }
+
+        val tokenStore = tokenManager.getTokenStore()
 
         if (tokenStore != null) {
             val accessToken = tokenStore.access.token
@@ -30,6 +47,8 @@ class AuthInterceptor(private val tokenManager: TokenManager) : Interceptor {
             } else {
                 return proceedWithNewToken(chain, request, accessToken)
             }
+        } else {
+            authManager.updateAuthState(AuthState.NO_USER)
         }
         return chain.proceed(request)
     }
@@ -52,8 +71,21 @@ class AuthInterceptor(private val tokenManager: TokenManager) : Interceptor {
         return currentTime.time >= tenSecondsBeforeExpiration
     }
 
-    private suspend fun refreshToken(tokenManager: TokenManager): TokenStore? = suspendCoroutine { continuation ->
-        // Implement the function to refresh the tokens using the refresh token and return the new tokens
-        // When you have the result, use `continuation.resume(yourResult)` to return the value
+    private suspend fun refreshToken(tokenManager: TokenManager): TokenStore? {
+        val refreshToken = tokenManager.getTokenStore()?.refresh?.token ?: return null
+
+        return try {
+            val response = withContext(Dispatchers.IO) {
+                ApiService.authApi.refreshTokens(RefreshTokensRequest(refreshToken))
+            }
+
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
     }
 }

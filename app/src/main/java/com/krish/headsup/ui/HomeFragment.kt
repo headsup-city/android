@@ -5,16 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krish.headsup.databinding.FragmentHomeBinding
 import com.krish.headsup.ui.components.HomeAdapter
 import com.krish.headsup.utils.Resource
 import com.krish.headsup.viewmodel.HomeViewModel
+import androidx.fragment.app.activityViewModels
 
 class HomeFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by activityViewModels()
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 

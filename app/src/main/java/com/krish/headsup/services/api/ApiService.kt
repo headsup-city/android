@@ -1,6 +1,7 @@
 package com.krish.headsup.services.api
 
-import AuthInterceptor
+import com.krish.headsup.managers.AuthManager
+import com.krish.headsup.utils.AuthInterceptor
 import com.krish.headsup.utils.TokenManager
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -38,14 +39,14 @@ object ApiService {
     val userApi: UserApi
         get() = retrofit.create(UserApi::class.java)
 
-    fun init(retrofit: Retrofit, tokenManager: TokenManager) {
+    fun init(retrofit: Retrofit, tokenManager: TokenManager, authManager: AuthManager) {
         this.tokenManager = tokenManager
 
         val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
-        val authInterceptor = AuthInterceptor(tokenManager)
+        val authInterceptor = AuthInterceptor(tokenManager, authManager)
 
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)

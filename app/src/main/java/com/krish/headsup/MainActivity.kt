@@ -3,6 +3,7 @@ package com.krish.headsup
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.NavController
@@ -11,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.krish.headsup.managers.AuthManager
 import com.krish.headsup.model.AuthState
 import com.krish.headsup.utils.TokenManager
+import com.krish.headsup.viewmodel.HomeViewModel
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.typeface.library.ionicons.Ionicons
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     private val authManager: AuthManager by lazy { (application as MyApplication).authManager }
     private lateinit var onBackPressedCallback: OnBackPressedCallback
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

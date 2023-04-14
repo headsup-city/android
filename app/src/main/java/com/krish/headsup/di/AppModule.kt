@@ -2,6 +2,8 @@ package com.krish.headsup.di
 
 import android.content.Context
 import com.krish.headsup.BuildConfig
+import com.krish.headsup.managers.AuthManager
+import com.krish.headsup.repositories.PostRepository
 import com.krish.headsup.services.api.ApiService
 import com.krish.headsup.services.api.AuthApi
 import com.krish.headsup.services.api.CommentApi
@@ -12,6 +14,7 @@ import com.krish.headsup.services.api.MessageApi
 import com.krish.headsup.services.api.PostApi
 import com.krish.headsup.services.api.ReportApi
 import com.krish.headsup.services.api.UserApi
+import com.krish.headsup.utils.AuthInterceptor
 import com.krish.headsup.utils.TokenManager
 import com.krish.headsup.utils.UserPreferences
 import dagger.Module
@@ -45,26 +48,36 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideAuthManager(): AuthManager {
+        return AuthManager()
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(tokenManager: TokenManager, authManager: AuthManager): OkHttpClient {
+        val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        val authInterceptor = AuthInterceptor(tokenManager, authManager)
+
         return OkHttpClient.Builder()
-            .addInterceptor(
-                HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BODY
-                }
-            )
+            .addInterceptor(httpLoggingInterceptor)
+            .addInterceptor(authInterceptor)
             .build()
     }
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, context: Context, tokenManager: TokenManager): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient, context: Context, tokenManager: TokenManager, authManager: AuthManager): Retrofit {
         val retrofit = Retrofit.Builder()
             .baseUrl(getBaseUrl(context))
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
 
-        ApiService.init(retrofit, tokenManager)
+        ApiService.init(retrofit, tokenManager, authManager)
+
         return retrofit
     }
 
@@ -132,5 +145,11 @@ object AppModule {
     @Singleton
     fun provideTokenManager(context: Context): TokenManager {
         return TokenManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun providePostRepository(postApi: PostApi): PostRepository {
+        return PostRepository(postApi)
     }
 }

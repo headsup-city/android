@@ -2,7 +2,6 @@ package com.krish.headsup
 
 import android.app.Application
 import com.krish.headsup.managers.AuthManager
-import com.krish.headsup.services.api.ApiService
 import com.krish.headsup.utils.AppDatabase
 import com.krish.headsup.utils.TokenManager
 import dagger.hilt.android.HiltAndroidApp
@@ -23,6 +22,5 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        ApiService.init(retrofit, tokenManager)
     }
 }
