@@ -87,6 +87,9 @@ dependencies {
     implementation 'com.mikepenz:entypo-typeface:1.0.0.7-kotlin@aar'
     implementation 'com.mikepenz:ionicons-typeface:2.0.1.7-kotlin@aar'
     implementation 'com.mikepenz:material-design-icons-dx-typeface:5.0.1.2-kotlin@aar'
+
+    // Exoplayer
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.5'
 }
 
 kapt {

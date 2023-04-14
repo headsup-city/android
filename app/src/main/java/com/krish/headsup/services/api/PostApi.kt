@@ -1,7 +1,7 @@
 package com.krish.headsup.services.api
 
-import com.krish.headsup.model.GeneralPostResType
 import com.krish.headsup.model.Post
+import com.krish.headsup.model.PostListResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.DELETE
@@ -41,7 +41,7 @@ interface PostApi {
         @Query("page") page: Int,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
-    ): Response<GeneralPostResType>
+    ): Response<PostListResponse>
 
     @GET("post/{id}")
     suspend fun getPost(
@@ -54,19 +54,19 @@ interface PostApi {
         @Header("Authorization") token: String,
         @Path("id") id: String,
         @Query("page") page: Int
-    ): Response<GeneralPostResType>
+    ): Response<PostListResponse>
 
     @POST("post/{id}/like")
     suspend fun likePost(
         @Header("Authorization") token: String,
         @Path("id") id: String
-    ): Response<GeneralPostResType>
+    ): Response<PostListResponse>
 
     @POST("post/{id}/unlike")
     suspend fun unlikePost(
         @Header("Authorization") token: String,
         @Path("id") id: String
-    ): Response<GeneralPostResType>
+    ): Response<PostListResponse>
 
     @DELETE("post/{id}")
     suspend fun deleteAPost(

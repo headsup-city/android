@@ -2,23 +2,8 @@ package com.krish.headsup.model
 
 import com.google.gson.annotations.SerializedName
 
-data class UserRegisterResponse(
-    @SerializedName("tokens")
-    val tokens: TokenStore,
 
-    @SerializedName("user")
-    val user: User
-)
-
-data class UserLoginResponse(
-    @SerializedName("tokens")
-    val tokens: TokenStore,
-
-    @SerializedName("user")
-    val user: User
-)
-
-data class RegisterRequestBody(
+data class RegistrationRequest(
     @SerializedName("name")
     val name: String,
 
@@ -31,16 +16,35 @@ data class RegisterRequestBody(
     @SerializedName("signUpSource")
     val signUpSource: Map<String, String>
 )
+data class RegistrationResponse(
+    @SerializedName("tokens")
+    val tokens: TokenStore,
 
-data class LoginRequestBody(
+    @SerializedName("user")
+    val user: User
+)
+
+
+data class LoginRequest(
     @SerializedName("loginId")
     val loginId: String,
 
     @SerializedName("password")
     val password: String
 )
+data class LoginResponse(
+    @SerializedName("tokens")
+    val tokens: TokenStore,
 
-data class GoogleSignInRequestBody(
+    @SerializedName("user")
+    val user: User
+)
+
+
+
+
+
+data class GoogleSignInRequest(
     @SerializedName("accessToken")
     val accessToken: String,
 
@@ -48,7 +52,7 @@ data class GoogleSignInRequestBody(
     val signUpSource: Map<String, String>
 )
 
-data class AppleSignInRequestBody(
+data class AppleSignInRequest(
     @SerializedName("name")
     val name: String,
 
@@ -65,7 +69,7 @@ data class AppleSignInRequestBody(
     val signUpSource: Map<String, String>
 )
 
-data class CommentForAPostResType(
+data class PostCommentsResponse(
     @SerializedName("limit")
     val limit: Int,
 
@@ -82,7 +86,7 @@ data class CommentForAPostResType(
     val totalResults: Int
 )
 
-data class SendMessageToUserBodyType(
+data class SendMessageToUserRequest(
     @SerializedName("text")
     val text: String,
 
@@ -90,7 +94,7 @@ data class SendMessageToUserBodyType(
     val messageType: String = "TEXT"
 )
 
-data class SendMessageToUserResType(
+data class SendMessageToUserResponse(
     @SerializedName("id")
     val id: String,
 
@@ -116,7 +120,7 @@ data class SendMessageToUserResType(
     val updatedAt: String
 )
 
-data class SendMessageToConvoResType(
+data class SendMessageToConversationResponse(
     @SerializedName("id")
     val id: String,
 
@@ -142,7 +146,7 @@ data class SendMessageToConvoResType(
     val updatedAt: String
 )
 
-data class GetMessageByConvoIdResType(
+data class GetMessagesByConversationIdResponse(
     @SerializedName("limit")
     val limit: Int = 20,
 
@@ -159,7 +163,7 @@ data class GetMessageByConvoIdResType(
     val totalResults: Int = 2
 )
 
-data class SendMessageToConvoBodyType(
+data class SendMessageToConversationRequest(
     @SerializedName("text")
     val text: String,
 
@@ -167,7 +171,7 @@ data class SendMessageToConvoBodyType(
     val messageType: String = "TEXT"
 )
 
-data class GeneralPostResType(
+data class PostListResponse(
     @SerializedName("limit")
     val limit: Int,
 
@@ -184,7 +188,7 @@ data class GeneralPostResType(
     val totalResults: Int
 )
 
-data class UserSearchResType(
+data class UserSearchResponse(
     @SerializedName("limit")
     val limit: Int,
 
@@ -201,7 +205,7 @@ data class UserSearchResType(
     val totalResults: Int
 )
 
-data class UserUpdatePassReqBodyType(
+data class UpdatePasswordRequest(
     @SerializedName("oldPassword")
     val oldPassword: String,
 
@@ -209,7 +213,7 @@ data class UserUpdatePassReqBodyType(
     val newPassword: String
 )
 
-data class UserUpdateReqBodyType(
+data class UpdateUserRequest(
     @SerializedName("name")
     val name: String?,
 
@@ -223,7 +227,7 @@ data class UserUpdateReqBodyType(
     val password: String?
 )
 
-data class GetConversationsApiResType(
+data class ConversationListResponse(
     @SerializedName("limit")
     val limit: Int,
 
@@ -240,8 +244,7 @@ data class GetConversationsApiResType(
     val totalResults: Int
 )
 
-
-data class SubscribePushTokenReqBodyType(
+data class PushTokenSubscriptionRequest(
     @SerializedName("pushToken")
     val pushToken: String
 )
@@ -259,22 +262,23 @@ data class AvatarData(
     val avatarUri: String
 )
 
-data class ForgotPasswordRequestBody(
+data class ForgotPasswordRequest(
     @SerializedName("email")
     val email: String
 )
 
-data class ResetPasswordRequestBody(
+data class ResetPasswordRequest(
     @SerializedName("password")
     val password: String
 )
 
-data class RefreshTokensRequestBody(
+data class RefreshTokensRequest(
     @SerializedName("refreshToken")
     val refreshToken: String
 )
 
-data class LogoutRequestBody(
+data class LogoutRequest(
     @SerializedName("refreshToken")
     val refreshToken: String
 )
+

@@ -1,7 +1,7 @@
 package com.krish.headsup.services.api
 
 import com.krish.headsup.model.Conversation
-import com.krish.headsup.model.GetConversationsApiResType
+import com.krish.headsup.model.ConversationListResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -26,5 +26,5 @@ interface ConversationApi {
     suspend fun getConversations(
         @Header("Authorization") token: String,
         @Query("page") page: Int? = 0
-    ): Response<GetConversationsApiResType>
+    ): Response<ConversationListResponse>
 }

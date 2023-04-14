@@ -1,7 +1,7 @@
 package com.krish.headsup.services.api
 
 import com.krish.headsup.model.Comment
-import com.krish.headsup.model.CommentForAPostResType
+import com.krish.headsup.model.PostCommentsResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -23,7 +23,7 @@ interface CommentApi {
         @Header("Authorization") token: String,
         @Path("postId") postId: String,
         @Query("page") page: Int? = 0
-    ): Response<CommentForAPostResType>
+    ): Response<PostCommentsResponse>
 
     @POST("comment/{id}/like")
     suspend fun likeComment(

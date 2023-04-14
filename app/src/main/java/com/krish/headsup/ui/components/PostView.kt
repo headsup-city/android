@@ -1,48 +1,84 @@
 package com.krish.headsup.ui.components
 
 import android.content.Context
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.FrameLayout
+import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.ui.StyledPlayerView
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 
-class PostView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
-    private lateinit var postType: String
-    private val contentContainer: FrameLayout
-    private val likeButton: LikeButtonView
-    private val commentButton: CommentButtonView
+class PostView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
+    private val authorName: TextView
+    private val postText: TextView
+    private val postImage: ImageView
+    private val postVideo: StyledPlayerView
+    private var player: ExoPlayer? = null
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.post_view, this, true)
-        contentContainer = findViewById(R.id.postContentContainer)
-        likeButton = findViewById(R.id.likeButton)
-        commentButton = findViewById(R.id.commentButton)
+        LayoutInflater.from(context).inflate(R.layout.view_post, this, true)
+        orientation = VERTICAL
+
+        authorName = findViewById(R.id.authorName)
+        postText = findViewById(R.id.postText)
+        postImage = findViewById(R.id.postImage)
+        postVideo = findViewById(R.id.postVideo)
     }
 
-    fun setPost(post: Post) {
-        postType = post.postType ?: "text"
-        when (postType) {
+    fun bind(post: Post) {
+        authorName.text = post.author?.name
+        postText.text = post.caption
+
+        when (post.postType) {
             "text" -> {
-                val textView = TextView(context)
-                textView.text = post.caption
-                contentContainer.addView(textView)
+                postImage.visibility = View.GONE
+                postVideo.visibility = View.GONE
             }
-            "image" -> {
-                val imageView = ImageView(context)
-                imageView.adjustViewBounds = true
-                Glide.with(context).load(post.imageUri).into(imageView)
-                contentContainer.addView(imageView)
+            "photo" -> {
+                postImage.visibility = View.VISIBLE
+                postVideo.visibility = View.GONE
+
+                // Load the image using Glide
+                Glide.with(context)
+                    .load(post.imageUri)
+                    .centerCrop()
+                    .into(postImage)
             }
             "video" -> {
-                // Handle video post type here
+                postImage.visibility = View.GONE
+                postVideo.visibility = View.VISIBLE
+
+                // Initialize ExoPlayer
+                player = ExoPlayer.Builder(context).build()
+                postVideo.player = player
+
+                // Create a MediaSource
+                val dataSourceFactory = DefaultHttpDataSource.Factory()
+                val mediaSourceFactory = ProgressiveMediaSource.Factory(dataSourceFactory)
+                val mediaItem = MediaItem.fromUri(Uri.parse(post.imageUri))
+                val mediaSource: MediaSource = mediaSourceFactory.createMediaSource(mediaItem)
+
+                // Set the MediaSource and prepare the player
+                player?.setMediaSource(mediaSource)
+                player?.prepare()
+                player?.playWhenReady = true
             }
         }
+    }
 
-        likeButton.setLikeCount(post.likeCount ?: 0)
-        commentButton.setCommentCount(post.commentCount ?: 0)
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        // Release the ExoPlayer when the view is detached
+        player?.release()
     }
 }

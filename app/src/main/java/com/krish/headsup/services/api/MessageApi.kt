@@ -1,10 +1,10 @@
 package com.krish.headsup.services.api
 
-import com.krish.headsup.model.GetMessageByConvoIdResType
-import com.krish.headsup.model.SendMessageToConvoBodyType
-import com.krish.headsup.model.SendMessageToConvoResType
-import com.krish.headsup.model.SendMessageToUserBodyType
-import com.krish.headsup.model.SendMessageToUserResType
+import com.krish.headsup.model.GetMessagesByConversationIdResponse
+import com.krish.headsup.model.SendMessageToConversationRequest
+import com.krish.headsup.model.SendMessageToConversationResponse
+import com.krish.headsup.model.SendMessageToUserRequest
+import com.krish.headsup.model.SendMessageToUserResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -20,19 +20,19 @@ interface MessageApi {
         @Path("convoId") convoId: String,
         @Query("page") page: Int,
         @Header("Authorization") token: String
-    ): Response<GetMessageByConvoIdResType>
+    ): Response<GetMessagesByConversationIdResponse>
 
     @POST("message/sendMessage/user/{id}")
     suspend fun sendMessageToUser(
         @Path("id") id: String,
-        @Body body: SendMessageToUserBodyType,
+        @Body body: SendMessageToUserRequest,
         @Header("Authorization") token: String
-    ): Response<SendMessageToUserResType>
+    ): Response<SendMessageToUserResponse>
 
     @POST("message/sendMessage/conversation/{id}")
     suspend fun sendMessageToConversation(
         @Path("id") id: String,
-        @Body body: SendMessageToConvoBodyType,
+        @Body body: SendMessageToConversationRequest,
         @Header("Authorization") token: String
-    ): Response<SendMessageToConvoResType>
+    ): Response<SendMessageToConversationResponse>
 }
