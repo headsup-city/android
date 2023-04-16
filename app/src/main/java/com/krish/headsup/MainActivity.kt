@@ -1,7 +1,10 @@
 package com.krish.headsup
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        showStatusBar()
 
         updateAuthStateFromToken()
 
@@ -90,6 +95,20 @@ class MainActivity : AppCompatActivity() {
         authManager.updateAuthState(newState)
     }
 
+    private fun showStatusBar() {
+        // Force status bar to be visible
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.apply {
+                show(WindowInsets.Type.statusBars())
+                systemBarsBehavior = WindowInsetsController.BEHAVIOR_DEFAULT
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility =
+                window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN.inv()
+        }
+    }
+
     private fun setupBottomNavigationView(bottomNavigationView: BottomNavigationView, mainContainer: FragmentContainerView) {
         bottomNavigationView.setOnItemSelectedListener { item ->
             val navGraphId = when (item.itemId) {
@@ -108,6 +127,9 @@ class MainActivity : AppCompatActivity() {
 
             val navController = inflater.navController
             mainContainer.setTag(R.id.mainContainer, navController)
+
+            // Force status bar to be visible
+            showStatusBar()
 
             setupDestinationChangeListener(navController, bottomNavigationView)
 

@@ -18,7 +18,7 @@ data class Post(
     @SerializedName("attachment")
     val attachment: ApiImage?,
 
-    @SerializedName("attachment")
+    // Remove the @SerializedName annotation from the imageUri field
     val imageUri: String?,
 
     @SerializedName("author")
@@ -39,6 +39,7 @@ data class Post(
     @SerializedName("expires")
     val expires: String?
 )
+
 
 data class Location(
     @SerializedName("type")

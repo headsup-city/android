@@ -2,12 +2,10 @@ package com.krish.headsup.ui.components
 
 import android.content.Context
 import android.net.Uri
-import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -18,24 +16,24 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
 
-class PostView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
-    private val authorName: TextView
-    private val postText: TextView
-    private val postImage: ImageView
-    private val postVideo: StyledPlayerView
+class PostView(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val context: Context = itemView.context
+    private val authorAvatar: ImageView = itemView.findViewById(R.id.authorAvatar)
+    private val authorName: TextView = itemView.findViewById(R.id.authorName)
+    private val postImage: ImageView = itemView.findViewById(R.id.postImage)
+    private val postText: TextView = itemView.findViewById(R.id.postText)
+    private val postVideo: StyledPlayerView = itemView.findViewById(R.id.postVideo)
     private var player: ExoPlayer? = null
 
-    init {
-        LayoutInflater.from(context).inflate(R.layout.view_post, this, true)
-        orientation = VERTICAL
-
-        authorName = findViewById(R.id.authorName)
-        postText = findViewById(R.id.postText)
-        postImage = findViewById(R.id.postImage)
-        postVideo = findViewById(R.id.postVideo)
-    }
-
     fun bind(post: Post) {
+
+        // Load the author's avatar using Glide
+        Glide.with(context)
+            .load(post.author?.avatar)
+            .placeholder(R.drawable.default_avatar)
+            .circleCrop()
+            .into(authorAvatar)
+
         authorName.text = post.author?.name
         postText.text = post.caption
 
@@ -44,6 +42,7 @@ class PostView(context: Context, attrs: AttributeSet) : LinearLayout(context, at
                 postImage.visibility = View.GONE
                 postVideo.visibility = View.GONE
             }
+
             "photo" -> {
                 postImage.visibility = View.VISIBLE
                 postVideo.visibility = View.GONE
@@ -54,6 +53,7 @@ class PostView(context: Context, attrs: AttributeSet) : LinearLayout(context, at
                     .centerCrop()
                     .into(postImage)
             }
+
             "video" -> {
                 postImage.visibility = View.GONE
                 postVideo.visibility = View.VISIBLE
@@ -76,8 +76,7 @@ class PostView(context: Context, attrs: AttributeSet) : LinearLayout(context, at
         }
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
+    fun onDetachedFromWindow() {
         // Release the ExoPlayer when the view is detached
         player?.release()
     }

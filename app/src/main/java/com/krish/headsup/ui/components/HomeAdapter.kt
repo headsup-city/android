@@ -4,22 +4,25 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
+import com.krish.headsup.R
 import com.krish.headsup.model.Post
 
-class HomeAdapter : ListAdapter<Post, HomeAdapter.HomeViewHolder>(PostDiffCallback()) {
+class HomeAdapter : ListAdapter<Post, PostView>(PostDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
-        val postView = LayoutInflater.from(parent.context).inflate(com.krish.headsup.R.layout.post_view, parent, false) as PostView
-        return HomeViewHolder(postView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostView {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.view_post, parent, false)
+        return PostView(view)
     }
 
-    override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PostView, position: Int) {
         val post = getItem(position)
-        holder.postView.bind(post)
+        holder.bind(post)
     }
 
-    class HomeViewHolder(val postView: PostView) : RecyclerView.ViewHolder(postView)
+    override fun onViewDetachedFromWindow(holder: PostView) {
+        super.onViewDetachedFromWindow(holder)
+        holder.onDetachedFromWindow()
+    }
 
     class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
         override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {

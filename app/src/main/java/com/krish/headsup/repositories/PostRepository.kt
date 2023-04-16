@@ -14,8 +14,8 @@ class PostRepository @Inject constructor(private val postApi: PostApi) {
         return withContext(Dispatchers.IO) {
             Log.d("PostRepository15", "Starting api call")
             try {
-                val response = postApi.getGeneralPost(accessToken, 0, 22.1, 28.23)
-                Log.d("PostRepository18", "Got response")
+                val response = postApi.getGeneralPost(accessToken, 0, 28.5506082, 77.3451002)
+                Log.d("PostRepository18", "Got response: $response")
                 if (response.isSuccessful) {
                     Log.d("PostRepository20", "Api Success")
                     response.body()?.results?.let { posts ->

@@ -33,4 +33,8 @@
     <string name="create_post_screen">Create post screen</string>
     <string name="activity_screen">Activity screen</string>
     <string name="profile_screen">Profile screen</string>
+    <string name="left_button_description">Header left button</string>
+    <string name="title_icon_description">Header title icon</string>
+    <string name="right_button_description">Header right button</string>
+    <string name="near_you">Near you</string>
 </resources>

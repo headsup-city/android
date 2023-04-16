@@ -9,12 +9,10 @@ import android.widget.TextView
 import com.krish.headsup.R
 
 class CommentButtonView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
-    private val commentIcon: ImageView
     private val commentCount: TextView
 
     init {
         LayoutInflater.from(context).inflate(R.layout.comment_button_view, this, true)
-        commentIcon = findViewById(R.id.commentButton)
         commentCount = findViewById(R.id.commentCount)
     }
 

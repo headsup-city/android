@@ -35,7 +35,7 @@ interface PostApi {
         @Part body: MultipartBody.Part
     ): Response<Unit>
 
-    @GET("post/general")
+    @GET("/v1/post/general")
     suspend fun getGeneralPost(
         @Header("Authorization") token: String,
         @Query("page") page: Int,

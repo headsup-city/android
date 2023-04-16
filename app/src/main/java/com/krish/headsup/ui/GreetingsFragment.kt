@@ -13,8 +13,8 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.common.SignInButton
 import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentGreetingsBinding
-import makeStatusBarTranslucent
-import restoreStatusBar
+import com.krish.headsup.utils.makeStatusBarTranslucent
+import com.krish.headsup.utils.restoreStatusBar
 
 class GreetingsFragment : Fragment() {
 
@@ -30,7 +30,6 @@ class GreetingsFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -57,7 +56,7 @@ class GreetingsFragment : Fragment() {
                 childView.text = getString(R.string.sign_in_with_google)
                 childView.textSize = 18f
                 childView.setTextColor(Color.BLACK)
-                childView.setTypeface(Typeface.DEFAULT_BOLD)
+                childView.typeface = Typeface.DEFAULT_BOLD
             }
         }
     }
