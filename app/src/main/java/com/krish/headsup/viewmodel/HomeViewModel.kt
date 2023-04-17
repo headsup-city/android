@@ -22,14 +22,14 @@ class HomeViewModel @Inject constructor(
     private val _posts = MutableLiveData<Resource<List<Post>>>()
     val posts: LiveData<Resource<List<Post>>> = _posts
 
-    fun loadPosts() {
+    fun loadPosts(latitude: Double, longitude: Double) {
         viewModelScope.launch {
             _posts.value = Resource.Loading()
             val accessToken = tokenManager.getTokenStore()?.access?.token
-            Log.d("HomeViewLogAccessToken","$accessToken")
+            Log.d("HomeViewLogAccessToken", "$accessToken")
             if (accessToken != null) {
-                val result = postRepository.getGeneralPost(accessToken)
-                Log.d("HomeViewLogResult","$result")
+                val result = postRepository.getGeneralPost(accessToken, 0, latitude, longitude)
+                Log.d("HomeViewLogResult", "$result")
                 _posts.value = result
             } else {
                 _posts.value = Resource.error("Access token is missing")

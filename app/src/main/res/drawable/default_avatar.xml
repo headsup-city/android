@@ -2,8 +2,8 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:drawable="@drawable/person_sharp"
-        android:top="12dp"
+        android:top="0dp"
         android:bottom="0dp"
-        android:left="8dp"
-        android:right="8dp" />
+        android:left="0dp"
+        android:right="0dp" />
 </layer-list>

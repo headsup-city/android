@@ -40,7 +40,6 @@ data class Post(
     val expires: String?
 )
 
-
 data class Location(
     @SerializedName("type")
     val type: String?,

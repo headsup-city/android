@@ -58,9 +58,11 @@ dependencies {
     implementation 'com.google.dagger:hilt-android:2.44'
     kapt 'com.google.dagger:hilt-android-compiler:2.44'
 
-    implementation 'androidx.work:work-runtime-ktx:2.8.1'
+    // Navigation
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+
+    implementation 'androidx.work:work-runtime-ktx:2.8.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     implementation 'androidx.room:room-runtime:2.5.1'
@@ -91,6 +93,9 @@ dependencies {
 
     // Exoplayer
     implementation 'com.google.android.exoplayer:exoplayer:2.18.5'
+
+    // Fused Location Provider API from Google Play Services
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 }
 
 kapt {

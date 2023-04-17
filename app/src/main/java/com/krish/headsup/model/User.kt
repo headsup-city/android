@@ -21,6 +21,9 @@ data class User(
     @SerializedName("avatar")
     val avatar: String?,
 
+    @SerializedName("avatarUri")
+    val avatarUri: String?,
+
     @SerializedName("role")
     val role: String?,
 

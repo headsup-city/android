@@ -1,6 +1,5 @@
 package com.krish.headsup.ui
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle

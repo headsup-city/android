@@ -10,5 +10,8 @@ data class ApiImage(
     val width: Int?,
 
     @SerializedName("height")
-    val height: Int?
+    val height: Int?,
+
+    @SerializedName("uri")
+    val uri: String?
 )

@@ -56,7 +56,7 @@ interface PostApi {
         @Query("page") page: Int
     ): Response<PostListResponse>
 
-    @POST("post/{id}/like")
+    @POST("/v1/post/{id}/like")
     suspend fun likePost(
         @Header("Authorization") token: String,
         @Path("id") id: String

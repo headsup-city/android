@@ -11,7 +11,8 @@ class HomeAdapter : ListAdapter<Post, PostView>(PostDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostView {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_post, parent, false)
-        return PostView(view)
+        val screenWidth = parent.context.resources.displayMetrics.widthPixels
+        return PostView(view, screenWidth)
     }
 
     override fun onBindViewHolder(holder: PostView, position: Int) {

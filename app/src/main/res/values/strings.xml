@@ -37,4 +37,7 @@
     <string name="title_icon_description">Header title icon</string>
     <string name="right_button_description">Header right button</string>
     <string name="near_you">Near you</string>
+    <string name="like">Like button</string>
+    <string name="comment">Comment button</string>
+    <string name="share">Share button</string>
 </resources>

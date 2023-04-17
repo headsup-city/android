@@ -5,4 +5,7 @@
         <attr name="cornerRadius" format="dimension" />
         <attr name="icon" format="reference" />
     </declare-styleable>
+    <declare-styleable name="CustomAvatarImageView">
+        <attr name="defaultAvatarPaddingTop" format="dimension" />
+    </declare-styleable>
 </resources>
