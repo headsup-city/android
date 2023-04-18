@@ -17,11 +17,13 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
 import com.krish.headsup.utils.dpToPx
+import com.krish.headsup.utils.getRelativeTime
 
 class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.ViewHolder(itemView) {
     private val context: Context = itemView.context
     private val authorAvatar: CustomAvatarImageView = itemView.findViewById(R.id.authorAvatar)
     private val authorName: TextView = itemView.findViewById(R.id.authorName)
+    private val postDate: TextView = itemView.findViewById(R.id.postDate)
     private val postImage: ImageView = itemView.findViewById(R.id.postImage)
     private val postText: TextView = itemView.findViewById(R.id.postText)
     private val postVideo: StyledPlayerView = itemView.findViewById(R.id.postVideo)
@@ -32,6 +34,7 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
     private val commentButton: ImageView = itemView.findViewById(R.id.commentButton)
     private val commentCountText: TextView = itemView.findViewById(R.id.commentCount)
     private val shareButton: ImageView = itemView.findViewById(R.id.shareButton)
+
 
     fun bind(post: Post) {
 
@@ -47,6 +50,7 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
             .into(authorAvatar)
 
         authorName.text = post.author?.name
+        postDate.text = getRelativeTime(post.createdAt, context)
         postText.text = post.caption
 
         if (post.caption.isNullOrEmpty()) {
@@ -101,12 +105,10 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
 
         if (post.likeCount!! > 0) {
             likeCountText.visibility = View.VISIBLE
-            commentCountText.visibility = View.VISIBLE
             likeCountText.text = post.likeCount.toString()
         }
 
         if (post.commentCount!! > 0) {
-            likeCountText.visibility = View.VISIBLE
             commentCountText.visibility = View.VISIBLE
             commentCountText.text = post.commentCount.toString()
         }

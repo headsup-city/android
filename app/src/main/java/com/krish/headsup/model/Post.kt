@@ -37,7 +37,13 @@ data class Post(
     val location: Location?,
 
     @SerializedName("expires")
-    val expires: String?
+    val expires: String?,
+
+    @SerializedName("createdAt")
+val createdAt: String?,
+
+    @SerializedName("updatedAt")
+    val updatedAt: String?
 )
 
 data class Location(
