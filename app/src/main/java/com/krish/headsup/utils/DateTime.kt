@@ -4,7 +4,8 @@ import android.content.Context
 import android.text.format.DateUtils
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+import java.util.TimeZone
 
 fun getRelativeTime(dateIso: String?, context: Context): String {
     if (dateIso == null) {

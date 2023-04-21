@@ -7,7 +7,6 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
@@ -18,7 +17,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.krish.headsup.managers.AuthManager
 import com.krish.headsup.model.AuthState
 import com.krish.headsup.utils.TokenManager
-import com.krish.headsup.viewmodel.HomeViewModel
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.typeface.library.ionicons.Ionicons
@@ -169,7 +167,6 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-
         // Set up back stack listener
         fragmentManager.addOnBackStackChangedListener {
             val currentNavController = fragmentManager.primaryNavigationFragment as NavHostFragment
@@ -201,7 +198,6 @@ class MainActivity : AppCompatActivity() {
             commitNow()
         }
     }
-
 
     private fun handleBottomNavigationViewVisibility(
         destinationId: Int,

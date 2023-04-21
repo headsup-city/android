@@ -1,16 +1,16 @@
 package com.krish.headsup.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.krish.headsup.model.Post
 import com.krish.headsup.repositories.PostRepository
-import com.krish.headsup.utils.Resource
 import com.krish.headsup.utils.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,21 +19,24 @@ class HomeViewModel @Inject constructor(
     private val tokenManager: TokenManager
 ) : ViewModel() {
 
-    private val _posts = MutableLiveData<Resource<List<Post>>>()
-    val posts: LiveData<Resource<List<Post>>> = _posts
+    private val _currentPostResult = MutableLiveData<Flow<PagingData<Post>>>()
+    val currentPostResult: LiveData<Flow<PagingData<Post>>> = _currentPostResult
 
-    fun loadPosts(latitude: Double, longitude: Double) {
-        viewModelScope.launch {
-            _posts.value = Resource.Loading()
-            val accessToken = tokenManager.getTokenStore()?.access?.token
-            Log.d("HomeViewLogAccessToken", "$accessToken")
-            if (accessToken != null) {
-                val result = postRepository.getGeneralPost(accessToken, 0, latitude, longitude)
-                Log.d("HomeViewLogResult", "$result")
-                _posts.value = result
-            } else {
-                _posts.value = Resource.error("Access token is missing")
-            }
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    fun loadPosts(latitude: Double, longitude: Double, reset: Boolean = false): Flow<PagingData<Post>> {
+        val accessToken = tokenManager.getTokenStore()?.access?.token
+        if (accessToken != null) {
+            _isLoading.value = true // Set loading flag to true
+            val newResult = postRepository.getGeneralPostStream(accessToken, latitude, longitude, reset = reset)
+                .cachedIn(viewModelScope)
+            _currentPostResult.value = newResult
+            _isLoading.value = false // Set loading flag to false after loading is done
+            return newResult
+        } else {
+            throw IllegalStateException("Access token is missing")
         }
     }
+
 }

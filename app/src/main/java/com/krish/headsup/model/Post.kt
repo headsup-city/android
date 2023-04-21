@@ -40,7 +40,7 @@ data class Post(
     val expires: String?,
 
     @SerializedName("createdAt")
-val createdAt: String?,
+    val createdAt: String?,
 
     @SerializedName("updatedAt")
     val updatedAt: String?

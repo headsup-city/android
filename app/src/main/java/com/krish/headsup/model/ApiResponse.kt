@@ -145,7 +145,7 @@ data class GetMessagesByConversationIdResponse(
     val limit: Int = 20,
 
     @SerializedName("page")
-    val page: Int = 1,
+    val page: Int = 0,
 
     @SerializedName("results")
     val results: List<Message>,

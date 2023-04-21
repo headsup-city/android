@@ -2,12 +2,12 @@ package com.krish.headsup.ui.components
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
 
-class HomeAdapter : ListAdapter<Post, PostView>(PostDiffCallback()) {
+class HomeAdapter : PagingDataAdapter<Post, PostView>(PostDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostView {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_post, parent, false)
