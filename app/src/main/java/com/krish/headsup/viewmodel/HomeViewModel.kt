@@ -22,21 +22,15 @@ class HomeViewModel @Inject constructor(
     private val _currentPostResult = MutableLiveData<Flow<PagingData<Post>>>()
     val currentPostResult: LiveData<Flow<PagingData<Post>>> = _currentPostResult
 
-    private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    fun loadPosts(latitude: Double, longitude: Double, reset: Boolean = false): Flow<PagingData<Post>> {
+    fun loadPosts(latitude: Double, longitude: Double): Flow<PagingData<Post>> {
         val accessToken = tokenManager.getTokenStore()?.access?.token
         if (accessToken != null) {
-            _isLoading.value = true // Set loading flag to true
-            val newResult = postRepository.getGeneralPostStream(accessToken, latitude, longitude, reset = reset)
+            val newResult = postRepository.getGeneralPostStream(accessToken, latitude, longitude)
                 .cachedIn(viewModelScope)
             _currentPostResult.value = newResult
-            _isLoading.value = false // Set loading flag to false after loading is done
             return newResult
         } else {
             throw IllegalStateException("Access token is missing")
         }
     }
-
 }

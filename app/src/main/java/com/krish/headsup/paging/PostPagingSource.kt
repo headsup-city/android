@@ -34,6 +34,7 @@ class PostPagingSource(
         } catch (e: IOException) {
             LoadResult.Error(e)
         } catch (e: HttpException) {
+            Log.e("PostPagingSource", "HttpException with status code: ${e.code()}, message: ${e.message()}")
             LoadResult.Error(e)
         }
     }
@@ -45,4 +46,3 @@ class PostPagingSource(
         }
     }
 }
-

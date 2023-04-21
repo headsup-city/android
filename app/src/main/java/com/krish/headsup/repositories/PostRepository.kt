@@ -13,8 +13,7 @@ class PostRepository @Inject constructor(private val postApi: PostApi) {
 
     private var postPagingSource: PostPagingSource? = null
 
-    fun getGeneralPostStream(accessToken: String, latitude: Double, longitude: Double, reset: Boolean = false): Flow<PagingData<Post>> {
-
+    fun getGeneralPostStream(accessToken: String, latitude: Double, longitude: Double): Flow<PagingData<Post>> {
 
         return Pager(
             config = PagingConfig(
@@ -32,4 +31,3 @@ class PostRepository @Inject constructor(private val postApi: PostApi) {
         ).flow
     }
 }
-

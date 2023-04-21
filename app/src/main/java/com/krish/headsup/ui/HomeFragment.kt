@@ -15,9 +15,8 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentHomeBinding
 import com.krish.headsup.ui.components.HomeAdapter
@@ -79,7 +78,7 @@ class HomeFragment : Fragment(), LocationCallback {
         // Set up the SwipeRefreshLayout for pull-to-refresh
         binding.swipeRefreshLayout.setOnRefreshListener {
             if (latitude != null && longitude != null) {
-                viewModel.loadPosts(latitude!!, longitude!!, reset = true)
+                viewModel.loadPosts(latitude!!, longitude!!)
             }
             binding.swipeRefreshLayout.isRefreshing = false
         }
@@ -89,7 +88,7 @@ class HomeFragment : Fragment(), LocationCallback {
         binding.recyclerView.adapter = adapter
 
         viewModel.currentPostResult.observe(viewLifecycleOwner) { pagingDataFlow ->
-            viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.viewModelScope.launch {
                 pagingDataFlow?.collectLatest { pagingData ->
                     // Update the adapter's data with the new posts and notify the adapter
                     adapter.submitData(pagingData)
