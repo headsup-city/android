@@ -11,27 +11,27 @@ import retrofit2.http.Query
 
 interface CommentApi {
 
-    @POST("comment/create")
+    @POST("/v1/comment/create")
     suspend fun newComment(
         @Header("Authorization") token: String,
         @Query("postId") postId: String,
         @Query("text") text: String
     ): Response<Comment>
 
-    @GET("comment/getCommentForPost/{postId}")
+    @GET("/v1/comment/getCommentForPost/{postId}")
     suspend fun getCommentsForPost(
         @Header("Authorization") token: String,
         @Path("postId") postId: String,
         @Query("page") page: Int? = 0
     ): Response<PostCommentsResponse>
 
-    @POST("comment/{id}/like")
+    @POST("/v1/comment/{id}/like")
     suspend fun likeComment(
         @Header("Authorization") token: String,
         @Path("id") id: String
     ): Response<Unit>
 
-    @POST("comment/{id}/unlike")
+    @POST("/v1/comment/{id}/unlike")
     suspend fun unlikeComment(
         @Header("Authorization") token: String,
         @Path("id") id: String

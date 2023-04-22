@@ -30,4 +30,17 @@ class PostRepository @Inject constructor(private val postApi: PostApi) {
             }
         ).flow
     }
+
+    suspend fun getPostById(accessToken: String, id: String): Post? {
+        return try {
+            val response = postApi.getPost("Bearer $accessToken", id)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

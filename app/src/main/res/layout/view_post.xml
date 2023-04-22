@@ -162,6 +162,7 @@
             android:contentDescription="@string/share"
             android:scaleType="fitCenter"
             android:src="@drawable/share_outline" />
+
     </LinearLayout>
 
     <View

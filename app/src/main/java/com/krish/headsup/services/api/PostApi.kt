@@ -43,7 +43,7 @@ interface PostApi {
         @Query("longitude") longitude: Double
     ): Response<PostListResponse>
 
-    @GET("post/{id}")
+    @GET("v1/post/{id}")
     suspend fun getPost(
         @Header("Authorization") token: String,
         @Path("id") id: String
