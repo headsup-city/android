@@ -6,7 +6,17 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.krish.headsup.ui.HomeFragment"
-        android:label="Home" />
+        android:label="Home" >
+        <action
+            android:id="@+id/action_homeFragment_to_imagePostFragment"
+            app:destination="@+id/imagePostFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_textPostFragment"
+            app:destination="@+id/textPostFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_videoPostFragment"
+            app:destination="@+id/videoPostFragment" />
+    </fragment>
     <fragment
         android:id="@+id/conversationFragment"
         android:name="com.krish.headsup.ui.ConversationFragment"
@@ -18,7 +28,11 @@
     <fragment
         android:id="@+id/imagePostFragment"
         android:name="com.krish.headsup.ui.ImagePostFragment"
-        android:label="ImagePost" />
+        android:label="ImagePost">
+        <argument
+            android:name="post"
+            app:argType="com.krish.headsup.model.Post" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.krish.headsup.ui.ProfileFragment"
@@ -26,9 +40,17 @@
     <fragment
         android:id="@+id/textPostFragment"
         android:name="com.krish.headsup.ui.TextPostFragment"
-        android:label="TextPost" />
+        android:label="TextPost">
+        <argument
+            android:name="post"
+            app:argType="com.krish.headsup.model.Post" />
+    </fragment>
     <fragment
         android:id="@+id/videoPostFragment"
         android:name="com.krish.headsup.ui.VideoPostFragment"
-        android:label="VideoPost" />
+        android:label="VideoPost">
+        <argument
+            android:name="post"
+            app:argType="com.krish.headsup.model.Post" />
+    </fragment>
 </navigation>
