@@ -11,14 +11,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentHomeBinding
+import com.krish.headsup.model.Post
 import com.krish.headsup.ui.components.HomeAdapter
 import com.krish.headsup.utils.LocationCallback
 import com.krish.headsup.utils.LocationUtils
@@ -26,7 +27,7 @@ import com.krish.headsup.viewmodel.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), LocationCallback {
+class HomeFragment : Fragment(), LocationCallback, HomeAdapter.OnPostClickListener {
 
     private var latitude: Double? = null
     private var longitude: Double? = null
@@ -83,7 +84,7 @@ class HomeFragment : Fragment(), LocationCallback {
             binding.swipeRefreshLayout.isRefreshing = false
         }
 
-        val adapter = HomeAdapter()
+        val adapter = HomeAdapter(this)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 
@@ -126,6 +127,25 @@ class HomeFragment : Fragment(), LocationCallback {
     override fun onLocationFailure() {
         // Handle the case when location is not available
         Log.d("DebugPostNotLoading", "onLocationFailure")
+    }
+
+    override fun onPostClick(post: Post, navHostViewId: Int) {
+        val navController = NavHostFragment.findNavController(this)
+        when (post.postType) {
+            "PRIMARY" -> {
+                if (post.imageUri.isNullOrEmpty()) {
+                    val action = HomeFragmentDirections.actionHomeFragmentToImagePostFragment(post)
+                    navController.navigate(action)
+                } else {
+                    val action = HomeFragmentDirections.actionHomeFragmentToTextPostFragment(post)
+                    navController.navigate(action)
+                }
+            }
+            "SHORT" -> {
+                val action = HomeFragmentDirections.actionHomeFragmentToVideoPostFragment(post)
+                navController.navigate(action)
+            }
+        }
     }
 
     override fun onDestroyView() {
