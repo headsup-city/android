@@ -69,8 +69,8 @@
         android:scaleType="centerCrop"
         android:visibility="gone" />
 
-    <com.google.android.exoplayer2.ui.StyledPlayerView
-        android:id="@+id/postVideo"
+    <com.krish.headsup.ui.components.CustomVideoPlayer
+        android:id="@+id/customVideoPlayer"
         android:layout_width="match_parent"
         android:layout_height="350dp"
         android:paddingTop="8dp"

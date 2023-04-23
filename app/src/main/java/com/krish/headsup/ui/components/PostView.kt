@@ -1,19 +1,12 @@
 package com.krish.headsup.ui.components
 
 import android.content.Context
-import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.ui.StyledPlayerView
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
 import com.krish.headsup.utils.dpToPx
@@ -27,8 +20,7 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
     private val postDate: TextView = itemView.findViewById(R.id.postDate)
     private val postImage: ImageView = itemView.findViewById(R.id.postImage)
     private val postText: TextView = itemView.findViewById(R.id.postText)
-    private val postVideo: StyledPlayerView = itemView.findViewById(R.id.postVideo)
-    private var player: ExoPlayer? = null
+    private val customVideoPlayer: CustomVideoPlayer = itemView.findViewById(R.id.customVideoPlayer)
     private val likeButton: ImageView = itemView.findViewById(R.id.likeButton)
     private val likeCountText: TextView = itemView.findViewById(R.id.likeCount)
     private val commentButton: ImageView = itemView.findViewById(R.id.commentButton)
@@ -40,12 +32,8 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
         likeCountText.visibility = View.GONE
         commentCountText.visibility = View.GONE
         postImage.visibility = View.GONE
-        postVideo.visibility = View.GONE
         postText.visibility = View.GONE
-
-        // Stop video playback and release the player resources
-        player?.stop()
-        player?.release()
+        customVideoPlayer.visibility = View.GONE
 
         if (post != null) {
             // Load the author's avatar using Glide
@@ -93,23 +81,9 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
                     }
                 }
 
-                "short" -> {
-                    postVideo.visibility = View.VISIBLE
-
-                    // Initialize ExoPlayer
-                    player = ExoPlayer.Builder(context).build()
-                    postVideo.player = player
-
-                    // Create a MediaSource
-                    val dataSourceFactory = DefaultHttpDataSource.Factory()
-                    val mediaSourceFactory = ProgressiveMediaSource.Factory(dataSourceFactory)
-                    val mediaItem = MediaItem.fromUri(Uri.parse(post.attachment?.uri))
-                    val mediaSource: MediaSource = mediaSourceFactory.createMediaSource(mediaItem)
-
-                    // Set the MediaSource and prepare the player
-                    player?.setMediaSource(mediaSource)
-                    player?.prepare()
-                    player?.playWhenReady = true
+                "SHORT" -> {
+                    customVideoPlayer.visibility = View.VISIBLE
+                    customVideoPlayer.setVideoUri(post.attachment?.uri ?: "")
                 }
             }
 
@@ -126,7 +100,8 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
     }
 
     fun onDetachedFromWindow() {
-        // Release the ExoPlayer when the view is detached
-        player?.release()
+        // Release the CustomVideoPlayer when the view is detached
+        customVideoPlayer.releasePlayer()
     }
 }
+
