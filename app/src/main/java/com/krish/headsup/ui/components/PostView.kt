@@ -93,7 +93,7 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
                     }
                 }
 
-                "short" -> {
+                "SHORT" -> {
                     postVideo.visibility = View.VISIBLE
 
                     // Initialize ExoPlayer
