@@ -1,7 +1,10 @@
 package com.krish.headsup.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class User(
     @SerializedName("id")
     val id: String,
@@ -74,8 +77,9 @@ data class User(
 
     @SerializedName("lastLogin")
     val lastLogin: String?
-)
+) : Parcelable
 
+@Parcelize
 data class JobDoneRating(
     @SerializedName("total")
     val total: Int,
@@ -85,12 +89,13 @@ data class JobDoneRating(
 
     @SerializedName("points")
     val points: Int
-)
+) : Parcelable
 
+@Parcelize
 data class SignUpSource(
     @SerializedName("platform")
     val platform: String,
 
     @SerializedName("platformType")
     val platformType: String
-)
+) : Parcelable
