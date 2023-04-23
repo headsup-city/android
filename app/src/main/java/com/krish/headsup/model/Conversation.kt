@@ -21,9 +21,6 @@ data class Conversation(
     @SerializedName("image")
     val image: String?,
 
-    @SerializedName("imageUri")
-    val imageUri: String?,
-
     @SerializedName("createdAt")
     val createdAt: String,
 

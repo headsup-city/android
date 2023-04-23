@@ -130,14 +130,15 @@ class HomeFragment : Fragment(), LocationCallback, HomeAdapter.OnPostClickListen
     }
 
     override fun onPostClick(post: Post, navHostViewId: Int) {
+        Log.d("onPostClick", post.toString())
         val navController = NavHostFragment.findNavController(this)
         when (post.postType) {
             "PRIMARY" -> {
-                if (post.imageUri.isNullOrEmpty()) {
-                    val action = HomeFragmentDirections.actionHomeFragmentToImagePostFragment(post)
+                if (post.attachment?.uri.isNullOrEmpty()) {
+                    val action = HomeFragmentDirections.actionHomeFragmentToTextPostFragment(post)
                     navController.navigate(action)
                 } else {
-                    val action = HomeFragmentDirections.actionHomeFragmentToTextPostFragment(post)
+                    val action = HomeFragmentDirections.actionHomeFragmentToImagePostFragment(post)
                     navController.navigate(action)
                 }
             }
