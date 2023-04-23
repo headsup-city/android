@@ -1,18 +1,13 @@
 package com.krish.headsup
-
 import android.os.Build
 import android.os.Bundle
-import android.util.SparseArray
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.commit
-import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.krish.headsup.managers.AuthManager
 import com.krish.headsup.model.AuthState
@@ -27,17 +22,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val authManager: AuthManager by lazy { (application as MyApplication).authManager }
-    private lateinit var onBackPressedCallback: OnBackPressedCallback
-
-    private val navHostIds = listOf(
-        R.navigation.home_navigation,
-        R.navigation.search_navigation,
-        R.navigation.create_post_navigation,
-        R.navigation.activity_navigation,
-        R.navigation.profile_navigation
-    )
-
-    private val navHostFragments = SparseArray<NavHostFragment>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,64 +30,40 @@ class MainActivity : AppCompatActivity() {
         showStatusBar()
         updateAuthStateFromToken()
 
-        val authNavHostFragment =
-            supportFragmentManager.findFragmentById(R.id.authNavigation) as NavHostFragment
-        val authNavController = authNavHostFragment.navController
-        val mainContainer = findViewById<FragmentContainerView>(R.id.mainContainer)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainContainer) as NavHostFragment
+        val navController = navHostFragment.navController
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigation)
 
         authManager.authState.observe(this) { authState ->
             when (authState) {
                 AuthState.NO_USER -> {
-                    authNavController.navigate(R.id.action_global_greetingFragment)
-                    authNavHostFragment.view?.visibility = View.VISIBLE
-                    mainContainer.visibility = View.GONE
+                    navController.navigate(R.id.auth_navigation)
                     bottomNavigationView.visibility = View.GONE
                 }
 
                 AuthState.LOADING -> {
-                    authNavHostFragment.view?.visibility = View.GONE
-                    mainContainer.visibility = View.GONE
-                    bottomNavigationView.visibility = View.GONE
+                    // ... loading state logic ...
                 }
 
                 AuthState.AUTHENTICATED -> {
-                    authNavHostFragment.view?.visibility = View.GONE
-                    mainContainer.visibility = View.VISIBLE
+                    navController.navigate(R.id.main_navigation)
                     bottomNavigationView.visibility = View.VISIBLE
-
-                    setupBottomNavigationView(bottomNavigationView, mainContainer)
                 }
             }
         }
 
-        onBackPressedCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                val currentNavController = mainContainer.getTag(R.id.mainContainer) as NavController
-                if (!currentNavController.navigateUp()) {
-                    if (this.isEnabled) {
-                        isEnabled = false
-                        finish()
-                    } else {
-                        isEnabled = true
-                    }
-                }
-            }
-        }
-        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        bottomNavigationView.setupWithNavController(navController)
+
+        setupIcons(bottomNavigationView)
     }
 
     private fun updateAuthStateFromToken() {
         val tokenManager = TokenManager(this)
-        val accessToken = tokenManager.getTokenStore()?.access
-
-        val newState = if (accessToken != null) {
-            AuthState.AUTHENTICATED
-        } else {
-            AuthState.NO_USER
+        tokenManager.getTokenStore()?.access?.let {
+            authManager.updateAuthState(AuthState.AUTHENTICATED)
+        } ?: run {
+            authManager.updateAuthState(AuthState.NO_USER)
         }
-
-        authManager.updateAuthState(newState)
     }
 
     private fun showStatusBar() {
@@ -117,112 +77,6 @@ class MainActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             window.decorView.systemUiVisibility =
                 window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN.inv()
-        }
-    }
-
-    private fun setupBottomNavigationView(bottomNavigationView: BottomNavigationView, mainContainer: FragmentContainerView) {
-        val fragmentManager = supportFragmentManager
-
-        // Create a NavHostFragment for each navigation graph
-        navHostIds.forEachIndexed { index, navGraphId ->
-            val navHostFragment = NavHostFragment.create(navGraphId)
-            navHostFragments.put(index, navHostFragment)
-            fragmentManager.beginTransaction()
-                .add(R.id.mainContainer, navHostFragment)
-                .hide(navHostFragment)
-                .commitNow()
-        }
-
-        // Set default tab
-        fragmentManager.beginTransaction().show(navHostFragments[0]).commitNow()
-
-        bottomNavigationView.setOnItemSelectedListener { item ->
-            val index = when (item.itemId) {
-                R.id.homeTab -> 0
-                R.id.searchTab -> 1
-                R.id.createPostTab -> 2
-                R.id.activityTab -> 3
-                R.id.profileTab -> 4
-                else -> return@setOnItemSelectedListener false
-            }
-
-            val fragmentManager = supportFragmentManager
-            val currentNavHostFragment = fragmentManager.primaryNavigationFragment as NavHostFragment
-
-            fragmentManager.commit {
-                setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                hide(currentNavHostFragment)
-                show(navHostFragments[index])
-            }
-
-            // Set the selected NavHostFragment as the primary navigation fragment
-            switchNavHostFragment(fragmentManager, navHostFragments, index)
-
-            val newNavController = navHostFragments[index].navController
-            setupDestinationChangeListener(newNavController, bottomNavigationView)
-
-            // Force status bar to be visible
-            showStatusBar()
-
-            true
-        }
-
-        // Set up back stack listener
-        fragmentManager.addOnBackStackChangedListener {
-            val currentNavController = fragmentManager.primaryNavigationFragment as NavHostFragment
-            currentNavController.navController.apply {
-                bottomNavigationView.selectedItemId = when (graph.id) {
-                    R.id.home_navigation -> R.id.homeTab
-                    R.id.search_navigation -> R.id.searchTab
-                    R.id.create_post_navigation -> R.id.createPostTab
-                    R.id.activity_navigation -> R.id.activityTab
-                    R.id.profile_navigation -> R.id.profileTab
-                    else -> R.id.homeTab
-                }
-            }
-        }
-
-        setupIcons(bottomNavigationView)
-    }
-
-    private fun switchNavHostFragment(fragmentManager: FragmentManager, navHostFragments: SparseArray<NavHostFragment>, index: Int) {
-        fragmentManager.beginTransaction().apply {
-            for (i in 0 until navHostFragments.size()) {
-                val fragment = navHostFragments.valueAt(i)
-                if (i == index) {
-                    show(fragment)
-                } else {
-                    hide(fragment)
-                }
-            }
-            commitNow()
-        }
-    }
-
-    private fun handleBottomNavigationViewVisibility(
-        destinationId: Int,
-        bottomNavigationView: BottomNavigationView
-    ) {
-        when (destinationId) {
-            R.id.conversationFragment,
-            R.id.profileFragment,
-            R.id.textPostFragment,
-            R.id.imagePostFragment,
-            R.id.videoPostFragment -> {
-                bottomNavigationView.visibility = View.GONE
-            }
-            else -> {
-                bottomNavigationView.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    private fun setupDestinationChangeListener(
-        navController: NavController,
-        bottomNavigationView: BottomNavigationView
-    ) {
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            handleBottomNavigationViewVisibility(destination.id, bottomNavigationView)
         }
     }
 

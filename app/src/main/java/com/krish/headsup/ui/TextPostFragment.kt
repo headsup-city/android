@@ -13,11 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krish.headsup.adapters.CommentAdapter
-import com.krish.headsup.databinding.FragmentImagePostBinding
 import com.krish.headsup.databinding.FragmentTextPostBinding
 import com.krish.headsup.model.Post
-import com.krish.headsup.viewmodel.ImagePostViewModel
-import com.krish.headsup.viewmodel.ImagePostViewModel_AssistedFactory
 import com.krish.headsup.viewmodel.TextPostViewModel
 import com.krish.headsup.viewmodel.TextPostViewModel_AssistedFactory
 import dagger.hilt.android.AndroidEntryPoint
