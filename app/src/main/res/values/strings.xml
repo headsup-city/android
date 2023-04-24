@@ -40,4 +40,5 @@
     <string name="like">Like button</string>
     <string name="comment">Comment button</string>
     <string name="share">Share button</string>
+    <string name="unknown_author">Unknown</string>
 </resources>

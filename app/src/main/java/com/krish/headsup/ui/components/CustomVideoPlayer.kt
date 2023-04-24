@@ -10,11 +10,9 @@ import android.widget.ProgressBar
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.StyledPlayerView
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.krish.headsup.R
+import com.krish.headsup.utils.ExoPlayerUtil
 
 class CustomVideoPlayer @JvmOverloads constructor(
     context: Context,
@@ -49,19 +47,16 @@ class CustomVideoPlayer @JvmOverloads constructor(
 
     fun setVideoUri(uri: String) {
         // Initialize ExoPlayer
-        player = ExoPlayer.Builder(context).build()
+        player = ExoPlayerUtil.createExoPlayer(context)
         playerView.player = player
 
         player?.addListener(CustomPlayerListener())
 
-        // Create a MediaSource
-        val dataSourceFactory = DefaultHttpDataSource.Factory()
-        val mediaSourceFactory = ProgressiveMediaSource.Factory(dataSourceFactory)
+        // Set the MediaItem directly on the ExoPlayer instance
         val mediaItem = MediaItem.fromUri(uri)
-        val mediaSource: MediaSource = mediaSourceFactory.createMediaSource(mediaItem)
+        player?.setMediaItem(mediaItem)
 
-        // Set the MediaSource and prepare the player
-        player?.setMediaSource(mediaSource)
+        // Prepare the player
         player?.prepare()
         player?.playWhenReady = true
     }
@@ -71,9 +66,8 @@ class CustomVideoPlayer @JvmOverloads constructor(
         override fun onPlaybackStateChanged(state: Int) {
             when (state) {
                 Player.STATE_BUFFERING -> {
-                    if (!isReplaying) {
-                        progressBar.visibility = View.VISIBLE
-                    }
+                    progressBar.visibility = View.VISIBLE
+                    playButton.visibility = View.GONE
                 }
                 Player.STATE_ENDED -> {
                     playButton.visibility = View.VISIBLE
@@ -85,6 +79,11 @@ class CustomVideoPlayer @JvmOverloads constructor(
                 }
             }
         }
+    }
+
+    fun resetPlayer() {
+        releasePlayer()
+        progressBar.visibility = View.VISIBLE
     }
 
     fun releasePlayer() {

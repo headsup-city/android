@@ -1,9 +1,11 @@
 package com.krish.headsup.ui.components
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
 
@@ -12,7 +14,8 @@ class HomeAdapter : PagingDataAdapter<Post, PostView>(PostDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostView {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_post, parent, false)
         val screenWidth = parent.context.resources.displayMetrics.widthPixels
-        return PostView(view, screenWidth)
+        val postView = PostView(view, screenWidth)
+        return postView
     }
 
     override fun onBindViewHolder(holder: PostView, position: Int) {
@@ -35,3 +38,4 @@ class HomeAdapter : PagingDataAdapter<Post, PostView>(PostDiffCallback()) {
         }
     }
 }
+

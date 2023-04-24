@@ -1,6 +1,7 @@
 package com.krish.headsup.ui.components
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -9,8 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
+import com.krish.headsup.ui.components.CustomAvatarImageView
+import com.krish.headsup.ui.components.CustomVideoPlayer
 import com.krish.headsup.utils.dpToPx
 import com.krish.headsup.utils.getRelativeTime
+import com.krish.headsup.utils.glide.CustomCacheKeyGenerator
+import com.krish.headsup.utils.glide.GlideApp
 
 class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.ViewHolder(itemView) {
     private val context: Context = itemView.context
@@ -20,7 +25,7 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
     private val postDate: TextView = itemView.findViewById(R.id.postDate)
     private val postImage: ImageView = itemView.findViewById(R.id.postImage)
     private val postText: TextView = itemView.findViewById(R.id.postText)
-    private val customVideoPlayer: CustomVideoPlayer = itemView.findViewById(R.id.customVideoPlayer)
+     val customVideoPlayer: CustomVideoPlayer = itemView.findViewById(R.id.customVideoPlayer)
     private val likeButton: ImageView = itemView.findViewById(R.id.likeButton)
     private val likeCountText: TextView = itemView.findViewById(R.id.likeCount)
     private val commentButton: ImageView = itemView.findViewById(R.id.commentButton)
@@ -35,33 +40,34 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
         postText.visibility = View.GONE
         customVideoPlayer.visibility = View.GONE
 
-        if (post != null) {
+        post?.let {
             // Load the author's avatar using Glide
             if (CustomAvatarImageView.defaultAvatar == null) {
                 CustomAvatarImageView.defaultAvatar = ContextCompat.getDrawable(context, R.drawable.default_avatar)
             }
 
-            Glide.with(context)
-                .load(post.author?.avatarUri)
+            GlideApp.with(context)
+                .load(it.author?.avatarUri)
+                .signature(CustomCacheKeyGenerator(it.author?.avatarUri ?: ""))
                 .placeholder(CustomAvatarImageView.defaultAvatar)
                 .circleCrop()
                 .into(authorAvatar)
 
-            authorName.text = post.author?.name
-            postDate.text = getRelativeTime(post.createdAt, context)
-            postText.text = post.caption
+            authorName.text = it.author?.name ?: context.getString(R.string.unknown_author)
+            postDate.text = getRelativeTime(it.createdAt, context)
+            postText.text = it.caption
 
-            if (post.caption.isNullOrEmpty()) {
+            if (it.caption.isNullOrEmpty()) {
                 postText.visibility = View.GONE
             } else { postText.visibility = View.VISIBLE }
 
-            when (post.postType) {
+            when (it.postType) {
                 "PRIMARY" -> {
-                    if (!post.attachment?.uri.isNullOrEmpty()) {
+                    it.attachment?.uri?.let { uri ->
                         postImage.visibility = View.VISIBLE
 
                         // Calculate the height based on the aspect ratio
-                        val aspectRatio = post.attachment?.height?.toFloat()?.div(post.attachment?.width ?: 1) ?: 0f
+                        val aspectRatio = it.attachment?.height?.toFloat()?.div(it.attachment?.width ?: 1) ?: 0f
                         val calculatedHeight = (screenWidth * aspectRatio).toInt()
 
                         // Set the maxHeight constraint
@@ -73,9 +79,10 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
                         layoutParams.height = finalHeight
                         postImage.layoutParams = layoutParams
 
-                        // Load the image using Glide
-                        Glide.with(context)
-                            .load(post.attachment?.uri)
+                        // Load the image using Glide with CustomCacheKeyGenerator
+                        GlideApp.with(context)
+                            .load(uri)
+                            .signature(CustomCacheKeyGenerator(uri))
                             .centerCrop()
                             .into(postImage)
                     }
@@ -83,25 +90,25 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
 
                 "SHORT" -> {
                     customVideoPlayer.visibility = View.VISIBLE
-                    customVideoPlayer.setVideoUri(post.attachment?.uri ?: "")
+                    it.attachment?.uri?.let { uri -> customVideoPlayer.setVideoUri(uri) }
                 }
             }
 
-            if (post.likeCount!! > 0) {
+            if (it.likeCount!! > 0) {
                 likeCountText.visibility = View.VISIBLE
-                likeCountText.text = post.likeCount.toString()
+                likeCountText.text = it.likeCount.toString()
             }
 
-            if (post.commentCount!! > 0) {
+            if (it.commentCount!! > 0) {
                 commentCountText.visibility = View.VISIBLE
-                commentCountText.text = post.commentCount.toString()
+                commentCountText.text = it.commentCount.toString()
             }
         }
     }
 
     fun onDetachedFromWindow() {
+        Log.d("PostView", "onDetachedFromWindow called for ViewHolder: $this")
         // Release the CustomVideoPlayer when the view is detached
         customVideoPlayer.releasePlayer()
     }
 }
-
