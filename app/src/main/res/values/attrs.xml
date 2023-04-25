@@ -8,4 +8,7 @@
     <declare-styleable name="CustomAvatarImageView">
         <attr name="defaultAvatarPaddingTop" format="dimension" />
     </declare-styleable>
+    <declare-styleable name="CustomVideoPlayer">
+        <attr name="showMuteButtons" format="boolean" />
+    </declare-styleable>
 </resources>

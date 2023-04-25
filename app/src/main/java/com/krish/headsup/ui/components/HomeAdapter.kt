@@ -1,11 +1,9 @@
 package com.krish.headsup.ui.components
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
 
@@ -38,4 +36,3 @@ class HomeAdapter : PagingDataAdapter<Post, PostView>(PostDiffCallback()) {
         }
     }
 }
-

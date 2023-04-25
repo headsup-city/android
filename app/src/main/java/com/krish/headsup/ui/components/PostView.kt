@@ -7,11 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
-import com.krish.headsup.ui.components.CustomAvatarImageView
-import com.krish.headsup.ui.components.CustomVideoPlayer
 import com.krish.headsup.utils.dpToPx
 import com.krish.headsup.utils.getRelativeTime
 import com.krish.headsup.utils.glide.CustomCacheKeyGenerator
@@ -25,7 +22,7 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
     private val postDate: TextView = itemView.findViewById(R.id.postDate)
     private val postImage: ImageView = itemView.findViewById(R.id.postImage)
     private val postText: TextView = itemView.findViewById(R.id.postText)
-     val customVideoPlayer: CustomVideoPlayer = itemView.findViewById(R.id.customVideoPlayer)
+    val customVideoPlayer: CustomVideoPlayer = itemView.findViewById(R.id.customVideoPlayer)
     private val likeButton: ImageView = itemView.findViewById(R.id.likeButton)
     private val likeCountText: TextView = itemView.findViewById(R.id.likeCount)
     private val commentButton: ImageView = itemView.findViewById(R.id.commentButton)

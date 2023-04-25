@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.krish.headsup.R
 import com.krish.headsup.utils.ExoPlayerUtil
+import com.krish.headsup.utils.PreferenceManager
 
 class CustomVideoPlayer @JvmOverloads constructor(
     context: Context,
@@ -23,15 +24,40 @@ class CustomVideoPlayer @JvmOverloads constructor(
     private val playerView: StyledPlayerView
     private val progressBar: ProgressBar
     private val playButton: ImageView
+    private val muteButton: ImageView
+    private val unmuteButton: ImageView
     private var player: ExoPlayer? = null
     private var isReplaying = false
+    private var showMuteButtons = true
 
     init {
         LayoutInflater.from(context).inflate(R.layout.fragment_custom_video_player, this, true)
 
+        attrs?.let {
+            val typedArray = context.obtainStyledAttributes(it, R.styleable.CustomVideoPlayer)
+            showMuteButtons = typedArray.getBoolean(R.styleable.CustomVideoPlayer_showMuteButtons, true)
+            typedArray.recycle()
+        }
+
         playerView = findViewById(R.id.postVideo)
         progressBar = findViewById(R.id.videoLoadingProgressBar)
         playButton = findViewById(R.id.playButton)
+        muteButton = findViewById(R.id.muteButton)
+        unmuteButton = findViewById(R.id.unmuteButton)
+
+        updateMuteButtonVisibility()
+
+        muteButton.setOnClickListener {
+            PreferenceManager.setMuteState(context, false)
+            syncMuteState()
+        }
+
+        unmuteButton.setOnClickListener {
+            PreferenceManager.setMuteState(context, true)
+            syncMuteState()
+        }
+
+        syncMuteState()
 
         playButton.setOnClickListener {
             player?.let {
@@ -45,6 +71,23 @@ class CustomVideoPlayer @JvmOverloads constructor(
         }
     }
 
+    private fun syncMuteState() {
+        player?.volume = if (PreferenceManager.getMuteState(context)) 0f else 1f
+        updateMuteButtonVisibility()
+    }
+
+    private fun updateMuteButtonVisibility() {
+        if (!showMuteButtons) {
+            muteButton.visibility = View.GONE
+            unmuteButton.visibility = View.GONE
+            return
+        }
+
+        val isMuted = PreferenceManager.getMuteState(context)
+        muteButton.visibility = if (isMuted) View.VISIBLE else View.GONE
+        unmuteButton.visibility = if (isMuted) View.GONE else View.VISIBLE
+    }
+
     fun setVideoUri(uri: String) {
         // Initialize ExoPlayer
         player = ExoPlayerUtil.createExoPlayer(context)
@@ -55,6 +98,8 @@ class CustomVideoPlayer @JvmOverloads constructor(
         // Set the MediaItem directly on the ExoPlayer instance
         val mediaItem = MediaItem.fromUri(uri)
         player?.setMediaItem(mediaItem)
+
+        syncMuteState()
 
         // Prepare the player
         player?.prepare()
