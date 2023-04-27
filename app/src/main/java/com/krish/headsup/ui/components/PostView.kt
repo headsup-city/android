@@ -9,12 +9,18 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
+import com.krish.headsup.ui.HomeFragment
 import com.krish.headsup.utils.dpToPx
 import com.krish.headsup.utils.getRelativeTime
 import com.krish.headsup.utils.glide.CustomCacheKeyGenerator
 import com.krish.headsup.utils.glide.GlideApp
 
-class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.ViewHolder(itemView) {
+
+class PostView(
+    itemView: View,
+    private val screenWidth: Int,
+    private val onVideoClickListener: HomeAdapter.OnVideoClickListener?
+) : RecyclerView.ViewHolder(itemView) {
     private val context: Context = itemView.context
 
     private val authorAvatar: CustomAvatarImageView = itemView.findViewById(R.id.authorAvatar)
@@ -29,6 +35,12 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
     private val commentCountText: TextView = itemView.findViewById(R.id.commentCount)
     private val shareButton: ImageView = itemView.findViewById(R.id.shareButton)
 
+    // Add the listener interface
+    interface OnVideoClickListener {
+        fun onVideoClick(postId: String)
+    }
+
+
     fun bind(post: Post?) {
         // Reset all views to their initial state
         likeCountText.visibility = View.GONE
@@ -36,6 +48,8 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
         postImage.visibility = View.GONE
         postText.visibility = View.GONE
         customVideoPlayer.visibility = View.GONE
+
+
 
         post?.let {
             // Load the author's avatar using Glide
@@ -89,6 +103,10 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
                     customVideoPlayer.visibility = View.VISIBLE
                     it.attachment?.uri?.let { uri -> customVideoPlayer.setVideoUri(uri) }
                 }
+            }
+
+            customVideoPlayer.onVideoClickListener = {
+                onVideoClickListener?.onVideoClick(post.id)
             }
 
             if (it.likeCount!! > 0) {

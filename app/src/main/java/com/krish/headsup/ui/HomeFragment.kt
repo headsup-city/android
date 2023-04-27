@@ -11,11 +11,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentHomeBinding
@@ -42,13 +42,14 @@ class HomeFragment : Fragment(), LocationCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("DebugPostNotLoading", "onCreateView")
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val navController = NavHostFragment.findNavController(this)
+
 
         requestLocationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
@@ -83,7 +84,15 @@ class HomeFragment : Fragment(), LocationCallback {
             binding.swipeRefreshLayout.isRefreshing = false
         }
 
-        val adapter = HomeAdapter()
+        val adapter = HomeAdapter().apply {
+            onVideoClickListener = object : HomeAdapter.OnVideoClickListener {
+                override fun onVideoClick(postId: String) {
+                    val action = HomeFragmentDirections.actionHomeFragmentToVideoPostFragment(postId)
+                    navController.navigate(action)
+                }
+            }
+        }
+
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 

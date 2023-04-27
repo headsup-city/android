@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.exoplayer2.ExoPlayer
@@ -16,16 +17,27 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.krish.headsup.adapters.CommentAdapter
 import com.krish.headsup.databinding.FragmentVideoPostBinding
+import com.krish.headsup.viewmodel.VideoPostViewModelFactory
 import com.krish.headsup.viewmodel.VideoPostViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.internal.lifecycle.HiltViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class VideoPostFragment : Fragment() {
+    private val args: VideoPostFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentVideoPostBinding
-    private val viewModel: VideoPostViewModel by viewModels()
+    private val viewModel: VideoPostViewModel by viewModels {
+        VideoPostViewModelFactory(
+            postRepository = get(),
+            commentRepository = get(),
+            tokenManager = get(),
+            owner = this,
+            defaultArgs = Bundle().apply { putString("postId", args.postId) }
+        )
+    }
     private val commentAdapter = CommentAdapter()
     private var player: ExoPlayer? = null
 

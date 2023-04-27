@@ -1,6 +1,7 @@
 package com.krish.headsup.di
 
 import android.content.Context
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import com.krish.headsup.BuildConfig
 import com.krish.headsup.managers.AuthManager
 import com.krish.headsup.repositories.PostRepository
@@ -17,9 +18,11 @@ import com.krish.headsup.services.api.UserApi
 import com.krish.headsup.utils.AuthInterceptor
 import com.krish.headsup.utils.TokenManager
 import com.krish.headsup.utils.UserPreferences
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient

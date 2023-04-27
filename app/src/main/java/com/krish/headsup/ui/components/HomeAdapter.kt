@@ -9,11 +9,12 @@ import com.krish.headsup.model.Post
 
 class HomeAdapter : PagingDataAdapter<Post, PostView>(PostDiffCallback()) {
 
+    var onVideoClickListener: OnVideoClickListener? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostView {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_post, parent, false)
         val screenWidth = parent.context.resources.displayMetrics.widthPixels
-        val postView = PostView(view, screenWidth)
-        return postView
+        return PostView(view, screenWidth, onVideoClickListener)
     }
 
     override fun onBindViewHolder(holder: PostView, position: Int) {
@@ -25,6 +26,11 @@ class HomeAdapter : PagingDataAdapter<Post, PostView>(PostDiffCallback()) {
         super.onViewDetachedFromWindow(holder)
         holder.onDetachedFromWindow()
     }
+
+    interface OnVideoClickListener {
+        fun onVideoClick(postId: String)
+    }
+
 
     class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
         override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {

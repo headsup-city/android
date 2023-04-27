@@ -30,6 +30,8 @@ class CustomVideoPlayer @JvmOverloads constructor(
     private var isReplaying = false
     private var showMuteButtons = true
 
+    var onVideoClickListener: (() -> Unit)? = null
+
     init {
         LayoutInflater.from(context).inflate(R.layout.fragment_custom_video_player, this, true)
 
@@ -68,6 +70,11 @@ class CustomVideoPlayer @JvmOverloads constructor(
                 it.playWhenReady = true
                 playButton.visibility = View.GONE
             }
+        }
+
+        // Add a click listener to the player view
+        playerView.setOnClickListener {
+            onVideoClickListener?.invoke()
         }
     }
 
