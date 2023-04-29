@@ -1,7 +1,10 @@
 package com.krish.headsup.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class ApiImage(
     @SerializedName("name")
     val name: String?,
@@ -14,4 +17,4 @@ data class ApiImage(
 
     @SerializedName("uri")
     val uri: String?
-)
+) : Parcelable

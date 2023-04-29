@@ -1,9 +1,13 @@
 package com.krish.headsup.model
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
+@Parcelize
 @Entity
 data class Post(
     @PrimaryKey
@@ -18,14 +22,11 @@ data class Post(
     @SerializedName("attachment")
     val attachment: ApiImage?,
 
-    // Remove the @SerializedName annotation from the imageUri field
-    val imageUri: String?,
-
     @SerializedName("author")
     val author: User?,
 
     @SerializedName("event")
-    val event: Event?,
+    val event: @RawValue Event?,
 
     @SerializedName("commentCount")
     val commentCount: Int?,
@@ -44,12 +45,13 @@ data class Post(
 
     @SerializedName("updatedAt")
     val updatedAt: String?
-)
+) : Parcelable
 
+@Parcelize
 data class Location(
     @SerializedName("type")
     val type: String?,
 
     @SerializedName("coordinates")
     val coordinates: List<Double>?
-)
+) : Parcelable

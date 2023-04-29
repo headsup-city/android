@@ -79,8 +79,15 @@ class MainActivity : AppCompatActivity() {
 
         onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val currentNavController = mainContainer.getTag(R.id.mainContainer) as NavController
-                if (!currentNavController.navigateUp()) {
+                var navigatedUp = false
+                for (i in 0 until navHostFragments.size()) {
+                    val navController = navHostFragments.valueAt(i).navController
+                    if (navController.navigateUp()) {
+                        navigatedUp = true
+                        break
+                    }
+                }
+                if (!navigatedUp) {
                     if (this.isEnabled) {
                         isEnabled = false
                         finish()
@@ -135,6 +142,7 @@ class MainActivity : AppCompatActivity() {
 
         // Set default tab
         fragmentManager.beginTransaction().show(navHostFragments[0]).commitNow()
+        mainContainer.setTag(R.id.mainContainer, navHostFragments[0].navController) // Set the initial NavController tag
 
         bottomNavigationView.setOnItemSelectedListener { item ->
             val index = when (item.itemId) {

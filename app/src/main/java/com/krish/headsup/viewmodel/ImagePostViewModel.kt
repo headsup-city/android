@@ -2,6 +2,7 @@ package com.krish.headsup.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -19,12 +20,16 @@ class ImagePostViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val commentRepository: CommentRepository,
     private val tokenManager: TokenManager,
-    private val postId: String,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _post = MutableLiveData<Post>()
+    private val _post = MutableLiveData<Post>(savedStateHandle.get<Post>("post"))
+    private val postId: String = _post.value?.id ?: throw IllegalArgumentException("Missing postId")
+
     val post: LiveData<Post>
         get() = _post
+
+
 
     val comments: Flow<PagingData<Comment>>
         get() {
