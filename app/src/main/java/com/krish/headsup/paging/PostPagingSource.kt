@@ -20,7 +20,7 @@ class PostPagingSource(
 
         return try {
             val response = postApi.getGeneralPost(accessToken, nextPage, latitude, longitude)
-            val data = response.body()?.results ?: emptyList()
+            val data = response.body()?.results?.filter { it.postType != "SHORT" } ?: emptyList()
             val prevKey = if (nextPage > 0) nextPage - 1 else null
             val nextKey = if (response.body()?.totalPages!! - 1 > nextPage) nextPage + 1 else null
 

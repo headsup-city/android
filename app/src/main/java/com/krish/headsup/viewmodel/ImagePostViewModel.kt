@@ -29,8 +29,6 @@ class ImagePostViewModel @Inject constructor(
     val post: LiveData<Post>
         get() = _post
 
-
-
     val comments: Flow<PagingData<Comment>>
         get() {
             val accessToken = tokenManager.getTokenStore()?.access?.token

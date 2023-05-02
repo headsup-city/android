@@ -41,4 +41,10 @@
     <string name="comment">Comment button</string>
     <string name="share">Share button</string>
     <string name="unknown_author">Unknown</string>
+    <string name="comment_avatar_author">Avatar of comment\'s author</string>
+    <string name="like_button">Like Button</string>
+    <string name="type_a_comment_here">Type a comment here...</string>
+    <string name="send">Send</string>
+    <string name="post_menu">Post Menu</string>
+    <string name="be_the_first_to_comment">Be the first one to share your thoughts!</string>
 </resources>

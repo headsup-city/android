@@ -64,11 +64,11 @@ class HomeFragment : Fragment(), LocationCallback, HomeAdapter.OnPostClickListen
         checkLocationPermission()
 
         val toolbarTitle = view.findViewById<TextView>(R.id.toolbarTitleText)
-        val toolbarTitleIcon = view.findViewById<ImageView>(R.id.toolbarTitleIcon)
+        val toolbarTitleIconRight = view.findViewById<ImageView>(R.id.toolbarTitleIconRight)
         val convoButton = view.findViewById<ImageView>(R.id.toolbarRightButton)
 
         toolbarTitle.text = getString(R.string.near_you)
-        toolbarTitleIcon.visibility = View.VISIBLE
+        toolbarTitleIconRight.visibility = View.VISIBLE
 
         // Set an OnClickListener for the optional convo button
         convoButton.visibility = View.VISIBLE
@@ -79,9 +79,8 @@ class HomeFragment : Fragment(), LocationCallback, HomeAdapter.OnPostClickListen
         // Set up the SwipeRefreshLayout for pull-to-refresh
         binding.swipeRefreshLayout.setOnRefreshListener {
             if (latitude != null && longitude != null) {
-                viewModel.loadPosts(latitude!!, longitude!!)
+                checkLocationPermission()
             }
-            binding.swipeRefreshLayout.isRefreshing = false
         }
 
         val adapter = HomeAdapter(this)
@@ -108,9 +107,7 @@ class HomeFragment : Fragment(), LocationCallback, HomeAdapter.OnPostClickListen
                 val locationUtils = LocationUtils(requireContext(), this)
                 locationUtils.getLiveLocation()
             }
-
             else -> {
-                Log.d("DebugPostNotLoading", "Request ACCESS_FINE_LOCATION")
                 // Request the location permission
                 requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
@@ -122,11 +119,13 @@ class HomeFragment : Fragment(), LocationCallback, HomeAdapter.OnPostClickListen
         this.latitude = latitude
         this.longitude = longitude
         viewModel.loadPosts(latitude, longitude)
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 
     override fun onLocationFailure() {
         // Handle the case when location is not available
         Log.d("DebugPostNotLoading", "onLocationFailure")
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 
     override fun onPostClick(post: Post, navHostViewId: Int) {

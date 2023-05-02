@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
+    <color name="status_bar_color">#00000000</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
+    <color name="dark_blue">#FF003366</color>
+    <color name="blue">#FF0163C5</color>
+    <color name="light_blue">#FF007AFF</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_400">#FF29B6F6</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
+    <color name="purple_200">#FFBB86FC</color>
     <color name="white">#FFFFFFFF</color>
     <color name="off_white">#FFDDDDDD</color>
-    <color name="grey">#FF777777</color>
-    <color name="light_blue_400">#FF29B6F6</color>
-    <color name="light_blue_600">#FF039BE5</color>
-    <color name="blue">#FF0163C5</color>
     <color name="gray_400">#FFBDBDBD</color>
     <color name="gray_600">#FF757575</color>
+    <color name="gray">#FF777777</color>
     <color name="gray_700">#FF616161</color>
     <color name="gray_800">#FF4A4A4A</color>
-    <color name="grey_900">#FF353535</color>
-    <color name="grey_1000">#FF202020</color>
-    <color name="grey_1200">#FF0B0B0B</color>
-    <color name="redish_grey_1000">#FF201A1A</color>
-    <color name="bluish_grey_1000">#FF1A1A20</color>
-    <color name="status_bar_color">#00000000</color>
+    <color name="gray_900">#FF353535</color>
+    <color name="gray_1000">#FF202020</color>
+    <color name="gray_1200">#FF0B0B0B</color>
+    <color name="redish_gray_1000">#FF201A1A</color>
+    <color name="bluish_gray_1000">#FF1A1A20</color>
+    <color name="black">#FF000000</color>
 </resources>

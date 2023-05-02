@@ -71,7 +71,6 @@ class MainActivity : AppCompatActivity() {
                     authNavHostFragment.view?.visibility = View.GONE
                     mainContainer.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.VISIBLE
-
                     setupBottomNavigationView(bottomNavigationView, mainContainer)
                 }
             }
@@ -138,6 +137,8 @@ class MainActivity : AppCompatActivity() {
                 .add(R.id.mainContainer, navHostFragment)
                 .hide(navHostFragment)
                 .commitNow()
+            // Attach destination change listener to each NavController
+            setupDestinationChangeListener(navHostFragment.navController, bottomNavigationView)
         }
 
         // Set default tab

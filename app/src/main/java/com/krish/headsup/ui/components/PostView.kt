@@ -22,7 +22,7 @@ class PostView(itemView: View, private val screenWidth: Int) : RecyclerView.View
     private val postDate: TextView = itemView.findViewById(R.id.postDate)
     private val postImage: ImageView = itemView.findViewById(R.id.postImage)
     private val postText: TextView = itemView.findViewById(R.id.postText)
-    val customVideoPlayer: CustomVideoPlayer = itemView.findViewById(R.id.customVideoPlayer)
+    private val customVideoPlayer: CustomVideoPlayer = itemView.findViewById(R.id.customVideoPlayer)
     private val likeButton: ImageView = itemView.findViewById(R.id.likeButton)
     private val likeCountText: TextView = itemView.findViewById(R.id.likeCount)
     private val commentButton: ImageView = itemView.findViewById(R.id.commentButton)

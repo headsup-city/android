@@ -1,5 +1,7 @@
 package com.krish.headsup.adapters
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -9,19 +11,21 @@ import com.krish.headsup.model.Comment
 import com.krish.headsup.ui.viewholders.CommentViewHolder
 
 class CommentAdapter : PagingDataAdapter<Comment, CommentViewHolder>(CommentDiffCallback()) {
+    private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
-        val binding = ItemCommentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        context = parent.context
+        val binding = ItemCommentBinding.inflate(LayoutInflater.from(context), parent, false)
         return CommentViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        val currentItem = getItem(position)
-        if (currentItem != null) {
-            holder.bind(currentItem)
+        val comment = getItem(position)
+        if (comment != null) {
+            holder.bind(comment, context)
+            Log.d("TextPostFragment", "Comment at position $position: $comment")
         }
     }
-
     class CommentDiffCallback : DiffUtil.ItemCallback<Comment>() {
         override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
             return oldItem.id == newItem.id

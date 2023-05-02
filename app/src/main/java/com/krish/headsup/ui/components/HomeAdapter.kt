@@ -13,8 +13,7 @@ class HomeAdapter(private val onPostClickListener: OnPostClickListener) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostView {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_post, parent, false)
         val screenWidth = parent.context.resources.displayMetrics.widthPixels
-        val postView = PostView(view, screenWidth)
-        return postView
+        return PostView(view, screenWidth)
     }
 
     override fun onBindViewHolder(holder: PostView, position: Int) {
