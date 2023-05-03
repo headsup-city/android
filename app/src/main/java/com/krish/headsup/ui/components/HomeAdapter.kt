@@ -7,13 +7,13 @@ import androidx.recyclerview.widget.DiffUtil
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
 
-class HomeAdapter(private val onPostClickListener: OnPostClickListener) :
+class HomeAdapter(private val onPostClickListener: OnPostClickListener, private val onAuthorClickListener: PostView.OnAuthorClickListener) :
     PagingDataAdapter<Post, PostView>(PostDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostView {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_post, parent, false)
         val screenWidth = parent.context.resources.displayMetrics.widthPixels
-        return PostView(view, screenWidth)
+        return PostView(view, screenWidth, onAuthorClickListener)
     }
 
     override fun onBindViewHolder(holder: PostView, position: Int) {

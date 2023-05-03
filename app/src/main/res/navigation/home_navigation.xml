@@ -22,6 +22,11 @@
             app:destination="@+id/videoPostFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_homeFragment_to_profileFragment"
+            app:destination="@+id/profileFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/conversationFragment"
@@ -44,8 +49,8 @@
         android:name="com.krish.headsup.ui.ProfileFragment"
         android:label="Profile">
         <argument
-            android:name="profileId"
-            app:argType="String" />
+            android:name="userId"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/textPostFragment"

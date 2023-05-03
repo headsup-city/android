@@ -21,13 +21,14 @@ import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentHomeBinding
 import com.krish.headsup.model.Post
 import com.krish.headsup.ui.components.HomeAdapter
+import com.krish.headsup.ui.components.PostView
 import com.krish.headsup.utils.LocationCallback
 import com.krish.headsup.utils.LocationUtils
 import com.krish.headsup.viewmodel.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), LocationCallback, HomeAdapter.OnPostClickListener {
+class HomeFragment : Fragment(), LocationCallback, HomeAdapter.OnPostClickListener, PostView.OnAuthorClickListener {
 
     private var latitude: Double? = null
     private var longitude: Double? = null
@@ -83,7 +84,7 @@ class HomeFragment : Fragment(), LocationCallback, HomeAdapter.OnPostClickListen
             }
         }
 
-        val adapter = HomeAdapter(this)
+        val adapter = HomeAdapter(this, this)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 
@@ -146,6 +147,12 @@ class HomeFragment : Fragment(), LocationCallback, HomeAdapter.OnPostClickListen
                 navController.navigate(action)
             }
         }
+    }
+
+    override fun onAuthorClick(userId: String) {
+        val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment(userId)
+        val navController = NavHostFragment.findNavController(this)
+        navController.navigate(action)
     }
 
     override fun onDestroyView() {
