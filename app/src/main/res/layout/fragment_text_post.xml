@@ -26,8 +26,9 @@
                 <!-- Back button -->
                 <ImageButton
                     android:id="@+id/backButton"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:padding="4dp"
                     android:layout_marginStart="16dp"
                     android:background="?attr/selectableItemBackground"
                     android:contentDescription="@string/back_button"
@@ -183,6 +184,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:nestedScrollingEnabled="false" />
+
+                <TextView
+                    android:id="@+id/noCommentsPrompt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/be_the_first_to_comment"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:visibility="gone"/>
 
                 <!-- Add progress bar for loading comments -->
                 <ProgressBar

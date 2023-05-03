@@ -42,7 +42,11 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.krish.headsup.ui.ProfileFragment"
-        android:label="Profile" />
+        android:label="Profile">
+        <argument
+            android:name="profileId"
+            app:argType="String" />
+    </fragment>
     <fragment
         android:id="@+id/textPostFragment"
         android:name="com.krish.headsup.ui.TextPostFragment"

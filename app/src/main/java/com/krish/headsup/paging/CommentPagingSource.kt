@@ -19,7 +19,7 @@ class CommentPagingSource(
         return try {
             val response = commentApi.getCommentsForPost("Bearer $accessToken", postId, page)
             val comments = response.body()?.results ?: emptyList()
-            val nextPage = if (comments.isEmpty()) null else page + 1
+            val nextPage = response.body()?.let { if (it.totalPages > page) page + 1 else null }
 
             LoadResult.Page(
                 data = comments,

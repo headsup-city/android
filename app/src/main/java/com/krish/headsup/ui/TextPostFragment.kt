@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateHandle
@@ -88,6 +90,28 @@ class TextPostFragment : Fragment() {
         backButton.setOnClickListener {
             navController.navigateUp()
         }
+
+        commentAdapter.addLoadStateListener { loadState ->
+            // Show the progress bar while data is being loaded
+            if (loadState.refresh is LoadState.Loading) {
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
+
+            // Update the visibility of the noCommentsPrompt based on the itemCount and load state
+            val noCommentsPrompt: TextView? = view.findViewById(R.id.noCommentsPrompt)
+            if (commentAdapter.itemCount > 0) {
+                noCommentsPrompt?.visibility = View.GONE
+            } else {
+                // Only show the noCommentsPrompt if the data has finished loading and there are no items
+                if (loadState.refresh !is LoadState.Loading) {
+                    noCommentsPrompt?.visibility = View.VISIBLE
+                } else {
+                    noCommentsPrompt?.visibility = View.GONE
+                }
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -127,6 +151,9 @@ class TextPostFragment : Fragment() {
                 postTextContent.text = post.caption
                 authorName.text = post.author?.name
                 // You can set other post details like author's avatar, post date, etc.
+                if (CustomAvatarImageView.defaultAvatar == null) {
+                    CustomAvatarImageView.defaultAvatar = context?.let { ContextCompat.getDrawable(it, R.drawable.default_avatar) }
+                }
                 GlideApp.with(requireContext())
                     .load(post.author?.avatarUri)
                     .signature(CustomCacheKeyGenerator(post.author?.avatarUri ?: ""))
