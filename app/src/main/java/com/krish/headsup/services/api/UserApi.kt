@@ -19,34 +19,34 @@ import retrofit2.http.Query
 
 interface UserApi {
 
-    @GET("users/self")
+    @GET("/v1/users/self")
     suspend fun getSelf(@Header("Authorization") token: String): Response<User>
 
-    @GET("users/{id}")
+    @GET("/v1/users/{id}")
     suspend fun getUser(@Header("Authorization") token: String, @Path("id") id: String): Response<User>
 
-    @POST("users/{id}/changePassword")
+    @POST("/v1/users/{id}/changePassword")
     suspend fun changePassword(@Header("Authorization") token: String, @Path("id") id: String, @Body body: UpdatePasswordRequest): Response<User>
 
     @Multipart
-    @POST("users/{id}/changeAvatar")
+    @POST("/v1/users/{id}/changeAvatar")
     suspend fun updateAvatar(@Header("Authorization") token: String, @Path("id") id: String, @Part body: MultipartBody.Part): Response<UpdateAvatarResponse>
 
-    @POST("users/{id}/updateUser")
+    @POST("/v1/users/{id}/updateUser")
     suspend fun updateUser(@Header("Authorization") token: String, @Path("id") id: String, @Body body: UpdateUserRequest): Response<User>
 
-    @POST("users/subscribePushToken")
+    @POST("/v1/users/subscribePushToken")
     suspend fun subscribePushToken(@Header("Authorization") token: String, @Body body: PushTokenSubscriptionRequest): Response<User>
 
-    @POST("users/deleteSelf")
+    @POST("/v1/users/deleteSelf")
     suspend fun deleteUser(@Header("Authorization") token: String): Response<User>
 
-    @POST("users/{toBlock}/block")
+    @POST("/v1/users/{toBlock}/block")
     suspend fun blockUser(@Header("Authorization") token: String, @Path("toBlock") toBlock: String): Response<User>
 
-    @POST("users/{toUnblock}/unblock")
+    @POST("/v1/users/{toUnblock}/unblock")
     suspend fun unblockUser(@Header("Authorization") token: String, @Path("toUnblock") toUnblock: String): Response<User>
 
-    @GET("users/search")
+    @GET("/v1/users/search")
     suspend fun searchUser(@Header("Authorization") token: String, @Query("query") query: String, @Query("page") page: Int? = 0): Response<UserSearchResponse>
 }

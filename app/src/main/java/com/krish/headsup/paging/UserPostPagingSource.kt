@@ -7,21 +7,20 @@ import com.krish.headsup.services.api.PostApi
 import retrofit2.HttpException
 import java.io.IOException
 
-class PostPagingSource(
+class UserPostPagingSource(
     private val postApi: PostApi,
     private val accessToken: String,
-    private val latitude: Double,
-    private val longitude: Double,
+    private val userId: String,
 ) : PagingSource<Int, Post>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Post> {
         val nextPage = params.key ?: 0
 
         return try {
-            val response = postApi.getGeneralPost(accessToken, nextPage, latitude, longitude)
-            val data = response.body()?.results?.filter { it.postType != "SHORT" } ?: emptyList()
+            val response = postApi.getPostsForUser(accessToken, userId, nextPage)
+            val data = response.body()?.results ?: emptyList()
             val totalPages = response.body()?.totalPages ?: 0
-            val prevKey = if (nextPage > 0) nextPage - 1 else null
+            val prevKey = null
             val nextKey = if (totalPages - 1 > nextPage) nextPage + 1 else null
 
             LoadResult.Page(

@@ -49,7 +49,7 @@ interface PostApi {
         @Path("id") id: String
     ): Response<Post>
 
-    @GET("post/user/{id}/getPosts")
+    @GET("/v1/post/user/{id}/getPosts")
     suspend fun getPostsForUser(
         @Header("Authorization") token: String,
         @Path("id") id: String,

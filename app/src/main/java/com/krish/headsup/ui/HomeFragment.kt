@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentHomeBinding
 import com.krish.headsup.model.Post
-import com.krish.headsup.ui.components.HomeAdapter
+import com.krish.headsup.ui.components.PostPagingDataAdapter
 import com.krish.headsup.ui.components.PostView
 import com.krish.headsup.utils.LocationCallback
 import com.krish.headsup.utils.LocationUtils
@@ -28,7 +28,7 @@ import com.krish.headsup.viewmodel.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), LocationCallback, HomeAdapter.OnPostClickListener, PostView.OnAuthorClickListener {
+class HomeFragment : Fragment(), LocationCallback, PostPagingDataAdapter.OnPostClickListener, PostView.OnAuthorClickListener {
 
     private var latitude: Double? = null
     private var longitude: Double? = null
@@ -84,7 +84,7 @@ class HomeFragment : Fragment(), LocationCallback, HomeAdapter.OnPostClickListen
             }
         }
 
-        val adapter = HomeAdapter(this, this)
+        val adapter = PostPagingDataAdapter(this, this)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 

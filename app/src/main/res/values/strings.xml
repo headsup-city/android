@@ -47,4 +47,6 @@
     <string name="send">Send</string>
     <string name="post_menu">Post Menu</string>
     <string name="be_the_first_to_comment">Be the first one to share your thoughts!</string>
+    <string name="back_button_description">Back button</string>
+    <string name="profile_menu">Profile menu</string>
 </resources>

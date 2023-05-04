@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
 
-class HomeAdapter(private val onPostClickListener: OnPostClickListener, private val onAuthorClickListener: PostView.OnAuthorClickListener) :
+class PostPagingDataAdapter(private val onPostClickListener: OnPostClickListener, private val onAuthorClickListener: PostView.OnAuthorClickListener) :
     PagingDataAdapter<Post, PostView>(PostDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostView {
