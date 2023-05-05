@@ -7,6 +7,7 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
@@ -15,18 +16,24 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.krish.headsup.managers.AuthManager
+import com.krish.headsup.managers.SelfDataManager
 import com.krish.headsup.model.AuthState
 import com.krish.headsup.utils.TokenManager
+import com.krish.headsup.viewmodel.SharedViewModel
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.typeface.library.ionicons.Ionicons
 import com.mikepenz.iconics.utils.sizeDp
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val authManager: AuthManager by lazy { (application as MyApplication).authManager }
+    @Inject
+    lateinit var tokenManager: TokenManager
+    private val sharedViewModel: SharedViewModel by viewModels()
     private lateinit var onBackPressedCallback: OnBackPressedCallback
 
     private val navHostIds = listOf(
@@ -72,6 +79,11 @@ class MainActivity : AppCompatActivity() {
                     mainContainer.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.VISIBLE
                     setupBottomNavigationView(bottomNavigationView, mainContainer)
+
+
+                    // Fetch user data
+                    val accessToken = tokenManager.getTokenStore()?.access?.token
+                    accessToken?.let { sharedViewModel.fetchUserData(it) }
                 }
             }
         }

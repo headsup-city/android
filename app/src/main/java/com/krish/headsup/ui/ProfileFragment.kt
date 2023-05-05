@@ -1,22 +1,33 @@
 package com.krish.headsup.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentProfileBinding
+import com.krish.headsup.managers.SelfDataManager
 import com.krish.headsup.model.Post
+import com.krish.headsup.ui.components.CustomAvatarImageView
 import com.krish.headsup.ui.components.PostPagingDataAdapter
 import com.krish.headsup.ui.components.PostView
+import com.krish.headsup.utils.glide.CustomCacheKeyGenerator
+import com.krish.headsup.utils.glide.GlideApp
 import com.krish.headsup.viewmodel.ProfileViewModel
 import com.krish.headsup.viewmodel.ProfileViewModel_AssistedFactory
+import com.krish.headsup.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -27,6 +38,8 @@ class ProfileFragment : Fragment(), PostPagingDataAdapter.OnPostClickListener, P
 
     @Inject
     lateinit var profileViewModelFactory: ProfileViewModel_AssistedFactory
+
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private val viewModel: ProfileViewModel by viewModels {
         object : ViewModelProvider.Factory {
@@ -57,6 +70,18 @@ class ProfileFragment : Fragment(), PostPagingDataAdapter.OnPostClickListener, P
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+        sharedViewModel.user.observe(viewLifecycleOwner, Observer { user ->
+            // Log user data here
+            Log.d("DebugSelf", "User data: $user")
+
+            // Check if the userId is in user.following and update button visibility accordingly
+            val isFollowing = user.following?.contains(arguments?.getString("userId")
+                ?: "")
+
+            binding.followButton.visibility = if (isFollowing == true) View.GONE else View.VISIBLE
+            binding.followedButton.visibility = if (isFollowing == true) View.VISIBLE else View.GONE
+        })
+
         return binding.root
     }
 
@@ -67,6 +92,30 @@ class ProfileFragment : Fragment(), PostPagingDataAdapter.OnPostClickListener, P
         binding.profileRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.profileRecyclerview.adapter = adapter
 
+        val backButton: ImageButton = view.findViewById(R.id.backButton)
+        val navController = NavHostFragment.findNavController(this)
+
+        backButton.setOnClickListener {
+            navController.navigateUp()
+        }
+
+        // Observe the user LiveData from the ViewModel
+        viewModel.user.observe(viewLifecycleOwner) { user ->
+            if (user != null) {
+                // Update the UI with the user data
+                // For example, if you have a TextView with ID 'user_name', you can set its text like this:
+                // binding.userName.text = user.name
+                binding.userName.text = user.name
+
+                GlideApp.with(requireContext())
+                    .load(user.avatarUri)
+                    .signature(CustomCacheKeyGenerator(user.avatarUri ?: ""))
+                    .placeholder(CustomAvatarImageView.defaultAvatar)
+                    .circleCrop()
+                    .into(binding.authorAvatar) // Use the ImageView from the binding
+            }
+        }
+
         viewModel.posts.observe(viewLifecycleOwner) { pagingDataFlow ->
             viewModel.viewModelScope.launch {
                 pagingDataFlow?.collectLatest { pagingData ->
@@ -75,6 +124,13 @@ class ProfileFragment : Fragment(), PostPagingDataAdapter.OnPostClickListener, P
                 }
             }
         }
+
+        Log.d("DebugSelf", "Inside")
+
+        sharedViewModel.user.observe(viewLifecycleOwner, Observer { user ->
+            // Log user data here
+            Log.d("DebugSelf", "User data: $user")
+        })
     }
 
     override fun onPostClick(post: Post, navHostViewId: Int) {

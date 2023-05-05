@@ -9,7 +9,7 @@ data class FollowRequest(
     val toFollow: String
 )
 
-data class UnfollowRequest(
+data class UnFollowRequest(
     val toUnFollow: String
 )
 
@@ -22,7 +22,7 @@ interface FollowApi {
 
     @POST("follow/unfollowUser")
     suspend fun unFollowUser(
-        @Body unfollowRequest: UnfollowRequest,
+        @Body unfollowRequest: UnFollowRequest,
         @Header("Authorization") token: String
     ): Response<Unit>
 }

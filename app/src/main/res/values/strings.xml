@@ -49,4 +49,8 @@
     <string name="be_the_first_to_comment">Be the first one to share your thoughts!</string>
     <string name="back_button_description">Back button</string>
     <string name="profile_menu">Profile menu</string>
+    <string name="headsup_user">HeadsUp User</string>
+    <string name="message_user">Message User</string>
+    <string name="follow">Follow</string>
+    <string name="following">Following</string>
 </resources>
