@@ -14,13 +14,13 @@ data class UnFollowRequest(
 )
 
 interface FollowApi {
-    @POST("follow/followUser")
+    @POST("/v1/follow/followUser")
     suspend fun followUser(
         @Body followRequest: FollowRequest,
         @Header("Authorization") token: String
     ): Response<Unit>
 
-    @POST("follow/unfollowUser")
+    @POST("/v1/follow/unfollowUser")
     suspend fun unFollowUser(
         @Body unfollowRequest: UnFollowRequest,
         @Header("Authorization") token: String

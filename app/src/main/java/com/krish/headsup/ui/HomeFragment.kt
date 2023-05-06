@@ -28,7 +28,7 @@ import com.krish.headsup.viewmodel.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), LocationCallback, PostPagingDataAdapter.OnPostClickListener, PostView.OnAuthorClickListener {
+class HomeFragment : Fragment(), LocationCallback, PostView.OnCommentClickListener, PostView.OnAuthorClickListener {
 
     private var latitude: Double? = null
     private var longitude: Double? = null
@@ -129,8 +129,7 @@ class HomeFragment : Fragment(), LocationCallback, PostPagingDataAdapter.OnPostC
         binding.swipeRefreshLayout.isRefreshing = false
     }
 
-    override fun onPostClick(post: Post, navHostViewId: Int) {
-        Log.d("onPostClick", post.toString())
+    override fun onCommentClick(post: Post) {
         val navController = NavHostFragment.findNavController(this)
         when (post.postType) {
             "PRIMARY" -> {

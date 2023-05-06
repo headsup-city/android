@@ -7,25 +7,18 @@ import androidx.recyclerview.widget.DiffUtil
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
 
-class PostPagingDataAdapter(private val onPostClickListener: OnPostClickListener, private val onAuthorClickListener: PostView.OnAuthorClickListener) :
+class PostPagingDataAdapter(private val onCommentClickListener: PostView.OnCommentClickListener, private val onAuthorClickListener: PostView.OnAuthorClickListener) :
     PagingDataAdapter<Post, PostView>(PostDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostView {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_post, parent, false)
         val screenWidth = parent.context.resources.displayMetrics.widthPixels
-        return PostView(view, screenWidth, onAuthorClickListener)
+        return PostView(view, screenWidth,onCommentClickListener, onAuthorClickListener)
     }
 
     override fun onBindViewHolder(holder: PostView, position: Int) {
         val post = getItem(position)
         holder.bind(post)
-
-        // Set OnClickListener for the post item
-        holder.itemView.setOnClickListener {
-            post?.let { postItem ->
-                onPostClickListener.onPostClick(postItem, holder.itemView.id)
-            }
-        }
     }
 
     override fun onViewDetachedFromWindow(holder: PostView) {
@@ -41,9 +34,5 @@ class PostPagingDataAdapter(private val onPostClickListener: OnPostClickListener
         override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
             return oldItem == newItem
         }
-    }
-
-    interface OnPostClickListener {
-        fun onPostClick(post: Post, navHostViewId: Int)
     }
 }

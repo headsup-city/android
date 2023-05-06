@@ -16,7 +16,6 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.krish.headsup.managers.AuthManager
-import com.krish.headsup.managers.SelfDataManager
 import com.krish.headsup.model.AuthState
 import com.krish.headsup.utils.TokenManager
 import com.krish.headsup.viewmodel.SharedViewModel
@@ -79,7 +78,6 @@ class MainActivity : AppCompatActivity() {
                     mainContainer.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.VISIBLE
                     setupBottomNavigationView(bottomNavigationView, mainContainer)
-
 
                     // Fetch user data
                     val accessToken = tokenManager.getTokenStore()?.access?.token

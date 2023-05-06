@@ -14,7 +14,7 @@ import com.krish.headsup.utils.getRelativeTime
 import com.krish.headsup.utils.glide.CustomCacheKeyGenerator
 import com.krish.headsup.utils.glide.GlideApp
 
-class PostView(itemView: View, private val screenWidth: Int, private val onAuthorClickListener: OnAuthorClickListener) : RecyclerView.ViewHolder(itemView) {
+class PostView(itemView: View, private val screenWidth: Int, private val onCommentClickListener:OnCommentClickListener,private val onAuthorClickListener: OnAuthorClickListener) : RecyclerView.ViewHolder(itemView) {
     private val context: Context = itemView.context
 
     private val authorAvatar: CustomAvatarImageView = itemView.findViewById(R.id.authorAvatar)
@@ -114,11 +114,19 @@ class PostView(itemView: View, private val screenWidth: Int, private val onAutho
                 post.author?.id?.let { userId -> onAuthorClickListener.onAuthorClick(userId) }
             }
         }
+
+        commentButton.setOnClickListener {
+            post?.let { item -> onCommentClickListener.onCommentClick(item) }
+        }
     }
 
     // Add this interface to your PostView class
     interface OnAuthorClickListener {
         fun onAuthorClick(userId: String)
+    }
+
+    interface OnCommentClickListener {
+        fun onCommentClick(post: Post)
     }
 
     fun onDetachedFromWindow() {

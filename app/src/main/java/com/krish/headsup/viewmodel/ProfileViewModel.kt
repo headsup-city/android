@@ -1,25 +1,32 @@
 package com.krish.headsup.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.krish.headsup.model.Post
 import com.krish.headsup.model.User
+import com.krish.headsup.repositories.FollowRepository
 import com.krish.headsup.repositories.PostRepository
 import com.krish.headsup.repositories.UserRepository
 import com.krish.headsup.utils.TokenManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val postRepository: PostRepository,
     private val tokenManager: TokenManager,
+    private val followRepository: FollowRepository,
+    private val sharedViewModel: SharedViewModel,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -63,6 +70,75 @@ class ProfileViewModel @Inject constructor(
             return postResponse
         } else {
             throw IllegalStateException("Access token is missing")
+        }
+    }
+
+    suspend fun followUser(userId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val accessToken = tokenManager.getTokenStore()?.access?.token
+                Log.d("DebugSelf", "followUser, accessToken: $accessToken, userId: $userId")
+                if (!accessToken.isNullOrEmpty() && !userId.isNullOrEmpty()) {
+                    val response = followRepository.followUser(userId, accessToken)
+                    if (response.isSuccessful) {
+                        updateUserFollowingList(userId, true)
+                        Log.d("DebugSelf", "Emitting followUser true")
+                        return@withContext true
+                    } else {
+                        Log.d("DebugSelf", "Emitting followUser not successful api false")
+                        return@withContext false
+                    }
+                } else {
+                    Log.d("DebugSelf", "Emitting followUser else false")
+                    return@withContext false
+                }
+            } catch (e: Exception) {
+                Log.d("DebugSelf", "Emitting followUser catch false: ${e.message}")
+                return@withContext false
+            }
+        }
+    }
+
+    suspend fun unFollowUser(userId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val accessToken = tokenManager.getTokenStore()?.access?.token
+                Log.d("DebugSelf", "unFollowUser, accessToken: $accessToken, userId: $userId")
+                if (!accessToken.isNullOrEmpty() && !userId.isNullOrEmpty()) {
+                    val response = followRepository.unFollowUser(userId, accessToken)
+                    if (response.isSuccessful) {
+                        updateUserFollowingList(userId, false)
+                        Log.d("DebugSelf", "Emitting unFollowUser true")
+                        return@withContext true
+                    } else {
+                        Log.d("DebugSelf", "Emitting unFollowUser not successful api false")
+                        return@withContext false
+                    }
+                } else {
+                    Log.d("DebugSelf", "Emitting unFollowUser else false")
+                    return@withContext false
+                }
+            } catch (e: Exception) {
+                Log.d("DebugSelf", "Emitting unFollowUser catch false: ${e.message}")
+                return@withContext false
+            }
+        }
+    }
+
+    private fun updateUserFollowingList(userId: String, follow: Boolean) {
+        // Get the current user from sharedViewModel.user LiveData
+        val currentUser = sharedViewModel.user.value
+
+        if (currentUser != null) {
+            // Update the following list depending on the 'follow' flag
+            val updatedFollowingList = if (follow) {
+                currentUser.following?.toMutableSet()?.apply { add(userId) }?.toList()
+            } else {
+                currentUser.following?.toMutableSet()?.apply { remove(userId) }?.toList()
+            }
+
+            // Update the sharedViewModel's user LiveData with the updated following list
+            sharedViewModel.updateUser(currentUser.copy(following = updatedFollowingList))
         }
     }
 }

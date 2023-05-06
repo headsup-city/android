@@ -26,4 +26,8 @@ class SharedViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateUser(updatedUser: User) {
+        _user.postValue(updatedUser)
+    }
 }
