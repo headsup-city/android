@@ -15,21 +15,21 @@ import retrofit2.http.Query
 
 interface PostApi {
     @Multipart
-    @POST("post/createPrimaryPost")
+    @POST("/v1/post/createPrimaryPost")
     suspend fun uploadPrimaryPost(
         @Header("Authorization") token: String,
         @Part body: MultipartBody.Part
     ): Response<Unit>
 
     @Multipart
-    @POST("post/createShortPost")
+    @POST("/v1/post/createShortPost")
     suspend fun uploadShortPost(
         @Header("Authorization") token: String,
         @Part body: MultipartBody.Part
     ): Response<Unit>
 
     @Multipart
-    @POST("post/createEventPost")
+    @POST("/v1/post/createEventPost")
     suspend fun uploadEventPost(
         @Header("Authorization") token: String,
         @Part body: MultipartBody.Part
@@ -43,7 +43,7 @@ interface PostApi {
         @Query("longitude") longitude: Double
     ): Response<PostListResponse>
 
-    @GET("v1/post/{id}")
+    @GET("/v1/post/{id}")
     suspend fun getPost(
         @Header("Authorization") token: String,
         @Path("id") id: String
@@ -60,15 +60,15 @@ interface PostApi {
     suspend fun likePost(
         @Header("Authorization") token: String,
         @Path("id") id: String
-    ): Response<PostListResponse>
+    ): Response<Unit>
 
-    @POST("post/{id}/unlike")
+    @POST("/v1/post/{id}/unlike")
     suspend fun unlikePost(
         @Header("Authorization") token: String,
         @Path("id") id: String
-    ): Response<PostListResponse>
+    ): Response<Unit>
 
-    @DELETE("post/{id}")
+    @DELETE("/v1/post/{id}")
     suspend fun deleteAPost(
         @Header("Authorization") token: String,
         @Path("id") id: String

@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.krish.headsup.model.Post
+import com.krish.headsup.utils.Result
 import com.krish.headsup.paging.PostPagingSource
 import com.krish.headsup.paging.UserPostPagingSource
 import com.krish.headsup.services.api.PostApi
@@ -33,19 +34,6 @@ class PostRepository @Inject constructor(private val postApi: PostApi) {
         ).flow
     }
 
-    suspend fun getPostById(accessToken: String, id: String): Post? {
-        return try {
-            val response = postApi.getPost("Bearer $accessToken", id)
-            if (response.isSuccessful) {
-                response.body()
-            } else {
-                null
-            }
-        } catch (e: Exception) {
-            null
-        }
-    }
-
     fun getUserPostStream(accessToken: String, userId: String): Flow<PagingData<Post>> {
         return Pager(
             config = PagingConfig(
@@ -62,4 +50,45 @@ class PostRepository @Inject constructor(private val postApi: PostApi) {
             }
         ).flow
     }
+
+    suspend fun getPostById(accessToken: String, id: String): Post? {
+        return try {
+            val response = postApi.getPost("Bearer $accessToken", id)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    suspend fun likePost(accessToken: String, postId: String): Result<Unit> {
+        return try {
+            val response = postApi.likePost("Bearer $accessToken", postId)
+            if (response.isSuccessful) {
+                Result.Success(Unit)
+            } else {
+                Result.Error(Exception("API request failed: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun unlikePost(accessToken: String, postId: String): Result<Unit> {
+        return try {
+            val response = postApi.unlikePost("Bearer $accessToken", postId)
+            if (response.isSuccessful) {
+                Result.Success(Unit)
+            } else {
+                Result.Error(Exception("API request failed: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+
 }

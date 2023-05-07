@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment(), PostView.OnCommentClickListener, PostView.OnAuthorClickListener {
+class ProfileFragment : Fragment(), PostView.OnCommentClickListener, PostView.OnAuthorClickListener, PostView.OnLikeButtonClickListener {
 
     @Inject
     lateinit var profileViewModelFactory: ProfileViewModel_AssistedFactory
@@ -93,7 +93,7 @@ class ProfileFragment : Fragment(), PostView.OnCommentClickListener, PostView.On
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = PostPagingDataAdapter(this, this)
+        val adapter = PostPagingDataAdapter(this, this,this, viewLifecycleOwner, sharedViewModel)
         binding.profileRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.profileRecyclerview.adapter = adapter
 
@@ -171,6 +171,21 @@ class ProfileFragment : Fragment(), PostView.OnCommentClickListener, PostView.On
         // Implement the logic for handling post clicks here
     }
 
+    override fun onLikeButtonClick(postId: String, onResult: (Boolean) -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val result = viewModel.likePost(postId)
+            onResult(result)
+        }
+    }
+
+    override fun onUnlikeButtonClick(postId: String, onResult: (Boolean) -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val result = viewModel.unlikePost(postId)
+            onResult(result)
+        }
+    }
+
+
     private fun followUser() {
         // Get the user ID from the ViewModel's user LiveData
         val userIdToFollow = viewModel.user.value?.id ?: return
@@ -187,7 +202,6 @@ class ProfileFragment : Fragment(), PostView.OnCommentClickListener, PostView.On
             }
         }
     }
-
 
     private fun unFollowUser() {
         // Get the user ID from the ViewModel's user LiveData

@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -14,6 +13,7 @@ import com.krish.headsup.model.User
 import com.krish.headsup.repositories.FollowRepository
 import com.krish.headsup.repositories.PostRepository
 import com.krish.headsup.repositories.UserRepository
+import com.krish.headsup.utils.Result
 import com.krish.headsup.utils.TokenManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -37,6 +37,7 @@ class ProfileViewModel @Inject constructor(
 
     private val _posts = MutableLiveData<Flow<PagingData<Post>>>()
     val posts: LiveData<Flow<PagingData<Post>>> = _posts
+
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -73,11 +74,62 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    suspend fun likePost(postId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val accessToken = tokenManager.getTokenStore()?.access?.token
+                if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
+                    when (postRepository.likePost(accessToken, postId)) {
+                        is Result.Success-> {
+                            Log.d("DebugSelf", "Emitting likePost true")
+                            return@withContext true
+                        }
+                        is Result.Error -> {
+                            Log.d("DebugSelf", "Emitting likePost not successful api false")
+                            return@withContext false
+                        }
+                    }
+                } else {
+                    Log.d("DebugSelf", "Emitting likePost else false")
+                    return@withContext false
+                }
+            } catch (e: Exception) {
+                Log.d("DebugSelf", "Emitting likePost catch false: ${e.message}")
+                return@withContext false
+            }
+        }
+    }
+
+    suspend fun unlikePost(postId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val accessToken = tokenManager.getTokenStore()?.access?.token
+                if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
+                    when (postRepository.unlikePost(accessToken, postId)) {
+                        is Result.Success-> {
+                            Log.d("DebugSelf", "Emitting unlikePost true")
+                            return@withContext true
+                        }
+                        is Result.Error -> {
+                            Log.d("DebugSelf", "Emitting unlikePost not successful api false")
+                            return@withContext false
+                        }
+                    }
+                } else {
+                    Log.d("DebugSelf", "Emitting unlikePost else false")
+                    return@withContext false
+                }
+            } catch (e: Exception) {
+                Log.d("DebugSelf", "Emitting unlikePost catch false: ${e.message}")
+                return@withContext false
+            }
+        }
+    }
+
     suspend fun followUser(userId: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 val accessToken = tokenManager.getTokenStore()?.access?.token
-                Log.d("DebugSelf", "followUser, accessToken: $accessToken, userId: $userId")
                 if (!accessToken.isNullOrEmpty() && !userId.isNullOrEmpty()) {
                     val response = followRepository.followUser(userId, accessToken)
                     if (response.isSuccessful) {
@@ -103,7 +155,6 @@ class ProfileViewModel @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val accessToken = tokenManager.getTokenStore()?.access?.token
-                Log.d("DebugSelf", "unFollowUser, accessToken: $accessToken, userId: $userId")
                 if (!accessToken.isNullOrEmpty() && !userId.isNullOrEmpty()) {
                     val response = followRepository.unFollowUser(userId, accessToken)
                     if (response.isSuccessful) {

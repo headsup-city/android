@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,15 +26,17 @@ import com.krish.headsup.ui.components.PostView
 import com.krish.headsup.utils.LocationCallback
 import com.krish.headsup.utils.LocationUtils
 import com.krish.headsup.viewmodel.HomeViewModel
+import com.krish.headsup.viewmodel.SharedViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), LocationCallback, PostView.OnCommentClickListener, PostView.OnAuthorClickListener {
+class HomeFragment : Fragment(), LocationCallback, PostView.OnCommentClickListener, PostView.OnAuthorClickListener, PostView.OnLikeButtonClickListener{
 
     private var latitude: Double? = null
     private var longitude: Double? = null
 
     private lateinit var requestLocationPermissionLauncher: ActivityResultLauncher<String>
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private val viewModel: HomeViewModel by activityViewModels()
     private var _binding: FragmentHomeBinding? = null
 
@@ -44,7 +47,6 @@ class HomeFragment : Fragment(), LocationCallback, PostView.OnCommentClickListen
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("DebugPostNotLoading", "onCreateView")
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -84,7 +86,7 @@ class HomeFragment : Fragment(), LocationCallback, PostView.OnCommentClickListen
             }
         }
 
-        val adapter = PostPagingDataAdapter(this, this)
+        val adapter = PostPagingDataAdapter(this, this,this, viewLifecycleOwner, sharedViewModel)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 
@@ -153,6 +155,22 @@ class HomeFragment : Fragment(), LocationCallback, PostView.OnCommentClickListen
         val navController = NavHostFragment.findNavController(this)
         navController.navigate(action)
     }
+
+    override fun onLikeButtonClick(postId: String, onResult: (Boolean) -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val result = viewModel.likePost(postId)
+            onResult(result)
+        }
+    }
+
+    override fun onUnlikeButtonClick(postId: String, onResult: (Boolean) -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val result = viewModel.unlikePost(postId)
+            onResult(result)
+        }
+    }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -106,9 +106,19 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/already_liked_button"
+                android:scaleType="fitCenter"
+                android:src="@drawable/heart_outline" />
+
+            <ImageButton
+                android:id="@+id/alreadyLikedButton"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackground"
                 android:contentDescription="@string/like"
                 android:scaleType="fitCenter"
-                android:src="@drawable/heart_filled" />
+                android:src="@drawable/heart_filled"
+                android:visibility="gone"/>
 
             <LinearLayout
                 android:layout_width="16dp"

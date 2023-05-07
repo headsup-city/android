@@ -53,4 +53,5 @@
     <string name="message_user">Message User</string>
     <string name="follow">Follow</string>
     <string name="following">Following</string>
+    <string name="already_liked_button">Already liked button</string>
 </resources>
