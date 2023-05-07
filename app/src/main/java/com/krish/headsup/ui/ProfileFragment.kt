@@ -93,7 +93,7 @@ class ProfileFragment : Fragment(), PostView.OnCommentClickListener, PostView.On
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = PostPagingDataAdapter(this, this,this, viewLifecycleOwner, sharedViewModel)
+        val adapter = PostPagingDataAdapter(this, this, this, viewLifecycleOwner, sharedViewModel)
         binding.profileRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.profileRecyclerview.adapter = adapter
 
@@ -184,7 +184,6 @@ class ProfileFragment : Fragment(), PostView.OnCommentClickListener, PostView.On
             onResult(result)
         }
     }
-
 
     private fun followUser() {
         // Get the user ID from the ViewModel's user LiveData

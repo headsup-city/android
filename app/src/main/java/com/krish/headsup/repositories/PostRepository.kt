@@ -4,10 +4,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.krish.headsup.model.Post
-import com.krish.headsup.utils.Result
 import com.krish.headsup.paging.PostPagingSource
 import com.krish.headsup.paging.UserPostPagingSource
 import com.krish.headsup.services.api.PostApi
+import com.krish.headsup.utils.Result
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -89,6 +89,4 @@ class PostRepository @Inject constructor(private val postApi: PostApi) {
             Result.Error(e)
         }
     }
-
-
 }

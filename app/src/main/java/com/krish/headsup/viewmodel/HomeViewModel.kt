@@ -44,7 +44,7 @@ class HomeViewModel @Inject constructor(
                 val accessToken = tokenManager.getTokenStore()?.access?.token
                 if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
                     when (postRepository.likePost(accessToken, postId)) {
-                        is Result.Success-> {
+                        is Result.Success -> {
                             Log.d("DebugSelf", "Emitting likePost true")
                             return@withContext true
                         }
@@ -70,7 +70,7 @@ class HomeViewModel @Inject constructor(
                 val accessToken = tokenManager.getTokenStore()?.access?.token
                 if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
                     when (postRepository.unlikePost(accessToken, postId)) {
-                        is Result.Success-> {
+                        is Result.Success -> {
                             Log.d("DebugSelf", "Emitting unlikePost true")
                             return@withContext true
                         }

@@ -38,7 +38,6 @@ class ProfileViewModel @Inject constructor(
     private val _posts = MutableLiveData<Flow<PagingData<Post>>>()
     val posts: LiveData<Flow<PagingData<Post>>> = _posts
 
-
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
@@ -80,7 +79,7 @@ class ProfileViewModel @Inject constructor(
                 val accessToken = tokenManager.getTokenStore()?.access?.token
                 if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
                     when (postRepository.likePost(accessToken, postId)) {
-                        is Result.Success-> {
+                        is Result.Success -> {
                             Log.d("DebugSelf", "Emitting likePost true")
                             return@withContext true
                         }
@@ -106,7 +105,7 @@ class ProfileViewModel @Inject constructor(
                 val accessToken = tokenManager.getTokenStore()?.access?.token
                 if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
                     when (postRepository.unlikePost(accessToken, postId)) {
-                        is Result.Success-> {
+                        is Result.Success -> {
                             Log.d("DebugSelf", "Emitting unlikePost true")
                             return@withContext true
                         }

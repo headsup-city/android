@@ -15,7 +15,7 @@ class PostPagingDataAdapter(private val onCommentClickListener: PostView.OnComme
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostView {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_post, parent, false)
         val screenWidth = parent.context.resources.displayMetrics.widthPixels
-        return PostView(view, screenWidth, onCommentClickListener, onAuthorClickListener,likeButtonClickListener, lifecycleOwner, sharedViewModel)
+        return PostView(view, screenWidth, onCommentClickListener, onAuthorClickListener, likeButtonClickListener, lifecycleOwner, sharedViewModel)
     }
 
     override fun onBindViewHolder(holder: PostView, position: Int) {

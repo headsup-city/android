@@ -30,7 +30,12 @@ import com.krish.headsup.viewmodel.SharedViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), LocationCallback, PostView.OnCommentClickListener, PostView.OnAuthorClickListener, PostView.OnLikeButtonClickListener{
+class HomeFragment :
+    Fragment(),
+    LocationCallback,
+    PostView.OnCommentClickListener,
+    PostView.OnAuthorClickListener,
+    PostView.OnLikeButtonClickListener {
 
     private var latitude: Double? = null
     private var longitude: Double? = null
@@ -86,7 +91,7 @@ class HomeFragment : Fragment(), LocationCallback, PostView.OnCommentClickListen
             }
         }
 
-        val adapter = PostPagingDataAdapter(this, this,this, viewLifecycleOwner, sharedViewModel)
+        val adapter = PostPagingDataAdapter(this, this, this, viewLifecycleOwner, sharedViewModel)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 
@@ -169,8 +174,6 @@ class HomeFragment : Fragment(), LocationCallback, PostView.OnCommentClickListen
             onResult(result)
         }
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()

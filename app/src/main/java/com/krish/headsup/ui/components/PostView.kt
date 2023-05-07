@@ -17,8 +17,15 @@ import com.krish.headsup.utils.glide.CustomCacheKeyGenerator
 import com.krish.headsup.utils.glide.GlideApp
 import com.krish.headsup.viewmodel.SharedViewModel
 
-class PostView(itemView: View, private val screenWidth: Int, private val onCommentClickListener: OnCommentClickListener, private val onAuthorClickListener: OnAuthorClickListener,
-               private val likeButtonClickListener: OnLikeButtonClickListener, private val lifecycleOwner: LifecycleOwner, private val sharedViewModel: SharedViewModel) : RecyclerView.ViewHolder(itemView) {
+class PostView(
+    itemView: View,
+    private val screenWidth: Int,
+    private val onCommentClickListener: OnCommentClickListener,
+    private val onAuthorClickListener: OnAuthorClickListener,
+    private val likeButtonClickListener: OnLikeButtonClickListener,
+    private val lifecycleOwner: LifecycleOwner,
+    private val sharedViewModel: SharedViewModel
+) : RecyclerView.ViewHolder(itemView) {
     private val context: Context = itemView.context
     private var mutablePost: Post? = null
 
@@ -145,29 +152,28 @@ class PostView(itemView: View, private val screenWidth: Int, private val onComme
             updateLikeCountText()
             if (post != null) {
                 likeButtonClickListener.onLikeButtonClick(post.id) { isLiked ->
-                    if(!isLiked) {
+                    if (!isLiked) {
                         likeButton.visibility = View.VISIBLE
                         alreadyLikedButton.visibility = View.GONE
                         mutablePost = post?.copy(likeCount = post.likeCount?.minus(1))
                         updateLikeCountText()
                     }
-
                 }
             }
         }
 
         alreadyLikedButton.setOnClickListener {
-                likeButton.visibility = View.VISIBLE
-                alreadyLikedButton.visibility = View.GONE
+            likeButton.visibility = View.VISIBLE
+            alreadyLikedButton.visibility = View.GONE
             mutablePost = post?.copy(likeCount = post.likeCount?.minus(1))
             updateLikeCountText()
             if (post != null) {
                 likeButtonClickListener.onUnlikeButtonClick(post.id) { isUnliked ->
-                    if(!isUnliked) {
+                    if (!isUnliked) {
                         likeButton.visibility = View.GONE
                         alreadyLikedButton.visibility = View.VISIBLE
                         mutablePost = post?.copy(likeCount = post.likeCount?.plus(1))
-                    updateLikeCountText()
+                        updateLikeCountText()
                     }
                 }
             }
@@ -176,7 +182,6 @@ class PostView(itemView: View, private val screenWidth: Int, private val onComme
         shareButton.setOnClickListener {
             sharePost(post)
         }
-
     }
 
     // Add this function to your PostView class
@@ -198,8 +203,6 @@ class PostView(itemView: View, private val screenWidth: Int, private val onComme
         fun onLikeButtonClick(postId: String, onResult: (Boolean) -> Unit)
         fun onUnlikeButtonClick(postId: String, onResult: (Boolean) -> Unit)
     }
-
-
 
     private fun sharePost(post: Post?) {
         post?.let {
@@ -226,7 +229,6 @@ class PostView(itemView: View, private val screenWidth: Int, private val onComme
             context.startActivity(shareIntent)
         }
     }
-
 
     fun onDetachedFromWindow() {
         Log.d("PostView", "onDetachedFromWindow called for ViewHolder: $this")
