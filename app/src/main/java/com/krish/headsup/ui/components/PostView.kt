@@ -1,6 +1,7 @@
 package com.krish.headsup.ui.components
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -171,6 +172,11 @@ class PostView(itemView: View, private val screenWidth: Int, private val onComme
                 }
             }
         }
+
+        shareButton.setOnClickListener {
+            sharePost(post)
+        }
+
     }
 
     // Add this function to your PostView class
@@ -195,6 +201,31 @@ class PostView(itemView: View, private val screenWidth: Int, private val onComme
 
 
 
+    private fun sharePost(post: Post?) {
+        post?.let {
+            val url = "https://www.headsup.city/post-description/${it.id}"
+            val title = "HeadsUp Post"
+            var message = ""
+
+            when (it.postType) {
+                "PRIMARY", "SHORT", "JOB" -> {
+                    message = "${it.caption} $url"
+                }
+                "EVENT" -> {
+                    message = "${it.event?.description} $url" // Assuming there's an 'event' property in your Post data class
+                }
+            }
+
+            val sendIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, message)
+                type = "text/plain"
+            }
+
+            val shareIntent = Intent.createChooser(sendIntent, title)
+            context.startActivity(shareIntent)
+        }
+    }
 
 
     fun onDetachedFromWindow() {
