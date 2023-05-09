@@ -4,7 +4,6 @@ import android.content.Context
 import com.krish.headsup.BuildConfig
 import com.krish.headsup.managers.AuthManager
 import com.krish.headsup.repositories.PostRepository
-import com.krish.headsup.services.api.ApiService
 import com.krish.headsup.services.api.AuthApi
 import com.krish.headsup.services.api.CommentApi
 import com.krish.headsup.services.api.ConversationApi
@@ -27,6 +26,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -48,18 +48,34 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient, @ApplicationContext context: Context): Retrofit {
+        val baseUrl = getBaseUrl(context)
+
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Provides
+    @Singleton
     fun provideAuthManager(): AuthManager {
         return AuthManager()
     }
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(tokenManager: TokenManager, authManager: AuthManager): OkHttpClient {
+    fun provideOkHttpClient(
+        tokenManager: TokenManager,
+        authManager: AuthManager,
+        authApiProvider: Provider<AuthApi>
+    ): OkHttpClient {
         val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
-        val authInterceptor = AuthInterceptor(tokenManager, authManager)
+        val authInterceptor = AuthInterceptor(tokenManager, authManager, authApiProvider)
 
         return OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
@@ -69,70 +85,56 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, context: Context, tokenManager: TokenManager, authManager: AuthManager): Retrofit {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(getBaseUrl(context))
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
-            .build()
-
-        ApiService.init(retrofit, tokenManager, authManager)
-
-        return retrofit
-    }
-
-    @Provides
-    @Singleton
     fun provideAuthApi(retrofit: Retrofit): AuthApi {
-        return ApiService.authApi
+        return retrofit.create(AuthApi::class.java)
     }
 
     @Provides
     @Singleton
     fun provideCommentApi(retrofit: Retrofit): CommentApi {
-        return ApiService.commentApi
+        return retrofit.create(CommentApi::class.java)
     }
 
     @Provides
     @Singleton
     fun provideConversationApi(retrofit: Retrofit): ConversationApi {
-        return ApiService.conversationApi
+        return retrofit.create(ConversationApi::class.java)
     }
 
     @Provides
     @Singleton
     fun provideFollowApi(retrofit: Retrofit): FollowApi {
-        return ApiService.followApi
+        return retrofit.create(FollowApi::class.java)
     }
 
     @Provides
     @Singleton
     fun provideMediaApi(retrofit: Retrofit): MediaApi {
-        return ApiService.mediaApi
+        return retrofit.create(MediaApi::class.java)
     }
 
     @Provides
     @Singleton
     fun provideMessageApi(retrofit: Retrofit): MessageApi {
-        return ApiService.messageApi
+        return retrofit.create(MessageApi::class.java)
     }
 
     @Provides
     @Singleton
     fun providePostApi(retrofit: Retrofit): PostApi {
-        return ApiService.postApi
+        return retrofit.create(PostApi::class.java)
     }
 
     @Provides
     @Singleton
     fun provideReportApi(retrofit: Retrofit): ReportApi {
-        return ApiService.reportApi
+        return retrofit.create(ReportApi::class.java)
     }
 
     @Provides
     @Singleton
     fun provideUserApi(retrofit: Retrofit): UserApi {
-        return ApiService.userApi
+        return retrofit.create(UserApi::class.java)
     }
 
     @Provides

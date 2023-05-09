@@ -1,7 +1,6 @@
 package com.krish.headsup.services.api
 
 import com.krish.headsup.managers.AuthManager
-import com.krish.headsup.utils.AuthInterceptor
 import com.krish.headsup.utils.TokenManager
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -46,11 +45,11 @@ object ApiService {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
-        val authInterceptor = AuthInterceptor(tokenManager, authManager)
+//        val authInterceptor = AuthInterceptor(tokenManager, authManager, authApi)
 
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
-            .addInterceptor(authInterceptor)
+//            .addInterceptor(authInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)

@@ -4,7 +4,7 @@ import com.krish.headsup.managers.AuthManager
 import com.krish.headsup.model.AuthState
 import com.krish.headsup.model.RefreshTokensRequest
 import com.krish.headsup.model.TokenStore
-import com.krish.headsup.services.api.ApiService
+import com.krish.headsup.services.api.AuthApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -15,8 +15,13 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
+import javax.inject.Provider
 
-class AuthInterceptor(private val tokenManager: TokenManager, private val authManager: AuthManager) : Interceptor {
+class AuthInterceptor(
+    private val tokenManager: TokenManager,
+    private val authManager: AuthManager,
+    private val authApiProvider: Provider<AuthApi>
+) : Interceptor {
     // Add the excluded API patterns here
     private val excludedApiPatterns = listOf(
         Regex("/v1/auth/.*"),
@@ -76,7 +81,7 @@ class AuthInterceptor(private val tokenManager: TokenManager, private val authMa
 
         return try {
             val response = withContext(Dispatchers.IO) {
-                ApiService.authApi.refreshTokens(RefreshTokensRequest(refreshToken))
+                authApiProvider.get().refreshTokens(RefreshTokensRequest(refreshToken))
             }
 
             if (response.isSuccessful) {

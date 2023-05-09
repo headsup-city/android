@@ -18,11 +18,14 @@
     <color name="gray_600">#FF757575</color>
     <color name="gray">#FF777777</color>
     <color name="gray_700">#FF616161</color>
+    <color name="bluish_gray_700">#FF616167</color>
     <color name="gray_800">#FF4A4A4A</color>
     <color name="gray_900">#FF353535</color>
+    <color name="bluish_gray_900">#FF35383A</color>
     <color name="gray_1000">#FF202020</color>
-    <color name="gray_1200">#FF0B0B0B</color>
     <color name="redish_gray_1000">#FF201A1A</color>
-    <color name="bluish_gray_1000">#FF1A1A20</color>
+    <color name="bluish_gray_1000">#FF1A1D21</color>
+    <color name="gray_1200">#FF0B0B0B</color>
     <color name="black">#FF000000</color>
+    <color name="transparent">#00000000</color>
 </resources>

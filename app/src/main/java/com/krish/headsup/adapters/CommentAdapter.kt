@@ -1,7 +1,6 @@
 package com.krish.headsup.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -23,7 +22,6 @@ class CommentAdapter : PagingDataAdapter<Comment, CommentViewHolder>(CommentDiff
         val comment = getItem(position)
         if (comment != null) {
             holder.bind(comment, context)
-            Log.d("TextPostFragment", "Comment at position $position: $comment")
         }
     }
     class CommentDiffCallback : DiffUtil.ItemCallback<Comment>() {

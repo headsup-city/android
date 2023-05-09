@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp">
+
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/authorAvatarCardView"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:paddingHorizontal="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false">
+
+        <com.krish.headsup.ui.components.CustomAvatarImageView
+            android:id="@+id/commentAvatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/comment_avatar_author"
+            android:scaleType="centerCrop"
+            app:defaultAvatarPaddingTop="4dp"
+            android:src="@drawable/person_sharp"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:text="@string/user_s_name"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>

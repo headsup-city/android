@@ -5,8 +5,14 @@
     app:startDestination="@+id/searchFragment">
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.krish.headsup.ui.SearchFragment"
-        android:label="Search" />
+        android:name="com.krish.headsup.ui.search.SearchFragment"
+        android:label="Search">
+        <action
+            android:id="@+id/action_searchFragment_to_profileFragment"
+            app:destination="@+id/profileFragment"
+            app:popUpTo="@id/searchFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
     <fragment
         android:id="@+id/conversationFragment"
         android:name="com.krish.headsup.ui.ConversationFragment"
@@ -18,17 +24,48 @@
     <fragment
         android:id="@+id/imagePostFragment"
         android:name="com.krish.headsup.ui.ImagePostFragment"
-        android:label="ImagePost" />
+        android:label="ImagePost">
+        <argument
+            android:name="post"
+            app:argType="com.krish.headsup.model.Post" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.krish.headsup.ui.ProfileFragment"
-        android:label="Profile" />
+        android:label="Profile">
+        <argument
+            android:name="userId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_profileFragment_to_imagePostFragment"
+            app:destination="@+id/imagePostFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_profileFragment_to_textPostFragment"
+            app:destination="@+id/textPostFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_profileFragment_to_videoPostFragment"
+            app:destination="@+id/videoPostFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
     <fragment
         android:id="@+id/textPostFragment"
         android:name="com.krish.headsup.ui.TextPostFragment"
-        android:label="TextPost" />
+        android:label="TextPost">
+        <argument
+            android:name="post"
+            app:argType="com.krish.headsup.model.Post" />
+    </fragment>
     <fragment
         android:id="@+id/videoPostFragment"
         android:name="com.krish.headsup.ui.VideoPostFragment"
-        android:label="VideoPost" />
+        android:label="VideoPost">
+        <argument
+            android:name="post"
+            app:argType="com.krish.headsup.model.Post" />
+    </fragment>
 </navigation>
