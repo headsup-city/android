@@ -3,13 +3,13 @@ package com.krish.headsup.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import com.krish.headsup.databinding.ListSearchUserBinding
 import com.krish.headsup.model.User
 import com.krish.headsup.ui.search.SearchViewHolder
 
-class SearchAdapter : PagingDataAdapter<User, SearchViewHolder>(SearchDiffCallback()) {
+class SearchAdapter : ListAdapter<User, SearchViewHolder>(SearchDiffCallback()) {
     private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {

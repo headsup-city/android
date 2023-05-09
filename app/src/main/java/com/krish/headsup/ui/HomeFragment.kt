@@ -132,7 +132,7 @@ class HomeFragment :
 
     override fun onLocationFailure() {
         // Handle the case when location is not available
-        Log.d("DebugPostNotLoading", "onLocationFailure")
+        Log.e("DebugPostNotLoading", "onLocationFailure")
         binding.swipeRefreshLayout.isRefreshing = false
     }
 

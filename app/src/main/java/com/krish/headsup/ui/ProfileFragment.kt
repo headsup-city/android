@@ -138,8 +138,6 @@ class ProfileFragment : Fragment(), PostView.OnCommentClickListener, PostView.On
             }
         }
 
-        Log.d("DebugSelf", "Inside")
-
         sharedViewModel.user.observe(
             viewLifecycleOwner,
             Observer { user ->

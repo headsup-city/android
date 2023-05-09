@@ -4,6 +4,7 @@ import android.content.Context
 import com.krish.headsup.BuildConfig
 import com.krish.headsup.managers.AuthManager
 import com.krish.headsup.repositories.PostRepository
+import com.krish.headsup.repositories.UserRepository
 import com.krish.headsup.services.api.AuthApi
 import com.krish.headsup.services.api.CommentApi
 import com.krish.headsup.services.api.ConversationApi
@@ -153,5 +154,11 @@ object AppModule {
     @Singleton
     fun providePostRepository(postApi: PostApi): PostRepository {
         return PostRepository(postApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(userApi: UserApi): UserRepository {
+        return UserRepository(userApi)
     }
 }

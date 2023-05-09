@@ -22,7 +22,6 @@ class SearchPagingSource(
             val totalPages = response.body()?.totalPages ?: 0
             val prevKey = if (nextPage > 0) nextPage - 1 else null
             val nextKey = if (totalPages - 1 > nextPage) nextPage + 1 else null
-
             LoadResult.Page(
                 data = data,
                 prevKey = prevKey,

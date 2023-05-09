@@ -1,6 +1,5 @@
 package com.krish.headsup.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -80,20 +79,16 @@ class ProfileViewModel @Inject constructor(
                 if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
                     when (postRepository.likePost(accessToken, postId)) {
                         is Result.Success -> {
-                            Log.d("DebugSelf", "Emitting likePost true")
                             return@withContext true
                         }
                         is Result.Error -> {
-                            Log.d("DebugSelf", "Emitting likePost not successful api false")
                             return@withContext false
                         }
                     }
                 } else {
-                    Log.d("DebugSelf", "Emitting likePost else false")
                     return@withContext false
                 }
             } catch (e: Exception) {
-                Log.d("DebugSelf", "Emitting likePost catch false: ${e.message}")
                 return@withContext false
             }
         }
@@ -106,20 +101,16 @@ class ProfileViewModel @Inject constructor(
                 if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
                     when (postRepository.unlikePost(accessToken, postId)) {
                         is Result.Success -> {
-                            Log.d("DebugSelf", "Emitting unlikePost true")
                             return@withContext true
                         }
                         is Result.Error -> {
-                            Log.d("DebugSelf", "Emitting unlikePost not successful api false")
                             return@withContext false
                         }
                     }
                 } else {
-                    Log.d("DebugSelf", "Emitting unlikePost else false")
                     return@withContext false
                 }
             } catch (e: Exception) {
-                Log.d("DebugSelf", "Emitting unlikePost catch false: ${e.message}")
                 return@withContext false
             }
         }
@@ -133,18 +124,14 @@ class ProfileViewModel @Inject constructor(
                     val response = followRepository.followUser(userId, accessToken)
                     if (response.isSuccessful) {
                         updateUserFollowingList(userId, true)
-                        Log.d("DebugSelf", "Emitting followUser true")
                         return@withContext true
                     } else {
-                        Log.d("DebugSelf", "Emitting followUser not successful api false")
                         return@withContext false
                     }
                 } else {
-                    Log.d("DebugSelf", "Emitting followUser else false")
                     return@withContext false
                 }
             } catch (e: Exception) {
-                Log.d("DebugSelf", "Emitting followUser catch false: ${e.message}")
                 return@withContext false
             }
         }
@@ -158,18 +145,14 @@ class ProfileViewModel @Inject constructor(
                     val response = followRepository.unFollowUser(userId, accessToken)
                     if (response.isSuccessful) {
                         updateUserFollowingList(userId, false)
-                        Log.d("DebugSelf", "Emitting unFollowUser true")
                         return@withContext true
                     } else {
-                        Log.d("DebugSelf", "Emitting unFollowUser not successful api false")
                         return@withContext false
                     }
                 } else {
-                    Log.d("DebugSelf", "Emitting unFollowUser else false")
                     return@withContext false
                 }
             } catch (e: Exception) {
-                Log.d("DebugSelf", "Emitting unFollowUser catch false: ${e.message}")
                 return@withContext false
             }
         }
