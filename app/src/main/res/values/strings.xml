@@ -57,4 +57,6 @@
     <string name="share_post_title">Share Post</string>
     <string name="user_s_name">User\'s name</string>
     <string name="search_for_users">Search for users</string>
+    <string name="no_user_found">No user found</string>
+    <string name="type_name_to_search">Type a name</string>
 </resources>

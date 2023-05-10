@@ -6,8 +6,6 @@
     android:orientation="horizontal"
     android:padding="12dp">
 
-
-
     <androidx.cardview.widget.CardView
         android:id="@+id/authorAvatarCardView"
         android:layout_width="32dp"

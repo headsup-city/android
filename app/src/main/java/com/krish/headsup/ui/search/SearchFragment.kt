@@ -58,8 +58,12 @@ class SearchFragment : Fragment() {
         binding.searchInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = binding.searchInput.text.toString()
-                viewModel.onQueryChanged(query)
-                true
+                if (!query.isNullOrEmpty()) {
+                    viewModel.onQueryChanged(query)
+                    true
+                } else {
+                    false
+                }
             } else {
                 false
             }
@@ -70,13 +74,16 @@ class SearchFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.isNullOrEmpty()) {
+                    binding.searchHintText.visibility = View.VISIBLE
                     binding.closeIcon.visibility = View.GONE
                     binding.searchIcon.visibility = View.VISIBLE
+                    searchAdapter.submitList(emptyList()) // Clear the list
                 } else {
+                    binding.searchHintText.visibility = View.GONE
                     binding.closeIcon.visibility = View.VISIBLE
                     binding.searchIcon.visibility = View.GONE
+                    viewModel.onQueryChanged(s.toString())
                 }
-                viewModel.onQueryChanged(s.toString())
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -85,6 +92,7 @@ class SearchFragment : Fragment() {
         binding.closeIcon.setOnClickListener {
             binding.searchInput.setText("")
             binding.closeIcon.visibility = View.GONE
+            searchAdapter.submitList(emptyList()) // Clear the list
         }
     }
 
@@ -92,7 +100,21 @@ class SearchFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 viewModel.searchResults.collect { userList ->
-                    searchAdapter.submitList(userList)
+                    if (userList.isEmpty()) {
+                        if (binding.searchInput.text?.isNotEmpty() == true) {
+                            binding.noUserFoundText.visibility = View.VISIBLE
+                            binding.searchHintText.visibility = View.GONE
+                        } else {
+                            binding.noUserFoundText.visibility = View.GONE
+                            binding.searchHintText.visibility = View.VISIBLE
+                        }
+                        binding.userList.visibility = View.GONE
+                    } else {
+                        binding.noUserFoundText.visibility = View.GONE
+                        binding.searchHintText.visibility = View.GONE
+                        binding.userList.visibility = View.VISIBLE
+                        searchAdapter.submitList(userList)
+                    }
                 }
             } catch (e: Exception) {
                 // Handle the error here

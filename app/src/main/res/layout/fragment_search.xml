@@ -69,6 +69,17 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/searchHintText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/type_name_to_search"
+                android:textColor="@color/gray_400"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/searchContainer"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/userList"
@@ -79,7 +90,20 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/searchContainer" />
+                app:layout_constraintTop_toBottomOf="@id/searchHintText" />
+
+            <TextView
+                android:id="@+id/noUserFoundText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_user_found"
+                android:textColor="@color/gray_400"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/searchHintText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="gone"/>
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -95,3 +119,4 @@
 
     </com.krish.headsup.ui.components.CustomCoordinatorLayout>
 </layout>
+
