@@ -34,7 +34,7 @@ class PostView(
     private val postDate: TextView = itemView.findViewById(R.id.postDate)
     private val postImage: ImageView = itemView.findViewById(R.id.postImage)
     private val postText: TextView = itemView.findViewById(R.id.postText)
-    private val customVideoPlayer: CustomVideoPlayer = itemView.findViewById(R.id.customVideoPlayer)
+    val customVideoPlayer: CustomVideoPlayer = itemView.findViewById(R.id.customVideoPlayer)
     private val likeButton: ImageView = itemView.findViewById(R.id.likeButton)
     private val alreadyLikedButton: ImageView = itemView.findViewById(R.id.alreadyLikedButton)
     private val likeCountText: TextView = itemView.findViewById(R.id.likeCount)
@@ -233,6 +233,6 @@ class PostView(
     fun onDetachedFromWindow() {
         Log.d("PostView", "onDetachedFromWindow called for ViewHolder: $this")
         // Release the CustomVideoPlayer when the view is detached
-        customVideoPlayer.releasePlayer()
+        customVideoPlayer.resetPlayer()
     }
 }

@@ -11,9 +11,12 @@
         tools:context=".ui.search.SearchFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true">
+            android:fitsSystemWindows="true"
+            android:clickable="true"
+            android:focusableInTouchMode="true">
 
             <RelativeLayout
                 android:id="@+id/searchContainer"
@@ -73,14 +76,13 @@
                 android:id="@+id/searchHintText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/type_name_to_search"
+                android:text="@string/type_to_search_users"
                 android:textColor="@color/gray_400"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/userList"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/searchContainer"
-                app:layout_constraintVertical_bias="0.5" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/noUserFoundText"
@@ -91,11 +93,10 @@
                 android:textColor="@color/gray_400"
                 android:textSize="14sp"
                 android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/userList"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/searchContainer"
-                app:layout_constraintVertical_bias="0.5" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/userList"
@@ -106,7 +107,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/searchContainer" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -122,4 +123,3 @@
 
     </com.krish.headsup.ui.components.CustomCoordinatorLayout>
 </layout>
-

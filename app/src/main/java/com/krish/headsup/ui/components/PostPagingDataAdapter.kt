@@ -28,6 +28,12 @@ class PostPagingDataAdapter(private val onCommentClickListener: PostView.OnComme
         holder.onDetachedFromWindow()
     }
 
+    override fun onViewRecycled(holder: PostView) {
+        super.onViewRecycled(holder)
+        holder.customVideoPlayer.resetPlayer()
+    }
+
+
     class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
         override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
             return oldItem.id == newItem.id

@@ -1,5 +1,6 @@
 package com.krish.headsup.ui.search
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -47,6 +49,7 @@ class SearchFragment : Fragment() {
         observeViewModel()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupViews() {
 
         binding.coordinatorLayout.setOnClickListener {
@@ -54,6 +57,12 @@ class SearchFragment : Fragment() {
                 hideKeyboardAndClearFocus()
             }
         }
+
+        binding.constraintLayout.setOnTouchListener { v, event ->
+            hideKeyboardAndClearFocus()
+            return@setOnTouchListener false
+        }
+
 
         binding.searchInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -75,6 +84,7 @@ class SearchFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.isNullOrEmpty()) {
                     binding.searchHintText.visibility = View.VISIBLE
+                    binding.noUserFoundText.visibility = View.GONE
                     binding.closeIcon.visibility = View.GONE
                     binding.searchIcon.visibility = View.VISIBLE
                     searchAdapter.submitList(emptyList()) // Clear the list
@@ -88,6 +98,10 @@ class SearchFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+
+        binding.noUserFoundText.setOnClickListener { hideKeyboardAndClearFocus() }
+        binding.searchHintText.setOnClickListener { hideKeyboardAndClearFocus() }
+        binding.userList.setOnTouchListener { _, _ -> hideKeyboardAndClearFocus(); false }
 
         binding.closeIcon.setOnClickListener {
             binding.searchInput.setText("")
@@ -124,9 +138,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun hideKeyboardAndClearFocus() {
+        binding.searchInput.clearFocus()
         val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(binding.searchInput.windowToken, 0)
-        binding.searchInput.clearFocus()
     }
 
     override fun onDestroyView() {

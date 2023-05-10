@@ -59,4 +59,5 @@
     <string name="search_for_users">Search for users</string>
     <string name="no_user_found">No user found</string>
     <string name="type_name_to_search">Type a name</string>
+    <string name="type_to_search_users">Type to search users</string>
 </resources>

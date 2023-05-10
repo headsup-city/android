@@ -131,8 +131,9 @@ class CustomVideoPlayer @JvmOverloads constructor(
         progressBar.visibility = View.VISIBLE
     }
 
-    fun releasePlayer() {
+    private fun releasePlayer() {
         // Release the ExoPlayer when the view is detached
         player?.release()
+        player = null
     }
 }
