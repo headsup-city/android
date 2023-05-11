@@ -27,15 +27,16 @@
             app:destination="@+id/profileFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_homeFragment_to_conversationFragment"
+            app:destination="@+id/conversationFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/conversationFragment"
         android:name="com.krish.headsup.ui.ConversationFragment"
         android:label="Conversation" />
-    <fragment
-        android:id="@+id/conversationListFragment"
-        android:name="com.krish.headsup.ui.ConversationListFragment"
-        android:label="ConversationList" />
     <fragment
         android:id="@+id/imagePostFragment"
         android:name="com.krish.headsup.ui.ImagePostFragment"
@@ -64,6 +65,11 @@
         <action
             android:id="@+id/action_profileFragment_to_videoPostFragment"
             app:destination="@+id/videoPostFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_profileFragment_to_conversationFragment"
+            app:destination="@+id/conversationFragment"
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="false" />
     </fragment>

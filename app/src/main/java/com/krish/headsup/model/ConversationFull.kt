@@ -18,8 +18,11 @@ data class ConversationFull(
     @SerializedName("image")
     val image: String?,
 
+    @SerializedName("imageUri")
+    val imageUri: String?,
+
     @SerializedName("lastMessage")
-    val lastMessage: Message?,
+    val lastMessage: MessageBasic?,
 
     @SerializedName("lastMessageAuthor")
     val lastMessageAuthor: User?,

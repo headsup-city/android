@@ -28,6 +28,32 @@ data class Message(
     val updatedAt: String
 )
 
+data class MessageBasic(
+    @SerializedName("id")
+    val id: String,
+
+    @SerializedName("text")
+    val text: String?,
+
+    @SerializedName("messageType")
+    val messageType: MessageType,
+
+    @SerializedName("attachment")
+    val attachment: String?,
+
+    @SerializedName("author")
+    val author: String,
+
+    @SerializedName("conversation")
+    val conversation: String,
+
+    @SerializedName("createdAt")
+    val createdAt: String,
+
+    @SerializedName("updatedAt")
+    val updatedAt: String
+)
+
 enum class MessageType {
     TEXT
 }

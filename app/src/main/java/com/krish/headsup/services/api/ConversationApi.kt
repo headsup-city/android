@@ -9,20 +9,19 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ConversationApi {
-
-    @GET("conversation/{id}")
+    @GET("/v1/conversation/{id}")
     suspend fun getConvoById(
         @Header("Authorization") token: String,
         @Path("id") id: String
     ): Response<Conversation>
 
-    @GET("conversation/with-user/{userId}")
+    @GET("/v1/conversation/with-user/{userId}")
     suspend fun getConvoByUserId(
         @Header("Authorization") token: String,
         @Path("userId") userId: String
     ): Response<Conversation>
 
-    @GET("conversation/user/all-conversations")
+    @GET("/v1/conversation/user/all-conversations")
     suspend fun getConversations(
         @Header("Authorization") token: String,
         @Query("page") page: Int? = 0

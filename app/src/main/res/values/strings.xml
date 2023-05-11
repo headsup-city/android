@@ -60,4 +60,6 @@
     <string name="no_user_found">No user found</string>
     <string name="type_name_to_search">Type a name</string>
     <string name="type_to_search_users">Type to search users</string>
+    <string name="error_loading_data">Error loading data</string>
+    <string name="no_conversations_to_display">No conversations to display</string>
 </resources>

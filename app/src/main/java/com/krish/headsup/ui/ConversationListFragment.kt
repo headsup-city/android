@@ -36,7 +36,7 @@ class ConversationListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_conversation_list, container, false)
+        return inflater.inflate(R.layout.conversation_list, container, false)
     }
 
     companion object {

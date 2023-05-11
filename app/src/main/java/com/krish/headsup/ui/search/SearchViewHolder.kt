@@ -29,5 +29,4 @@ class SearchViewHolder(private val binding: ListSearchUserBinding) : RecyclerVie
                 .into(commentAvatar)
         }
     }
-
 }

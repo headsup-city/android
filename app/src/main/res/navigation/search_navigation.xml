@@ -18,10 +18,6 @@
         android:name="com.krish.headsup.ui.ConversationFragment"
         android:label="Conversation" />
     <fragment
-        android:id="@+id/conversationListFragment"
-        android:name="com.krish.headsup.ui.ConversationListFragment"
-        android:label="ConversationList" />
-    <fragment
         android:id="@+id/imagePostFragment"
         android:name="com.krish.headsup.ui.ImagePostFragment"
         android:label="ImagePost">

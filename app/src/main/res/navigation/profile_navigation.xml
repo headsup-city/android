@@ -8,10 +8,6 @@
         android:name="com.krish.headsup.ui.ConversationFragment"
         android:label="Conversation" />
     <fragment
-        android:id="@+id/conversationListFragment"
-        android:name="com.krish.headsup.ui.ConversationListFragment"
-        android:label="ConversationList" />
-    <fragment
         android:id="@+id/editProfileFragment"
         android:name="com.krish.headsup.ui.EditProfileFragment"
         android:label="EditProfile" />
