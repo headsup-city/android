@@ -1,13 +1,13 @@
 package com.krish.headsup.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krish.headsup.R
@@ -39,6 +39,7 @@ class ConversationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = ConversationAdapter()
+        val navController = NavHostFragment.findNavController(this)
 
         binding.conversationListItem.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -55,23 +56,24 @@ class ConversationFragment : Fragment() {
             }
         }
 
+        binding.backButton.setOnClickListener {
+            navController.navigateUp()
+        }
+
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 when (val refreshState = loadStates.refresh) {
                     is LoadState.Loading -> {
-                        Log.d("DebugSelf","CF60")
                         binding.loading.visibility = View.VISIBLE
                         binding.errorMessage.visibility = View.GONE
                         binding.emptyState.visibility = View.GONE
                     }
                     is LoadState.Error -> {
-                        Log.d("DebugSelf","CF65")
                         binding.loading.visibility = View.GONE
                         binding.errorMessage.visibility = View.VISIBLE
                         binding.errorMessage.text = getString(R.string.error_loading_data)
                     }
                     is LoadState.NotLoading -> {
-                        Log.d("DebugSelf","CF72")
                         binding.loading.visibility = View.GONE
                         if (loadStates.append.endOfPaginationReached && adapter.itemCount < 1) {
                             binding.emptyState.visibility = View.VISIBLE

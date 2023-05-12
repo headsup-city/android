@@ -3,6 +3,7 @@ package com.krish.headsup.di
 import android.content.Context
 import com.krish.headsup.BuildConfig
 import com.krish.headsup.managers.AuthManager
+import com.krish.headsup.repositories.MessageRepository
 import com.krish.headsup.repositories.PostRepository
 import com.krish.headsup.repositories.UserRepository
 import com.krish.headsup.services.api.AuthApi
@@ -160,5 +161,11 @@ object AppModule {
     @Singleton
     fun provideUserRepository(userApi: UserApi): UserRepository {
         return UserRepository(userApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMessageRepository(messageApi: MessageApi): MessageRepository {
+        return MessageRepository(messageApi)
     }
 }

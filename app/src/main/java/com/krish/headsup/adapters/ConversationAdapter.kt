@@ -3,10 +3,12 @@ package com.krish.headsup.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.krish.headsup.databinding.ConversationListBinding
 import com.krish.headsup.model.ConversationFull
+import com.krish.headsup.ui.ConversationFragmentDirections
 import com.krish.headsup.ui.viewholders.ConversationViewHolder
 
 class ConversationAdapter : PagingDataAdapter<ConversationFull, ConversationViewHolder>(
@@ -25,6 +27,12 @@ class ConversationAdapter : PagingDataAdapter<ConversationFull, ConversationView
         val conversationFull = getItem(position)
         if (conversationFull != null) {
             holder.bind(conversationFull)
+        }
+        holder.itemView.setOnClickListener {
+            if (conversationFull != null) {
+                val action = ConversationFragmentDirections.actionConversationFragmentToMessagingFragment(conversationFull.id)
+                holder.itemView.findNavController().navigate(action)
+            }
         }
     }
 

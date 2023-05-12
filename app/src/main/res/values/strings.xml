@@ -62,4 +62,9 @@
     <string name="type_to_search_users">Type to search users</string>
     <string name="error_loading_data">Error loading data</string>
     <string name="no_conversations_to_display">No conversations to display</string>
+    <string name="enter_message">Enter message</string>
+    <string name="go_back_to_previous_screen">Go back to previous screen</string>
+    <string name="type_a_message_here">Type a message here...</string>
+    <string name="send_message">Send message</string>
+    <string name="example">Example</string>
 </resources>

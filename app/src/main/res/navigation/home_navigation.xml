@@ -36,7 +36,13 @@
     <fragment
         android:id="@+id/conversationFragment"
         android:name="com.krish.headsup.ui.ConversationFragment"
-        android:label="Conversation" />
+        android:label="Conversation">
+        <action
+            android:id="@+id/action_conversationFragment_to_messagingFragment"
+            app:destination="@+id/messagingFragment"
+            app:popUpTo="@id/conversationFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
     <fragment
         android:id="@+id/imagePostFragment"
         android:name="com.krish.headsup.ui.ImagePostFragment"
@@ -89,4 +95,20 @@
             android:name="post"
             app:argType="com.krish.headsup.model.Post" />
     </fragment>
+    <fragment
+        android:id="@+id/messagingFragment"
+        android:name="com.krish.headsup.ui.MessagingFragment"
+        android:label="Messaging">
+        <argument
+            android:name="convoId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="userId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+
 </navigation>
