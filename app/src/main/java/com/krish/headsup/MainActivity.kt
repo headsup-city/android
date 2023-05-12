@@ -227,7 +227,8 @@ class MainActivity : AppCompatActivity() {
             R.id.profileFragment,
             R.id.textPostFragment,
             R.id.imagePostFragment,
-            R.id.videoPostFragment -> {
+            R.id.videoPostFragment,
+            R.id.messagingFragment -> {
                 bottomNavigationView.visibility = View.GONE
             }
             else -> {

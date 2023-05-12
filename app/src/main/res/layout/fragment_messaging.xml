@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?><?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.MessagingFragment">
 
     <androidx.appcompat.widget.Toolbar
@@ -22,12 +23,12 @@
             <!-- Back button -->
             <ImageButton
                 android:id="@+id/backButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginStart="16dp"
-                android:background="?attr/selectableItemBackground"
+                android:background="@drawable/white_circle"
                 android:contentDescription="@string/go_back_to_previous_screen"
-                android:padding="8dp"
+                android:padding="6dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/arrow_back_outline_white" />
 
@@ -83,13 +84,13 @@
 
             <!-- Three dots -->
             <ImageButton
-                android:id="@+id/postMenu"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:id="@+id/menu"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_gravity="end"
                 android:layout_marginEnd="8dp"
                 android:background="?attr/selectableItemBackground"
-                android:contentDescription="@string/post_menu"
+                android:contentDescription="@string/menu"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ellipsis_vertical" />
@@ -136,7 +137,7 @@
             android:layout_weight="1"
             android:autofillHints="emailBody"
             android:background="@drawable/rounded_edittext_background"
-            android:hint="@string/type_a_comment_here"
+            android:hint="@string/write_a_text"
             android:inputType="textMultiLine"
             android:maxLines="4"
             android:minHeight="48dp"
