@@ -1,11 +1,16 @@
 package com.krish.headsup.ui
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -33,6 +38,10 @@ class MessagingFragment : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var binding: FragmentMessagingBinding
     private lateinit var adapter: MessagingAdapter
+
+    private var initialY = 0f
+    private var finalY = 0f
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,6 +77,7 @@ class MessagingFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -80,7 +90,9 @@ class MessagingFragment : Fragment() {
 
         viewModel.messages.observe(viewLifecycleOwner) { messages ->
             val chatItems = convertMessagesToChatItems(messages)
-            adapter.submitList(chatItems)
+            adapter.submitList(chatItems) {
+                binding.recyclerView.scrollToPosition(0)
+            }
         }
 
         // Observe the otherUser results
@@ -111,6 +123,39 @@ class MessagingFragment : Fragment() {
         binding.backButton.setOnClickListener {
             navController.navigateUp()
         }
+
+        binding.root.setOnTouchListener { _, _ ->
+            hideKeyboard()
+            false
+        }
+
+        binding.recyclerView.setOnTouchListener { _, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    initialY = motionEvent.y
+                }
+                MotionEvent.ACTION_UP -> {
+                    finalY = motionEvent.y
+                    if (finalY > initialY) {
+                        // Scrolling up or a touch event
+                        hideKeyboard()
+                    }
+                    // else we are scrolling down, do nothing
+                }
+            }
+            false
+        }
+
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    showKeyboard(binding.messageInput)
+                }
+            }
+        })
+
 
         // Increase touchable area of the sendButton
         increaseTouchableArea(binding.sendButton, R.dimen.size_32_button_inc)
@@ -150,18 +195,34 @@ class MessagingFragment : Fragment() {
         val chatItems = mutableListOf<ChatItem>()
         var currentDate: String? = null
 
-        for (message in messages) {
+        for (message in messages.asReversed()) {
             val messageDate = getRelativeTimeForChat(message.createdAt)
 
-            chatItems.add(ChatItem.MessageItem(message))
-
             if (currentDate == null || messageDate != currentDate) {
-                chatItems.add(ChatItem.HeaderItem(messageDate))
+                chatItems.add(0, ChatItem.HeaderItem(messageDate))
                 currentDate = messageDate
             }
+
+            chatItems.add(0, ChatItem.MessageItem(message))
         }
 
         return chatItems
+    }
+
+    private fun showKeyboard(view: View) {
+        view.requestFocus()
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+
+    private fun hideKeyboard() {
+        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        // Check if no view has focus:
+        val currentFocusedView = activity?.currentFocus
+        currentFocusedView?.let {
+            inputMethodManager.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        }
     }
 
     override fun onResume() {

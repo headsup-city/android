@@ -1,6 +1,5 @@
 package com.krish.headsup.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -146,6 +145,7 @@ class MessagingViewModel @Inject constructor(
 
         // Optimistically add the temporary message to the chat UI
         _latestMessage.value = tempMessage
+        appendMessage(tempMessage)
 
         viewModelScope.launch {
             val accessToken = tokenManager.getTokenStore()?.access?.token ?: ""
@@ -178,6 +178,7 @@ class MessagingViewModel @Inject constructor(
 
         // Optimistically add the temporary message to the chat UI
         _latestMessage.value = tempMessage
+        appendMessage(tempMessage)
 
         viewModelScope.launch {
             val accessToken = tokenManager.getTokenStore()?.access?.token ?: ""
@@ -215,6 +216,12 @@ class MessagingViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun appendMessage(message: Message) {
+        val currentMessages = _messages.value.orEmpty().toMutableList()
+        currentMessages.add(0, message) // Add at start of list
+        _messages.value = currentMessages
     }
 
     enum class LoadingStatus {

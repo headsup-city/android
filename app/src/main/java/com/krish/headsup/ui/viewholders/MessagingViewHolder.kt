@@ -1,7 +1,5 @@
 package com.krish.headsup.ui.viewholders
 
-import android.view.Gravity
-import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +8,7 @@ import com.krish.headsup.databinding.MessagingListBinding
 import com.krish.headsup.model.Message
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.TimeZone
 
 class MessagingViewHolder(private val binding: MessagingListBinding, private val selfUserId: String?) :
     RecyclerView.ViewHolder(binding.root) {
@@ -43,8 +42,10 @@ class MessagingViewHolder(private val binding: MessagingListBinding, private val
 
     private fun convertToTimeFormat(dateTime: String): String {
         val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        formatter.timeZone = TimeZone.getTimeZone("UTC") // Parsing the date in UTC
         val date = formatter.parse(dateTime)
         val timeFormatter = SimpleDateFormat("h:mm a", Locale.getDefault())
+        timeFormatter.timeZone = TimeZone.getDefault() // Converting the date to device's default timezone
         return timeFormatter.format(date)
     }
 }
