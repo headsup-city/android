@@ -8,6 +8,7 @@ import com.krish.headsup.paging.PostPagingSource
 import com.krish.headsup.paging.UserPostPagingSource
 import com.krish.headsup.services.api.PostApi
 import com.krish.headsup.utils.Result
+import com.krish.headsup.utils.UnitResult
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -64,11 +65,11 @@ class PostRepository @Inject constructor(private val postApi: PostApi) {
         }
     }
 
-    suspend fun likePost(accessToken: String, postId: String): Result<Unit> {
+    suspend fun likePost(accessToken: String, postId: String): Result {
         return try {
             val response = postApi.likePost("Bearer $accessToken", postId)
             if (response.isSuccessful) {
-                Result.Success(Unit)
+                UnitResult(Unit)
             } else {
                 Result.Error(Exception("API request failed: ${response.message()}"))
             }
@@ -77,11 +78,11 @@ class PostRepository @Inject constructor(private val postApi: PostApi) {
         }
     }
 
-    suspend fun unlikePost(accessToken: String, postId: String): Result<Unit> {
+    suspend fun unlikePost(accessToken: String, postId: String): Result {
         return try {
             val response = postApi.unlikePost("Bearer $accessToken", postId)
             if (response.isSuccessful) {
-                Result.Success(Unit)
+                UnitResult(Unit)
             } else {
                 Result.Error(Exception("API request failed: ${response.message()}"))
             }

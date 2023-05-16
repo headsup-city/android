@@ -65,7 +65,7 @@ class PostView(
                 .into(authorAvatar)
 
             authorName.text = it.author?.name ?: context.getString(R.string.unknown_author)
-            postDate.text = getRelativeTime(it.createdAt, context)
+            postDate.text = getRelativeTime(it.createdAt)
             postText.text = it.caption
 
             if (it.caption.isNullOrEmpty()) {

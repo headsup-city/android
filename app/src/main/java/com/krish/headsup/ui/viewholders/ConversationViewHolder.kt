@@ -16,7 +16,7 @@ class ConversationViewHolder(private val binding: ConversationListBinding) : Rec
         binding.apply {
             nameTextView.text = conversation.lastMessageAuthor?.name
             lastMessageTextView.text = conversation.lastMessage?.text
-            timeTextView.text = getRelativeTime(conversation.updatedAt, context)
+            timeTextView.text = getRelativeTime(conversation.updatedAt)
 
             GlideApp.with(context)
                 .load(conversation.image)

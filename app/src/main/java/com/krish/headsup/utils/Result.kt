@@ -1,6 +1,26 @@
 package com.krish.headsup.utils
 
-sealed class Result<out T> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Throwable) : Result<Nothing>()
+import com.krish.headsup.model.Conversation
+import com.krish.headsup.model.GetMessagesByConversationIdResponse
+import com.krish.headsup.model.Message
+import com.krish.headsup.model.SendMessageToConversationResponse
+import com.krish.headsup.model.SendMessageToUserResponse
+import com.krish.headsup.model.User
+
+sealed class Result {
+    data class Error(val exception: Throwable) : Result()
 }
+
+data class ConversationResult(val data: Conversation) : Result()
+
+data class UserResult(val data: User) : Result()
+
+data class MessageResult(val data: Message) : Result()
+
+data class UnitResult(val data: Unit) : Result()
+
+data class SendMessageToUserResult(val data: SendMessageToUserResponse) : Result()
+
+data class SendMessageToConversationResult(val data: SendMessageToConversationResponse) : Result()
+
+data class MessagesResult(val data: GetMessagesByConversationIdResponse) : Result()

@@ -200,7 +200,7 @@ class ImagePostFragment : Fragment() {
                     .centerInside()
                     .into(postImageView)
 
-                postDate.text = getRelativeTime(post.createdAt, requireContext())
+                postDate.text = getRelativeTime(post.createdAt)
             }
         }
 

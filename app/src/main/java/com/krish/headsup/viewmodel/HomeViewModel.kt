@@ -10,6 +10,7 @@ import com.krish.headsup.model.Post
 import com.krish.headsup.repositories.PostRepository
 import com.krish.headsup.utils.Result
 import com.krish.headsup.utils.TokenManager
+import com.krish.headsup.utils.UnitResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -42,13 +43,15 @@ class HomeViewModel @Inject constructor(
             try {
                 val accessToken = tokenManager.getTokenStore()?.access?.token
                 if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
-                    when (postRepository.likePost(accessToken, postId)) {
-                        is Result.Success -> {
+                    val result = postRepository.likePost(accessToken, postId)
+                    when (result) {
+                        is UnitResult -> {
                             return@withContext true
                         }
                         is Result.Error -> {
                             return@withContext false
                         }
+                        else -> { return@withContext false }
                     }
                 } else {
                     return@withContext false
@@ -64,13 +67,15 @@ class HomeViewModel @Inject constructor(
             try {
                 val accessToken = tokenManager.getTokenStore()?.access?.token
                 if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
-                    when (postRepository.unlikePost(accessToken, postId)) {
-                        is Result.Success -> {
+                    val result = postRepository.unlikePost(accessToken, postId)
+                    when (result) {
+                        is UnitResult -> {
                             return@withContext true
                         }
                         is Result.Error -> {
                             return@withContext false
                         }
+                        else -> { return@withContext false }
                     }
                 } else {
                     return@withContext false

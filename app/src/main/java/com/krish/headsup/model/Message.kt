@@ -57,3 +57,8 @@ data class MessageBasic(
 enum class MessageType {
     TEXT
 }
+
+sealed class ChatItem {
+    data class MessageItem(val message: Message) : ChatItem()
+    data class HeaderItem(val date: String) : ChatItem()
+}

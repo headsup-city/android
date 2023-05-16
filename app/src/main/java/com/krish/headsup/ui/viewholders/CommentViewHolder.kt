@@ -16,7 +16,7 @@ class CommentViewHolder(private val binding: ItemCommentBinding) : RecyclerView.
             commentAuthor.text = comment.author?.name
             commentText.text = comment.text
             // Set your timestamp here
-            commentTimestamp.text = getRelativeTime(comment.createdAt, requireContext) // Format your timestamp here
+            commentTimestamp.text = getRelativeTime(comment.createdAt) // Format your timestamp here
 
             // Load the author's avatar using Glide
             GlideApp.with(requireContext)

@@ -160,7 +160,7 @@ class TextPostFragment : Fragment() {
                     .placeholder(CustomAvatarImageView.defaultAvatar)
                     .circleCrop()
                     .into(authorAvatar)
-                postDate.text = getRelativeTime(post.createdAt, requireContext())
+                postDate.text = getRelativeTime(post.createdAt)
             }
         }
 

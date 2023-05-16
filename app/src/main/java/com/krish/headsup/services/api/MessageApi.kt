@@ -15,21 +15,21 @@ import retrofit2.http.Query
 
 interface MessageApi {
 
-    @GET("message/conversation/{convoId}")
+    @GET("/v1/message/conversation/{convoId}")
     suspend fun getMessageByConvoId(
         @Path("convoId") convoId: String,
         @Query("page") page: Int,
         @Header("Authorization") token: String
     ): Response<GetMessagesByConversationIdResponse>
 
-    @POST("message/sendMessage/user/{id}")
+    @POST("/v1/message/sendMessage/user/{id}")
     suspend fun sendMessageToUser(
         @Path("id") id: String,
         @Body body: SendMessageToUserRequest,
         @Header("Authorization") token: String
     ): Response<SendMessageToUserResponse>
 
-    @POST("message/sendMessage/conversation/{id}")
+    @POST("/v1/message/sendMessage/conversation/{id}")
     suspend fun sendMessageToConversation(
         @Path("id") id: String,
         @Body body: SendMessageToConversationRequest,

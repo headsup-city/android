@@ -17,6 +17,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.NavHostFragment
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentHomeBinding
@@ -44,6 +45,7 @@ class HomeFragment :
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val viewModel: HomeViewModel by activityViewModels()
     private var _binding: FragmentHomeBinding? = null
+    private var arePostsEmpty: Boolean = true
 
     private val binding get() = _binding!!
 
@@ -94,16 +96,49 @@ class HomeFragment :
             }
         }
 
-        val adapter = PostPagingDataAdapter(this, this, this, viewLifecycleOwner, sharedViewModel)
+        val adapter = PostPagingDataAdapter(
+            this,
+            this,
+            this,
+            viewLifecycleOwner,
+            sharedViewModel
+        )
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
+
+        binding.retryButton.setOnClickListener {
+            checkLocationPermission()
+        }
 
         viewModel.currentPostResult.observe(viewLifecycleOwner) { pagingDataFlow ->
             viewModel.viewModelScope.launch {
                 pagingDataFlow?.collectLatest { pagingData ->
                     // Update the adapter's data with the new posts and notify the adapter
                     adapter.submitData(pagingData)
+                    if (adapter.itemCount == 0) {
+                        arePostsEmpty = true
+                    } else {
+                        arePostsEmpty = false
+                        binding.retryButton.visibility = View.GONE
+                    }
                 }
+            }
+        }
+
+        adapter.addLoadStateListener { loadState ->
+            // Only handling the refresh LoadState
+            val isRefreshing = loadState.refresh is LoadState.Loading
+            binding.swipeRefreshLayout.isRefreshing = isRefreshing
+
+            val isError = loadState.refresh is LoadState.Error
+            if (isError && arePostsEmpty) {
+                // There was an error refreshing (i.e., initial load), show the retry button and hide the ProgressBar
+                binding.retryButton.visibility = View.VISIBLE
+                binding.loadingProgressBar.visibility = View.GONE
+            } else {
+                // No error or posts are present, hide the retry button and ProgressBar
+                binding.retryButton.visibility = View.GONE
+                binding.loadingProgressBar.visibility = View.GONE
             }
         }
     }
@@ -134,9 +169,14 @@ class HomeFragment :
     }
 
     override fun onLocationFailure() {
-        // Handle the case when location is not available
         Log.e("DebugPostNotLoading", "onLocationFailure")
         binding.swipeRefreshLayout.isRefreshing = false
+        binding.loadingProgressBar.visibility = View.GONE
+        if (arePostsEmpty) {
+            binding.retryButton.visibility = View.VISIBLE // Show the retry button
+        } else {
+            binding.retryButton.visibility = View.GONE // Hide the retry button
+        }
     }
 
     override fun onCommentClick(post: Post) {

@@ -14,6 +14,8 @@ import com.krish.headsup.repositories.PostRepository
 import com.krish.headsup.repositories.UserRepository
 import com.krish.headsup.utils.Result
 import com.krish.headsup.utils.TokenManager
+import com.krish.headsup.utils.UnitResult
+import com.krish.headsup.utils.UserResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -50,10 +52,14 @@ class ProfileViewModel @Inject constructor(
             val accessToken = tokenManager.getTokenStore()?.access?.token
             if (!accessToken.isNullOrEmpty() && !userId.isNullOrEmpty()) {
 
-                val userResponse = userRepository.getUser(accessToken, userId)
-                if (userResponse.isSuccessful) {
-                    _user.postValue(userResponse.body())
-                    fetchUserPosts()
+                when (val userResponse = userRepository.getUser(accessToken, userId)) {
+                    is UserResult -> {
+                        _user.postValue(userResponse.data)
+                        fetchUserPosts()
+                    }
+                    is Result.Error -> {
+                    }
+                    else -> { }
                 }
             }
             _isLoading.postValue(false)
@@ -77,13 +83,15 @@ class ProfileViewModel @Inject constructor(
             try {
                 val accessToken = tokenManager.getTokenStore()?.access?.token
                 if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
-                    when (postRepository.likePost(accessToken, postId)) {
-                        is Result.Success -> {
+                    val result = postRepository.likePost(accessToken, postId)
+                    when (result) {
+                        is UnitResult -> {
                             return@withContext true
                         }
                         is Result.Error -> {
                             return@withContext false
                         }
+                        else -> { return@withContext false }
                     }
                 } else {
                     return@withContext false
@@ -99,13 +107,15 @@ class ProfileViewModel @Inject constructor(
             try {
                 val accessToken = tokenManager.getTokenStore()?.access?.token
                 if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
-                    when (postRepository.unlikePost(accessToken, postId)) {
-                        is Result.Success -> {
+                    val result = postRepository.unlikePost(accessToken, postId)
+                    when (result) {
+                        is UnitResult -> {
                             return@withContext true
                         }
                         is Result.Error -> {
                             return@withContext false
                         }
+                        else -> { return@withContext false }
                     }
                 } else {
                     return@withContext false
