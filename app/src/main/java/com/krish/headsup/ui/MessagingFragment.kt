@@ -42,7 +42,6 @@ class MessagingFragment : Fragment() {
     private var initialY = 0f
     private var finalY = 0f
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -93,6 +92,8 @@ class MessagingFragment : Fragment() {
             adapter.submitList(chatItems) {
                 binding.recyclerView.scrollToPosition(0)
             }
+            viewModel.loadingStatus.value
+            binding.encouragingMessage.visibility = View.GONE
         }
 
         // Observe the otherUser results
@@ -156,6 +157,36 @@ class MessagingFragment : Fragment() {
             }
         })
 
+        binding.retryButton.setOnClickListener {
+            viewModel.initialize(userId, convoId)
+        }
+
+        viewModel.loadingStatus.observe(viewLifecycleOwner) { status ->
+            when (status) {
+                MessagingViewModel.LoadingStatus.Loading -> {
+                    binding.loadingIndicator.visibility = View.VISIBLE
+                    binding.encouragingMessage.visibility = View.GONE
+                    binding.retryButton.visibility = View.GONE
+                    binding.recyclerView.visibility = View.GONE
+                }
+                MessagingViewModel.LoadingStatus.Success -> {
+                    binding.loadingIndicator.visibility = View.GONE
+                    binding.retryButton.visibility = View.GONE
+                    binding.recyclerView.visibility = View.VISIBLE
+                    if (viewModel.messages.value.isNullOrEmpty()) {
+                        binding.encouragingMessage.visibility = View.VISIBLE
+                    } else {
+                        binding.encouragingMessage.visibility = View.GONE
+                    }
+                }
+                MessagingViewModel.LoadingStatus.Error -> {
+                    binding.loadingIndicator.visibility = View.GONE
+                    binding.encouragingMessage.visibility = View.GONE
+                    binding.recyclerView.visibility = View.GONE
+                    binding.retryButton.visibility = View.VISIBLE
+                }
+            }
+        }
 
         // Increase touchable area of the sendButton
         increaseTouchableArea(binding.sendButton, R.dimen.size_32_button_inc)
@@ -214,7 +245,6 @@ class MessagingFragment : Fragment() {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
     }
-
 
     private fun hideKeyboard() {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager

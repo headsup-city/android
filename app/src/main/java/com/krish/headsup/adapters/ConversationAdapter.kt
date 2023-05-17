@@ -30,7 +30,7 @@ class ConversationAdapter : PagingDataAdapter<ConversationFull, ConversationView
         }
         holder.itemView.setOnClickListener {
             if (conversationFull != null) {
-                val action = ConversationFragmentDirections.actionConversationFragmentToMessagingFragment(conversationFull.id)
+                val action = ConversationFragmentDirections.actionConversationFragmentToMessagingFragment(conversationFull.id, null)
                 holder.itemView.findNavController().navigate(action)
             }
         }

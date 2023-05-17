@@ -78,6 +78,11 @@
             app:destination="@+id/conversationFragment"
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_profileFragment_to_messagingFragment"
+            app:destination="@+id/messagingFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/textPostFragment"

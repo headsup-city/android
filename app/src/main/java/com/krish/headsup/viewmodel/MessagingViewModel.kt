@@ -1,5 +1,6 @@
 package com.krish.headsup.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -64,6 +65,7 @@ class MessagingViewModel @Inject constructor(
     }
 
     fun initialize(userId: String?, convoId: String?) {
+        _loadingStatus.value = LoadingStatus.Loading
         viewModelScope.launch {
             if (convoId != null) {
                 // If we have a conversation ID, get the conversation
@@ -77,24 +79,23 @@ class MessagingViewModel @Inject constructor(
     }
 
     private suspend fun getConversationById(convoId: String) {
+        Log.d("DebugSelf", "Running getConversationById")
         val accessToken = tokenManager.getTokenStore()?.access?.token ?: ""
         val result = convoRepository.getConvoById(accessToken, convoId)
-        handleConversationResult(result)
+        handleConversationResult(result, null)
     }
 
     private suspend fun getConversationByUserId(userId: String) {
+        Log.d("DebugSelf", "Running getConversationByUserId")
         val accessToken = tokenManager.getTokenStore()?.access?.token ?: ""
         val result = convoRepository.getConvoByUserId(accessToken, userId)
-        handleConversationResult(result)
+        handleConversationResult(result, userId)
     }
 
-    private fun handleConversationResult(result: Result) {
+    private fun handleConversationResult(result: Result, userId: String?) {
         when (result) {
             is ConversationResult -> {
                 _convoData.value = result.data
-
-                // After successfully getting the conversation, fetch the initial messages
-                getInitialMessages(result.data.id)
 
                 // The other user is the one in the participants list that is not the current user
                 val otherUserId = result.data.participants?.first { it != currentUser?.id }
@@ -102,13 +103,54 @@ class MessagingViewModel @Inject constructor(
                 if (!otherUserId.isNullOrEmpty()) {
                     getOtherUser(otherUserId)
                 }
+                Log.d("DebugSelf", "Get conversation api success")
             }
             is Result.Error -> {
                 // Log or display the error message, but don't do anything else
                 _errorMessage.value = result.exception.message
+                if (!userId.isNullOrEmpty()) {
+                    getOtherUser(userId)
+                } else if (loadingStatus.value == LoadingStatus.Loading) {
+                    _loadingStatus.value = LoadingStatus.Error
+                }
+                Log.d("DebugSelf", "Get conversation api failed")
             }
             else -> {
                 // Handle other cases or do nothing
+            }
+        }
+    }
+
+    private fun getOtherUser(otherUserId: String) {
+        // Get the user with this ID
+        viewModelScope.launch {
+            val accessToken = tokenManager.getTokenStore()?.access?.token ?: ""
+            val result = userRepository.getUser(accessToken, otherUserId)
+            when (result) {
+                is UserResult -> {
+                    Log.d("DebugSelf", "Got other users successfully")
+                    // Successfully got the other user, update the LiveData
+                    _otherUser.value = result.data
+
+                    // After successfully getting the other user, fetch the initial messages
+                    convoData.value?.let {
+                        getInitialMessages(it.id)
+                    } ?: run {
+                        _loadingStatus.value = LoadingStatus.Success
+                    }
+
+                }
+                is Result.Error -> {
+                    Log.d("DebugSelf", "Getting other users error")
+                    // Handle the error
+                    _errorMessage.value = result.exception.message
+                    if (loadingStatus.value == LoadingStatus.Loading) {
+                        _loadingStatus.value = LoadingStatus.Error
+                    }
+                }
+                else -> {
+                    // Handle other cases or do nothing
+                }
             }
         }
     }
@@ -119,10 +161,16 @@ class MessagingViewModel @Inject constructor(
             val result = messageRepository.getInitialMessagesByConvoId(convoId, accessToken)
             when (result) {
                 is MessagesResult -> {
+                    Log.d("DebugSelf", "Got messages successfully")
                     _messages.value = result.data.results
+                    _loadingStatus.value = LoadingStatus.Success
                 }
                 is Result.Error -> {
+                    Log.d("DebugSelf", "Got messages failed")
                     _errorMessage.value = result.exception.message
+                    if (loadingStatus.value == LoadingStatus.Loading) {
+                        _loadingStatus.value = LoadingStatus.Error
+                    }
                 }
                 else -> {
                     // Handle other cases or do nothing
@@ -188,27 +236,6 @@ class MessagingViewModel @Inject constructor(
                     // Handle success case
                 }
                 is Result.Error -> {
-                    _errorMessage.value = result.exception.message
-                }
-                else -> {
-                    // Handle other cases or do nothing
-                }
-            }
-        }
-    }
-
-    private fun getOtherUser(otherUserId: String) {
-        // Get the user with this ID
-        viewModelScope.launch {
-            val accessToken = tokenManager.getTokenStore()?.access?.token ?: ""
-            val result = userRepository.getUser(accessToken, otherUserId)
-            when (result) {
-                is UserResult -> {
-                    // Successfully got the other user, update the LiveData
-                    _otherUser.value = result.data
-                }
-                is Result.Error -> {
-                    // Handle the error
                     _errorMessage.value = result.exception.message
                 }
                 else -> {

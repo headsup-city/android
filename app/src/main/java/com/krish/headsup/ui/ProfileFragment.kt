@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krish.headsup.R
@@ -93,6 +94,8 @@ class ProfileFragment : Fragment(), PostView.OnCommentClickListener, PostView.On
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val userId = arguments?.getString("userId")
+
         val adapter = PostPagingDataAdapter(this, this, this, viewLifecycleOwner, sharedViewModel)
         binding.profileRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.profileRecyclerview.adapter = adapter
@@ -102,6 +105,13 @@ class ProfileFragment : Fragment(), PostView.OnCommentClickListener, PostView.On
 
         backButton.setOnClickListener {
             navController.navigateUp()
+        }
+
+        binding.sendMessageButton.setOnClickListener {
+            if (!userId.isNullOrEmpty()) {
+                val action = ProfileFragmentDirections.actionProfileFragmentToMessagingFragment(null, userId)
+                navController.navigate(action)
+            }
         }
 
         binding.followButton.setOnClickListener {
