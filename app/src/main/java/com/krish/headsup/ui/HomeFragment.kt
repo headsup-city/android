@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -40,6 +41,10 @@ class HomeFragment :
 
     private var latitude: Double? = null
     private var longitude: Double? = null
+
+    private var getLocationRetryCount: Int = 0
+
+    private val MAX_GET_LOCATION_RETRY_COUNT: Int = 5
 
     private lateinit var requestLocationPermissionLauncher: ActivityResultLauncher<String>
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -126,24 +131,35 @@ class HomeFragment :
         }
 
         adapter.addLoadStateListener { loadState ->
-            // Only handling the refresh LoadState
+            // Show loading indicator at center of the screen or at the top depending on posts' presence.
             val isRefreshing = loadState.refresh is LoadState.Loading
-            binding.swipeRefreshLayout.isRefreshing = isRefreshing
+            binding.swipeRefreshLayout.isRefreshing = isRefreshing && !arePostsEmpty
+            binding.loadingProgressBar.visibility = if (isRefreshing && arePostsEmpty) View.VISIBLE else View.GONE
 
+            // If there is an error, show a toast or the retry button depending on posts' presence.
             val isError = loadState.refresh is LoadState.Error
-            if (isError && arePostsEmpty) {
-                // There was an error refreshing (i.e., initial load), show the retry button and hide the ProgressBar
-                binding.retryButton.visibility = View.VISIBLE
-                binding.loadingProgressBar.visibility = View.GONE
+            if (isError) {
+                if (arePostsEmpty) {
+                    // There was an error refreshing (i.e., initial load), show the retry button and hide the ProgressBar
+                    binding.retryButton.visibility = View.VISIBLE
+                    binding.loadingProgressBar.visibility = View.GONE
+                } else {
+                    // Posts are present, hide the retry button and ProgressBar, and show a toast
+                    binding.retryButton.visibility = View.GONE
+                    binding.swipeRefreshLayout.isRefreshing = false
+                    Toast.makeText(context, "An error occurred while refreshing", Toast.LENGTH_SHORT).show()
+                }
             } else {
-                // No error or posts are present, hide the retry button and ProgressBar
+                // No error, hide the retry button and both ProgressBars
                 binding.retryButton.visibility = View.GONE
                 binding.loadingProgressBar.visibility = View.GONE
+                binding.swipeRefreshLayout.isRefreshing = false
             }
         }
     }
 
     private fun checkLocationPermission() {
+        Log.d("DebugSelf", "Getting location")
         when {
             ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -166,16 +182,24 @@ class HomeFragment :
         this.longitude = longitude
         viewModel.loadPosts(latitude, longitude)
         binding.swipeRefreshLayout.isRefreshing = false
+        getLocationRetryCount = 0
     }
 
     override fun onLocationFailure() {
         Log.e("DebugPostNotLoading", "onLocationFailure")
-        binding.swipeRefreshLayout.isRefreshing = false
-        binding.loadingProgressBar.visibility = View.GONE
-        if (arePostsEmpty) {
-            binding.retryButton.visibility = View.VISIBLE // Show the retry button
+        // Retry location fetching automatically for a few times
+        if (getLocationRetryCount < MAX_GET_LOCATION_RETRY_COUNT) {
+            getLocationRetryCount++
+            checkLocationPermission()
         } else {
-            binding.retryButton.visibility = View.GONE // Hide the retry button
+            binding.swipeRefreshLayout.isRefreshing = false
+            binding.loadingProgressBar.visibility = View.GONE
+            if (arePostsEmpty) {
+                binding.retryButton.visibility = View.VISIBLE // Show the retry button
+            } else {
+                binding.retryButton.visibility = View.GONE // Hide the retry button
+            }
+            getLocationRetryCount = 0
         }
     }
 

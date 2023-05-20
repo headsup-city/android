@@ -4,6 +4,7 @@ import com.krish.headsup.model.Post
 import com.krish.headsup.model.PostListResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -14,25 +15,24 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PostApi {
-    @Multipart
     @POST("/v1/post/createPrimaryPost")
     suspend fun uploadPrimaryPost(
         @Header("Authorization") token: String,
-        @Part body: MultipartBody.Part
+        @Body body: MultipartBody
     ): Response<Unit>
 
     @Multipart
     @POST("/v1/post/createShortPost")
     suspend fun uploadShortPost(
         @Header("Authorization") token: String,
-        @Part body: MultipartBody.Part
+        @Part body: MultipartBody
     ): Response<Unit>
 
     @Multipart
     @POST("/v1/post/createEventPost")
     suspend fun uploadEventPost(
         @Header("Authorization") token: String,
-        @Part body: MultipartBody.Part
+        @Part body: MultipartBody
     ): Response<Unit>
 
     @GET("/v1/post/general")

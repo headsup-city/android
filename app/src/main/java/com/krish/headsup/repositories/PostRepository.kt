@@ -1,5 +1,6 @@
 package com.krish.headsup.repositories
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -10,6 +11,7 @@ import com.krish.headsup.services.api.PostApi
 import com.krish.headsup.utils.Result
 import com.krish.headsup.utils.UnitResult
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 class PostRepository @Inject constructor(private val postApi: PostApi) {
@@ -62,6 +64,20 @@ class PostRepository @Inject constructor(private val postApi: PostApi) {
             }
         } catch (e: Exception) {
             null
+        }
+    }
+
+    suspend fun createPrimaryPost(token: String, body: MultipartBody): Result {
+        return try {
+            val response = postApi.uploadPrimaryPost(token, body)
+            if (response.isSuccessful) {
+                UnitResult(Unit)
+            } else {
+                Result.Error(Exception("Failed to create primary post"))
+            }
+        } catch (e: Exception) {
+            Log.d("DebugSelf", e.message.toString())
+            Result.Error(e)
         }
     }
 

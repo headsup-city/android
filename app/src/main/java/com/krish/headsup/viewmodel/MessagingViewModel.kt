@@ -138,7 +138,6 @@ class MessagingViewModel @Inject constructor(
                     } ?: run {
                         _loadingStatus.value = LoadingStatus.Success
                     }
-
                 }
                 is Result.Error -> {
                     Log.d("DebugSelf", "Getting other users error")

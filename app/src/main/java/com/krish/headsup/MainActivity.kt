@@ -27,7 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnPostCreatedListener {
 
     private val authManager: AuthManager by lazy { (application as MyApplication).authManager }
     @Inject
@@ -204,6 +204,11 @@ class MainActivity : AppCompatActivity() {
         setupIcons(bottomNavigationView)
     }
 
+    override fun onPostCreated() {
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNavigationView.selectedItemId = R.id.homeTab // replace with actual ID
+    }
+
     private fun switchNavHostFragment(fragmentManager: FragmentManager, navHostFragments: SparseArray<NavHostFragment>, index: Int) {
         fragmentManager.beginTransaction().apply {
             for (i in 0 until navHostFragments.size()) {
@@ -269,4 +274,8 @@ class MainActivity : AppCompatActivity() {
                 sizeDp = 24
             }
     }
+}
+
+interface OnPostCreatedListener {
+    fun onPostCreated()
 }

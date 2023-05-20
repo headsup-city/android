@@ -74,4 +74,8 @@
     <string name="loding">Loding...</string>
     <string name="loading">Loading</string>
     <string name="encouraging_message">Empty chat? Not for long! Start by typing something in the textbox below.</string>
+    <string name="new_post">New post</string>
+    <string name="enter_your_post">What\'s new with you today?</string>
+    <string name="post_button">Post</string>
+    <string name="post_caption_character_count">0/250</string>
 </resources>
