@@ -54,9 +54,7 @@ class ProfileFragment :
         super.onViewCreated(view, savedInstanceState)
         val viewUtils = ViewUtils()
 
-        Log.d("DebugSelf", "Before getting userId args")
         val userId = arguments?.getString("userId")
-        Log.d("DebugSelf", "After getting userId args")
         val navController = NavHostFragment.findNavController(this)
 
         binding.apply {
@@ -74,7 +72,8 @@ class ProfileFragment :
 
         val headerAdapter = ProfileHeaderAdapter(
             onMessageClick = {
-                // your logic here
+                val action= ProfileFragmentDirections.actionProfileFragmentToMessagingFragment(null, userId)
+                navController.navigate(action)
             },
             onFollowClick = {
                 followUser()
