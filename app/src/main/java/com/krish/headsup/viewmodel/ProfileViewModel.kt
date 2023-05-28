@@ -2,7 +2,6 @@ package com.krish.headsup.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -16,22 +15,21 @@ import com.krish.headsup.utils.Result
 import com.krish.headsup.utils.TokenManager
 import com.krish.headsup.utils.UnitResult
 import com.krish.headsup.utils.UserResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val postRepository: PostRepository,
     private val tokenManager: TokenManager,
-    private val followRepository: FollowRepository,
-    private val sharedViewModel: SharedViewModel,
-    savedStateHandle: SavedStateHandle
+    private val followRepository: FollowRepository
 ) : ViewModel() {
-
-    private val userId = savedStateHandle.get<String>("userId")
+    private var userId: String? = null
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User> = _user
@@ -39,42 +37,65 @@ class ProfileViewModel @Inject constructor(
     private val _posts = MutableLiveData<Flow<PagingData<Post>>>()
     val posts: LiveData<Flow<PagingData<Post>>> = _posts
 
+    private val _followingUpdates = MutableLiveData<Pair<String, Boolean>>()
+    val followingUpdates: LiveData<Pair<String, Boolean>> = _followingUpdates
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    init {
-        fetchUserData()
+    private val _apiError = MutableLiveData<Boolean>()
+    val apiError: LiveData<Boolean> = _apiError
+
+    private val _isFollowing = MutableLiveData<Boolean>()
+    val isFollowing: LiveData<Boolean> = _isFollowing
+
+    fun initializeScreen(id: String, selfUser: User?) {
+        if (selfUser != null) {
+            userId = id
+            fetchUserData()
+            if (selfUser.following?.contains(id) == true) { _isFollowing.postValue(true) } else { _isFollowing.postValue(false) }
+        }
     }
 
-    private fun fetchUserData() {
+    fun fetchUserData() {
         viewModelScope.launch {
             _isLoading.postValue(true)
             val accessToken = tokenManager.getTokenStore()?.access?.token
-            if (!accessToken.isNullOrEmpty() && !userId.isNullOrEmpty()) {
-
+            val userId = userId
+            if (!accessToken.isNullOrEmpty() && userId != null) {
                 when (val userResponse = userRepository.getUser(accessToken, userId)) {
                     is UserResult -> {
                         _user.postValue(userResponse.data)
                         fetchUserPosts()
                     }
                     is Result.Error -> {
+                        _apiError.postValue(true)
                     }
-                    else -> { }
+                    else -> {
+                        _apiError.postValue(true)
+                    }
                 }
+            } else {
+                _apiError.postValue(true)
             }
             _isLoading.postValue(false)
         }
     }
 
-    private fun fetchUserPosts(): Flow<PagingData<Post>> {
-        val accessToken = tokenManager.getTokenStore()?.access?.token
-        if (!accessToken.isNullOrEmpty() && !userId.isNullOrEmpty()) {
-            val postResponse = postRepository.getUserPostStream(accessToken, userId)
-                .cachedIn(viewModelScope)
-            _posts.value = postResponse
-            return postResponse
-        } else {
-            throw IllegalStateException("Access token is missing")
+    private fun fetchUserPosts() {
+        viewModelScope.launch {
+            val accessToken = tokenManager.getTokenStore()?.access?.token
+            val userId = userId
+            if (!accessToken.isNullOrEmpty() && userId != null) {
+                try {
+                    val postResponse = postRepository.getUserPostStream(accessToken, userId).cachedIn(this)
+                    _posts.postValue(postResponse)
+                } catch (e: Exception) {
+                    _apiError.postValue(true)
+                }
+            } else {
+                _apiError.postValue(true)
+            }
         }
     }
 
@@ -129,6 +150,7 @@ class ProfileViewModel @Inject constructor(
     suspend fun followUser(userId: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
+                _isFollowing.postValue(false)
                 val accessToken = tokenManager.getTokenStore()?.access?.token
                 if (!accessToken.isNullOrEmpty() && !userId.isNullOrEmpty()) {
                     val response = followRepository.followUser(userId, accessToken)
@@ -150,6 +172,7 @@ class ProfileViewModel @Inject constructor(
     suspend fun unFollowUser(userId: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
+                _isFollowing.postValue(true)
                 val accessToken = tokenManager.getTokenStore()?.access?.token
                 if (!accessToken.isNullOrEmpty() && !userId.isNullOrEmpty()) {
                     val response = followRepository.unFollowUser(userId, accessToken)
@@ -157,31 +180,21 @@ class ProfileViewModel @Inject constructor(
                         updateUserFollowingList(userId, false)
                         return@withContext true
                     } else {
+                        _isFollowing.postValue(false)
                         return@withContext false
                     }
                 } else {
+                    _isFollowing.postValue(false)
                     return@withContext false
                 }
             } catch (e: Exception) {
+                _isFollowing.postValue(false)
                 return@withContext false
             }
         }
     }
 
     private fun updateUserFollowingList(userId: String, follow: Boolean) {
-        // Get the current user from sharedViewModel.user LiveData
-        val currentUser = sharedViewModel.user.value
-
-        if (currentUser != null) {
-            // Update the following list depending on the 'follow' flag
-            val updatedFollowingList = if (follow) {
-                currentUser.following?.toMutableSet()?.apply { add(userId) }?.toList()
-            } else {
-                currentUser.following?.toMutableSet()?.apply { remove(userId) }?.toList()
-            }
-
-            // Update the sharedViewModel's user LiveData with the updated following list
-            sharedViewModel.updateUser(currentUser.copy(following = updatedFollowingList))
-        }
+        _followingUpdates.postValue(userId to follow)
     }
 }

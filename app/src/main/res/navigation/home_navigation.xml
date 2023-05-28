@@ -57,7 +57,9 @@
         android:label="Profile">
         <argument
             android:name="userId"
-            app:argType="string" />
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
         <action
             android:id="@+id/action_profileFragment_to_imagePostFragment"
             app:destination="@+id/imagePostFragment"

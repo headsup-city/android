@@ -78,4 +78,5 @@
     <string name="enter_your_post">What\'s new with you today?</string>
     <string name="post_button">Post</string>
     <string name="post_caption_character_count">0/250</string>
+    <string name="no_posts_yet">User hasn\'t posted yet</string>
 </resources>

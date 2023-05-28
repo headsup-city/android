@@ -18,7 +18,7 @@ class UserPostPagingSource(
 
         return try {
             val response = postApi.getPostsForUser(accessToken, userId, nextPage)
-            val data = response.body()?.results ?: emptyList()
+            val data = response.body()?.results?.filter { it.postType != "SHORT" } ?: emptyList()
             val totalPages = response.body()?.totalPages ?: 0
             val prevKey = null
             val nextKey = if (totalPages - 1 > nextPage) nextPage + 1 else null

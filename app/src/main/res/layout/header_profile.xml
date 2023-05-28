@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/headerContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/authorAvatarCardView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:cardCornerRadius="50dp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false">
+
+        <com.krish.headsup.ui.components.CustomAvatarImageView
+            android:id="@+id/authorAvatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/person_sharp"
+            app:defaultAvatarPaddingTop="16dp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/buttonsContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/followButton"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/follow_button"
+            android:padding="0dp"
+            android:text="@string/follow"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/redish_pink_500" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/followedButton"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/followed_button"
+            android:padding="0dp"
+            android:text="@string/following"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:backgroundTint="@null" />
+
+        <ImageButton
+            android:id="@+id/sendMessageButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/white_circle"
+            android:contentDescription="@string/message_user"
+            android:padding="6dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/mail_outline" />
+
+    </LinearLayout>
+
+</LinearLayout>

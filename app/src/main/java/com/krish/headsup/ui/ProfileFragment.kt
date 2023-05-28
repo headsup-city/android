@@ -5,65 +5,40 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krish.headsup.R
+import com.krish.headsup.adapters.ProfileHeaderAdapter
+import com.krish.headsup.adapters.ProfilePostAdapter
 import com.krish.headsup.databinding.FragmentProfileBinding
 import com.krish.headsup.model.Post
-import com.krish.headsup.ui.components.CustomAvatarImageView
-import com.krish.headsup.ui.components.PostPagingDataAdapter
 import com.krish.headsup.ui.components.PostView
-import com.krish.headsup.utils.glide.CustomCacheKeyGenerator
-import com.krish.headsup.utils.glide.GlideApp
+import com.krish.headsup.utils.ViewUtils
 import com.krish.headsup.viewmodel.ProfileViewModel
-import com.krish.headsup.viewmodel.ProfileViewModel_AssistedFactory
 import com.krish.headsup.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment(), PostView.OnCommentClickListener, PostView.OnAuthorClickListener, PostView.OnLikeButtonClickListener {
-
-    @Inject
-    lateinit var profileViewModelFactory: ProfileViewModel_AssistedFactory
-
+class ProfileFragment :
+    Fragment(),
+    PostView.OnCommentClickListener,
+    PostView.OnAuthorClickListener,
+    PostView.OnLikeButtonClickListener {
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    private val viewModel: ProfileViewModel by viewModels {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-                    return profileViewModelFactory.create(
-                        SavedStateHandle(
-                            mapOf(
-                                "userId" to (
-                                    arguments?.getString("userId")
-                                        ?: ""
-                                    )
-                            )
-                        ),
-                        sharedViewModel
-                    ) as T
-                }
-                throw IllegalArgumentException("Unknown ViewModel class")
-            }
-        }
-    }
+    private val viewModel: ProfileViewModel by viewModels()
 
     private lateinit var binding: FragmentProfileBinding
+
+    private var isFollowingOtherUser: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,88 +47,96 @@ class ProfileFragment : Fragment(), PostView.OnCommentClickListener, PostView.On
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
-        sharedViewModel.user.observe(
-            viewLifecycleOwner,
-            Observer { user ->
-                // Log user data here
-
-                // Check if the userId is in user.following and update button visibility accordingly
-                val isFollowing = user.following?.contains(
-                    arguments?.getString("userId")
-                        ?: ""
-                )
-
-                binding.followButton.visibility = if (isFollowing == true) View.GONE else View.VISIBLE
-                binding.followedButton.visibility = if (isFollowing == true) View.VISIBLE else View.GONE
-            }
-        )
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val viewUtils = ViewUtils()
 
+        Log.d("DebugSelf", "Before getting userId args")
         val userId = arguments?.getString("userId")
-
-        val adapter = PostPagingDataAdapter(this, this, this, viewLifecycleOwner, sharedViewModel)
-        binding.profileRecyclerview.layoutManager = LinearLayoutManager(requireContext())
-        binding.profileRecyclerview.adapter = adapter
-
-        val backButton: ImageButton = view.findViewById(R.id.backButton)
+        Log.d("DebugSelf", "After getting userId args")
         val navController = NavHostFragment.findNavController(this)
 
-        backButton.setOnClickListener {
-            navController.navigateUp()
+        binding.apply {
+            profileRecyclerview.layoutManager = LinearLayoutManager(requireContext())
+            backButton.setOnClickListener { navController.navigateUp() }
+            retryButton.setOnClickListener { viewModel.fetchUserData() }
+            viewUtils.increaseTouchableArea(backButton, R.dimen.size_32_button_inc)
         }
 
-        binding.sendMessageButton.setOnClickListener {
-            if (!userId.isNullOrEmpty()) {
-                val action = ProfileFragmentDirections.actionProfileFragmentToMessagingFragment(null, userId)
-                navController.navigate(action)
-            }
+        if (userId != null) {
+            viewModel.initializeScreen(userId, sharedViewModel.user.value)
+        } else {
+            sharedViewModel.user.observe(viewLifecycleOwner) { user -> viewModel.initializeScreen(user.id, user) }
         }
 
-        binding.followButton.setOnClickListener {
-            followUser()
-        }
+        val headerAdapter = ProfileHeaderAdapter(
+            onMessageClick = {
+                // your logic here
+            },
+            onFollowClick = {
+                followUser()
+            },
+            onUnfollowClick = {
+                unFollowUser()
+            },
+            sharedViewModel = sharedViewModel,
+        )
 
-        binding.followedButton.setOnClickListener {
-            unFollowUser()
-        }
+        val postAdapter = ProfilePostAdapter(
+            this,
+            this,
+            this,
+            viewLifecycleOwner,
+            sharedViewModel,
+        )
 
-        // Observe the user LiveData from the ViewModel
+        val concatAdapter = ConcatAdapter(headerAdapter, postAdapter)
+        binding.profileRecyclerview.adapter = concatAdapter
+
         viewModel.user.observe(viewLifecycleOwner) { user ->
-            if (user != null) {
-                // Update the UI with the user data
-                // For example, if you have a TextView with ID 'user_name', you can set its text like this:
-                // binding.userName.text = user.name
-                binding.userName.text = user.name
-
-                GlideApp.with(requireContext())
-                    .load(user.avatarUri)
-                    .signature(CustomCacheKeyGenerator(user.avatarUri ?: ""))
-                    .placeholder(CustomAvatarImageView.defaultAvatar)
-                    .circleCrop()
-                    .into(binding.authorAvatar) // Use the ImageView from the binding
+            user?.let {
+                binding.userName.text = it.name
+                headerAdapter.setData(user, isFollowingOtherUser)
             }
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            binding.retryButton.visibility = if (it && postAdapter?.itemCount == 0) View.VISIBLE else View.GONE
+        }
+
+        viewModel.apiError.observe(viewLifecycleOwner) {
+            binding.retryButton.visibility = if (it != null && postAdapter?.itemCount == 0) View.VISIBLE else View.GONE
         }
 
         viewModel.posts.observe(viewLifecycleOwner) { pagingDataFlow ->
             viewModel.viewModelScope.launch {
                 pagingDataFlow?.collectLatest { pagingData ->
-                    // Update the adapter's data with the new posts and notify the adapter
-                    adapter.submitData(pagingData)
+                    postAdapter.submitData(pagingData)
+                    val isEmpty = postAdapter?.itemCount == 0
+                    binding.emptyPostsTextView.visibility = if (isEmpty) View.VISIBLE else View.GONE
+                    binding.loadingProgressBar.visibility = if (isEmpty) View.VISIBLE else View.GONE
+                    binding.retryButton.visibility = if (isEmpty) View.VISIBLE else View.GONE
                 }
             }
         }
 
-        sharedViewModel.user.observe(
-            viewLifecycleOwner,
-            Observer { user ->
-                // Log user data here
+        viewModel.followingUpdates.observe(viewLifecycleOwner) { followingUpdate ->
+            val (followedUserId, follow) = followingUpdate
+            sharedViewModel.user.value?.let { currentUser ->
+                val updatedFollowingList = currentUser.following?.toMutableSet()?.apply {
+                    if (follow) add(followedUserId) else remove(followedUserId)
+                }?.toList()
+                sharedViewModel.updateUser(currentUser.copy(following = updatedFollowingList))
             }
-        )
+        }
+
+        viewModel.isFollowing.observe(viewLifecycleOwner) { isFollowing ->
+            isFollowingOtherUser = isFollowing
+            postAdapter?.notifyDataSetChanged()
+        }
     }
 
     override fun onCommentClick(post: Post) {
@@ -194,35 +177,19 @@ class ProfileFragment : Fragment(), PostView.OnCommentClickListener, PostView.On
     }
 
     private fun followUser() {
-        // Get the user ID from the ViewModel's user LiveData
         val userIdToFollow = viewModel.user.value?.id ?: return
-        binding.followButton.visibility = View.GONE
-        binding.followedButton.visibility = View.VISIBLE
-        lifecycleScope.launch {
-            val success = viewModel.followUser(userIdToFollow)
-            if (success) {
-                Log.d("DebugSelf", "FollowUser success")
-            } else {
-                Log.d("DebugSelf", "FollowUser failed")
-                binding.followButton.visibility = View.VISIBLE
-                binding.followedButton.visibility = View.GONE
+        if (userIdToFollow != sharedViewModel.user.value?.id) {
+            lifecycleScope.launch {
+                viewModel.followUser(userIdToFollow)
             }
         }
     }
 
     private fun unFollowUser() {
-        // Get the user ID from the ViewModel's user LiveData
-        val userIdToUnFollow = viewModel.user.value?.id ?: return
-        binding.followedButton.visibility = View.GONE
-        binding.followButton.visibility = View.VISIBLE
-        lifecycleScope.launch {
-            val success = viewModel.unFollowUser(userIdToUnFollow)
-            if (success) {
-                Log.d("DebugSelf", "unFollowUser success")
-            } else {
-                Log.d("DebugSelf", "unFollowUser failed")
-                binding.followedButton.visibility = View.VISIBLE
-                binding.followButton.visibility = View.GONE
+        val userIdToFollow = viewModel.user.value?.id ?: return
+        if (userIdToFollow != sharedViewModel.user.value?.id) {
+            lifecycleScope.launch {
+                viewModel.unFollowUser(userIdToFollow)
             }
         }
     }
