@@ -7,7 +7,6 @@ import com.krish.headsup.model.User
 import com.krish.headsup.repositories.UserRepository
 import com.krish.headsup.utils.Result
 import com.krish.headsup.utils.TokenManager
-import com.krish.headsup.utils.UserResult
 import com.krish.headsup.utils.UserSearchResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,11 +41,11 @@ class SearchViewModel @Inject constructor(
                 searchResults.value = emptyList<User>()
             } else {
                 viewModelScope.launch {
-                     when (val response = userRepository.searchUser(accessToken, query)) {
+                    when (val response = userRepository.searchUser(accessToken, query)) {
                         is UserSearchResult -> {
-                            searchResults.value=response.data.results
+                            searchResults.value = response.data.results
                         }
-                        is Result.Error-> {
+                        is Result.Error -> {
                             // You can emit an error here which can be caught by the UI to display an error message
                             searchResults.value = emptyList<User>()
                             Log.e("SelfDebug", "Error occurred while searching")

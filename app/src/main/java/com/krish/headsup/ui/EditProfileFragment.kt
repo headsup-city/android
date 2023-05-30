@@ -133,7 +133,7 @@ class EditProfileFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             // There are no request codes
             val imageUri: Uri? = result.data?.data
-            if(imageUri!=null) {
+            if (imageUri != null) {
                 viewModel.updateAvatar(imageUri)
             }
         }
