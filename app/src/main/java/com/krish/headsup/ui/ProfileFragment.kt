@@ -1,7 +1,6 @@
 package com.krish.headsup.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,7 +71,7 @@ class ProfileFragment :
 
         val headerAdapter = ProfileHeaderAdapter(
             onMessageClick = {
-                val action= ProfileFragmentDirections.actionProfileFragmentToMessagingFragment(null, userId)
+                val action = ProfileFragmentDirections.actionProfileFragmentToMessagingFragment(null, userId)
                 navController.navigate(action)
             },
             onFollowClick = {

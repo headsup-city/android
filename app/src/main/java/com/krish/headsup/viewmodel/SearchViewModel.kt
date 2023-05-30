@@ -5,7 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krish.headsup.model.User
 import com.krish.headsup.repositories.UserRepository
+import com.krish.headsup.utils.Result
 import com.krish.headsup.utils.TokenManager
+import com.krish.headsup.utils.UserResult
+import com.krish.headsup.utils.UserSearchResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -39,17 +42,20 @@ class SearchViewModel @Inject constructor(
                 searchResults.value = emptyList<User>()
             } else {
                 viewModelScope.launch {
-                    try {
-                        val response = userRepository.searchUser(accessToken, query)
-                        if (response.isSuccessful && response.body() != null) {
-                            searchResults.value = response.body()!!.results
-                        } else {
-                            throw IllegalStateException("Search request failed with ${response.code()}")
+                     when (val response = userRepository.searchUser(accessToken, query)) {
+                        is UserSearchResult -> {
+                            searchResults.value=response.data.results
                         }
-                    } catch (e: Exception) {
-                        // You can emit an error here which can be caught by the UI to display an error message
-                        searchResults.value = emptyList<User>()
-                        Log.e("Debug", "Error occurred while searching: ${e.localizedMessage}")
+                        is Result.Error-> {
+                            // You can emit an error here which can be caught by the UI to display an error message
+                            searchResults.value = emptyList<User>()
+                            Log.e("SelfDebug", "Error occurred while searching")
+                        }
+                        else -> {
+                            // You can emit an error here which can be caught by the UI to display an error message
+                            searchResults.value = emptyList<User>()
+                            Log.e("SelfDebug", "Error occurred while searching")
+                        }
                     }
                 }
             }

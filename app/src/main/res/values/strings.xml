@@ -79,4 +79,9 @@
     <string name="post_button">Post</string>
     <string name="post_caption_character_count">0/250</string>
     <string name="no_posts_yet">User hasn\'t posted yet</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="edit_username">Edit username</string>
+    <string name="username">Username</string>
+    <string name="save_profile">Save Profile</string>
+    <string name="profile_picture">Profile picture</string>
 </resources>
