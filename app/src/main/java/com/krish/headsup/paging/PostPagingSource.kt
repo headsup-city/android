@@ -27,7 +27,8 @@ class PostPagingSource(
             LoadResult.Page(
                 data = data,
                 prevKey = prevKey,
-                nextKey = nextKey
+                nextKey = nextKey,
+                itemsAfter = if (data.isEmpty()) 0 else LoadResult.Page.COUNT_UNDEFINED
             )
         } catch (e: IOException) {
             LoadResult.Error(e)

@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/profile_navigation"
-    app:startDestination="@+id/mainProfileFragment">
+    app:startDestination="@+id/selfProfileFragment">
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="com.krish.headsup.ui.EditProfileFragment"
@@ -15,10 +15,6 @@
             android:name="post"
             app:argType="com.krish.headsup.model.Post" />
     </fragment>
-    <fragment
-        android:id="@+id/mainProfileFragment"
-        android:name="com.krish.headsup.ui.ProfileFragment"
-        android:label="MainProfile" />
     <fragment
         android:id="@+id/privacyFragment"
         android:name="com.krish.headsup.ui.PrivacyFragment"
@@ -51,6 +47,26 @@
             android:id="@+id/action_profileFragment_to_messagingFragment"
             app:destination="@+id/messagingFragment"
             app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/selfProfileFragment"
+        android:name="com.krish.headsup.ui.SelfProfileFragment"
+        android:label="Profile">
+        <action
+            android:id="@+id/action_selfProfileFragment_to_imagePostFragment"
+            app:destination="@+id/imagePostFragment"
+            app:popUpTo="@id/selfProfileFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_selfProfileFragment_to_textPostFragment"
+            app:destination="@+id/textPostFragment"
+            app:popUpTo="@id/selfProfileFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_selfProfileFragment_to_videoPostFragment"
+            app:destination="@+id/videoPostFragment"
+            app:popUpTo="@id/selfProfileFragment"
             app:popUpToInclusive="false" />
     </fragment>
     <fragment

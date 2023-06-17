@@ -12,6 +12,7 @@ class ProfileHeaderAdapter(
     private val onMessageClick: () -> Unit,
     private val onFollowClick: () -> Unit,
     private val onUnfollowClick: () -> Unit,
+    private val onEditProfileClick: () -> Unit,
     private val sharedViewModel: SharedViewModel,
 ) :
     RecyclerView.Adapter<ProfileHeaderViewHolder>() {
@@ -28,7 +29,7 @@ class ProfileHeaderAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileHeaderViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.header_profile, parent, false)
-        return ProfileHeaderViewHolder(view, onMessageClick, onFollowClick, onUnfollowClick)
+        return ProfileHeaderViewHolder(view, onMessageClick, onFollowClick, onUnfollowClick, onEditProfileClick)
     }
 
     override fun onBindViewHolder(holder: ProfileHeaderViewHolder, position: Int) {

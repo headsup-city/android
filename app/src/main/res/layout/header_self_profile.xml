@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/headerContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="45dp"
+    android:paddingTop="20dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="16dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/authorAvatarCardView"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false">
+
+        <com.krish.headsup.ui.components.CustomAvatarImageView
+            android:id="@+id/authorAvatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/person_sharp"
+            app:defaultAvatarPaddingTop="16dp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/nameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/authorAvatarCardView"
+        android:text="@string/user_s_name"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <ImageButton
+        android:id="@+id/editProfileButton"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_below="@+id/nameTextView"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@+id/authorAvatarCardView"
+        android:background="@drawable/white_circle"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/feather_edit_2" />
+
+    <ImageButton
+        android:id="@+id/settingButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:backgroundTint="@color/transparent"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/feather_settings" />
+
+</RelativeLayout>

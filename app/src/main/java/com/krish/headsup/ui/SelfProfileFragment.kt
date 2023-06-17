@@ -13,32 +13,28 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.krish.headsup.R
-import com.krish.headsup.adapters.ProfileHeaderAdapter
 import com.krish.headsup.adapters.ProfilePostAdapter
-import com.krish.headsup.databinding.FragmentProfileBinding
+import com.krish.headsup.adapters.SelfProfileHeaderAdapter
+import com.krish.headsup.databinding.FragmentSelfProfileBinding
 import com.krish.headsup.model.Post
 import com.krish.headsup.ui.components.PostView
-import com.krish.headsup.utils.ViewUtils
-import com.krish.headsup.viewmodel.ProfileViewModel
+import com.krish.headsup.viewmodel.SelfProfileViewModel
 import com.krish.headsup.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ProfileFragment :
+class SelfProfileFragment :
     Fragment(),
     PostView.OnCommentClickListener,
     PostView.OnAuthorClickListener,
     PostView.OnLikeButtonClickListener {
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    private val viewModel: ProfileViewModel by viewModels()
+    private val viewModel: SelfProfileViewModel by viewModels()
 
-    private lateinit var binding: FragmentProfileBinding
-
-    private var isFollowingOtherUser: Boolean = false
+    private lateinit var binding: FragmentSelfProfileBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,41 +42,25 @@ class ProfileFragment :
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        binding = FragmentSelfProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val viewUtils = ViewUtils()
-
-        val userId = arguments?.getString("userId")
-        val navController = NavHostFragment.findNavController(this)
 
         binding.apply {
             profileRecyclerview.layoutManager = LinearLayoutManager(requireContext())
-            backButton.setOnClickListener { navController.navigateUp() }
-            retryButton.setOnClickListener { viewModel.fetchUserData() }
-            viewUtils.increaseTouchableArea(backButton, R.dimen.size_32_button_inc)
+            retryButton.setOnClickListener { viewModel.retry() }
         }
 
-        if (userId != null) {
-            viewModel.initializeScreen(userId, sharedViewModel.user.value)
-        } else {
-            sharedViewModel.user.observe(viewLifecycleOwner) { user -> viewModel.initializeScreen(user.id, user) }
+        sharedViewModel.user.observe(viewLifecycleOwner) {
+            user ->
+            viewModel.initializeScreen(user)
         }
 
-        val headerAdapter = ProfileHeaderAdapter(
-            onMessageClick = {
-                val action = ProfileFragmentDirections.actionProfileFragmentToMessagingFragment(null, userId)
-                navController.navigate(action)
-            },
-            onFollowClick = {
-                followUser()
-            },
-            onUnfollowClick = {
-                unFollowUser()
-            }, onEditProfileClick = {},
+        val headerAdapter = SelfProfileHeaderAdapter(
+            onEditProfileClick = {},
             sharedViewModel = sharedViewModel,
         )
 
@@ -95,36 +75,31 @@ class ProfileFragment :
         val concatAdapter = ConcatAdapter(headerAdapter, postAdapter)
         binding.profileRecyclerview.adapter = concatAdapter
 
-        viewModel.user.observe(viewLifecycleOwner) { user ->
-            user?.let {
-                binding.userName.text = it.name
-                headerAdapter.setData(user, isFollowingOtherUser)
-            }
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            binding.retryButton.visibility = if (it && postAdapter.itemCount == 0) View.VISIBLE else View.GONE
         }
 
-        viewModel.isLoading.observe(viewLifecycleOwner) {
-            if (it && postAdapter.itemCount == 0) {
+        viewModel.apiError.observe(viewLifecycleOwner) {
+            binding.retryButton.visibility = if (it != null && postAdapter.itemCount == 0) View.VISIBLE else View.GONE
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading && postAdapter.itemCount == 0) {
                 binding.loadingProgressBar.visibility = View.VISIBLE
                 binding.retryButton.visibility = View.GONE
             } else {
                 binding.loadingProgressBar.visibility = View.GONE
-            }
-        }
-
-        viewModel.apiError.observe(viewLifecycleOwner) {
-            if (it && postAdapter.itemCount == 0) {
-                binding.retryButton.visibility = View.VISIBLE
-                binding.loadingProgressBar.visibility = View.GONE
-            } else {
+                // Remove this line, let the apiError observe block handle the visibility of retryButton
                 binding.retryButton.visibility = View.GONE
             }
         }
 
-        viewModel.posts.observe(viewLifecycleOwner) { pagingDataFlow ->
-            viewModel.viewModelScope.launch {
-                pagingDataFlow?.collectLatest { pagingData ->
-                    postAdapter.submitData(pagingData)
-                }
+        viewModel.apiError.observe(viewLifecycleOwner) { isError ->
+            if (isError != null && postAdapter.itemCount == 0) {
+                binding.retryButton.visibility = View.VISIBLE
+                binding.loadingProgressBar.visibility = View.GONE
+            } else {
+                binding.retryButton.visibility = View.GONE
             }
         }
 
@@ -137,6 +112,7 @@ class ProfileFragment :
         }
 
         postAdapter.addLoadStateListener { loadStates ->
+            // Handling initial loading state
             when (loadStates.refresh) {
                 is LoadState.Loading -> {
                     binding.retryButton.visibility = View.GONE
@@ -144,18 +120,9 @@ class ProfileFragment :
                     binding.emptyPostsTextView.visibility = View.GONE
                 }
                 is LoadState.NotLoading -> {
-                    val isEmpty = postAdapter.itemCount == 0
-                    if (isEmpty) {
-                        // If it's not loading and there's no error, we hide both views
-                        binding.retryButton.visibility = View.GONE
-                        binding.loadingProgressBar.visibility = View.GONE
-                        binding.emptyPostsTextView.visibility = View.VISIBLE
-                    } else {
-                        // If there are items in the adapter, we hide both views
-                        binding.retryButton.visibility = View.GONE
-                        binding.loadingProgressBar.visibility = View.GONE
-                        binding.emptyPostsTextView.visibility = View.GONE
-                    }
+                    binding.retryButton.visibility = View.GONE
+                    binding.loadingProgressBar.visibility = View.GONE
+                    binding.emptyPostsTextView.visibility = View.VISIBLE
                 }
                 is LoadState.Error -> {
                     binding.retryButton.visibility = View.VISIBLE
@@ -189,21 +156,6 @@ class ProfileFragment :
                     // Show error message
                 }
             }
-        }
-
-        viewModel.followingUpdates.observe(viewLifecycleOwner) { followingUpdate ->
-            val (followedUserId, follow) = followingUpdate
-            sharedViewModel.user.value?.let { currentUser ->
-                val updatedFollowingList = currentUser.following?.toMutableSet()?.apply {
-                    if (follow) add(followedUserId) else remove(followedUserId)
-                }?.toList()
-                sharedViewModel.updateUser(currentUser.copy(following = updatedFollowingList))
-            }
-        }
-
-        viewModel.isFollowing.observe(viewLifecycleOwner) { isFollowing ->
-            isFollowingOtherUser = isFollowing
-            postAdapter?.notifyDataSetChanged()
         }
     }
 
@@ -241,24 +193,6 @@ class ProfileFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             val result = viewModel.unlikePost(postId)
             onResult(result)
-        }
-    }
-
-    private fun followUser() {
-        val userIdToFollow = viewModel.user.value?.id ?: return
-        if (userIdToFollow != sharedViewModel.user.value?.id) {
-            lifecycleScope.launch {
-                viewModel.followUser(userIdToFollow)
-            }
-        }
-    }
-
-    private fun unFollowUser() {
-        val userIdToFollow = viewModel.user.value?.id ?: return
-        if (userIdToFollow != sharedViewModel.user.value?.id) {
-            lifecycleScope.launch {
-                viewModel.unFollowUser(userIdToFollow)
-            }
         }
     }
 }
