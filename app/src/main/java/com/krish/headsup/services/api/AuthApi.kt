@@ -11,7 +11,6 @@ import com.krish.headsup.model.RegistrationRequest
 import com.krish.headsup.model.RegistrationResponse
 import com.krish.headsup.model.ResetPasswordRequest
 import com.krish.headsup.model.TokenStore
-import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -31,23 +30,23 @@ interface AuthApi {
     suspend fun signinWithApple(@Body body: AppleSignInRequest): Response<LoginResponse>
 
     @POST("/v1/auth/forgot-password")
-    suspend fun forgotPassword(@Body body: ForgotPasswordRequest): ResponseBody
+    suspend fun forgotPassword(@Body body: ForgotPasswordRequest): Response<Void>
 
     @POST("/v1/auth/reset-password")
     suspend fun resetPassword(
         @Query("token") token: String,
         @Body body: ResetPasswordRequest
-    ): ResponseBody
+    ): Response<Void>
 
     @POST("/v1/auth/verify-email")
-    suspend fun verifyEmail(@Query("token") token: String): ResponseBody
+    suspend fun verifyEmail(@Query("token") token: String): Response<Void>
 
     @POST("/v1/auth/send-verification-email")
-    suspend fun sendVerificationEmail(): ResponseBody
+    suspend fun sendVerificationEmail(): Response<Void>
 
     @POST("/v1/auth/refresh-tokens")
     suspend fun refreshTokens(@Body body: RefreshTokensRequest): Response<TokenStore>
 
     @POST("/v1/auth/logout")
-    suspend fun logout(@Body body: LogoutRequest): ResponseBody
+    suspend fun logout(@Body body: LogoutRequest): Response<Void>
 }

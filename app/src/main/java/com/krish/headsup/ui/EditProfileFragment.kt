@@ -16,7 +16,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -154,7 +153,6 @@ class EditProfileFragment : Fragment() {
         }
     }
 
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
             PERMISSION_CODE -> {
@@ -199,7 +197,6 @@ class EditProfileFragment : Fragment() {
             .create()
         dialog.show()
     }
-
 
     companion object {
         private const val PERMISSION_CODE = 1001

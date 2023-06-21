@@ -122,29 +122,29 @@ class EditProfileViewModel @Inject constructor(
         viewModelScope.launch {
             try {
 
+                val accessToken = tokenManager.getTokenStore()?.access?.token
+                val currentUser = user.value
+                if (!accessToken.isNullOrEmpty() && currentUser != null) {
+                    val updatePasswordRequest = UpdatePasswordRequest(oldPassword, newPassword)
+                    val result = userRepository.changePassword(accessToken, currentUser.id, updatePasswordRequest)
 
-            val accessToken = tokenManager.getTokenStore()?.access?.token
-            val currentUser = user.value
-            if (!accessToken.isNullOrEmpty() && currentUser != null) {
-            val updatePasswordRequest = UpdatePasswordRequest(oldPassword, newPassword)
-            val result = userRepository.changePassword(accessToken, currentUser.id, updatePasswordRequest)
+                    when (result) {
+                        is UserResult -> {
+                            // Handle success
+                        }
+                        is Result.Error -> {
+                            // Handle error
+                            errorMessage.postValue(result.exception.message)
+                        }
 
-            when (result) {
-                is UserResult -> {
-                    // Handle success
+                        else -> {}
+                    }
                 }
-                is Result.Error -> {
-                    // Handle error
-                    errorMessage.postValue(result.exception.message)
-                }
-
-                else -> {}
-            }}
-        }catch(e:Exception){
-                errorMessage.postValue("Failed to update password")}
+            } catch (e: Exception) {
+                errorMessage.postValue("Failed to update password")
+            }
         }
     }
-
 
     fun clearErrorMessage() {
         errorMessage.value = null

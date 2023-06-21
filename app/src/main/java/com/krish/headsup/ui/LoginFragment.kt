@@ -57,7 +57,8 @@ class LoginFragment : Fragment() {
         }
 
         binding.forgotPasswordButton.setOnClickListener {
-            // TODO: Navigate to Forgot Password Fragment
+            val action = LoginFragmentDirections.actionLoginFragmentToForgotPasswordFragment()
+            navController.navigate(action)
         }
 
         binding.loginButton.setOnClickListener {

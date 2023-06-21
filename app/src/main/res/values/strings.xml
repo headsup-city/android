@@ -14,7 +14,8 @@
     <string name="log_in">Log in</string>
     <string name="terms">Terms</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="forgot_password">Forgot Password?</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="forgot_password_question">Forgot Password?</string>
     <string name="new_here">New Here?</string>
     <string name="register_now">Register Now</string>
     <string name="greeting_screen_message">Find people near you, get into nearby activities, socialize, meetups.</string>
@@ -87,4 +88,5 @@
     <string name="change_password">Change Password</string>
     <string name="save_changes">Save Changes</string>
     <string name="save">Save</string>
+    <string name="recover_password">Recover Password</string>
 </resources>

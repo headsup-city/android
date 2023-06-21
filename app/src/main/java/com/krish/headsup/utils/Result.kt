@@ -2,7 +2,9 @@ package com.krish.headsup.utils
 
 import com.krish.headsup.model.Conversation
 import com.krish.headsup.model.GetMessagesByConversationIdResponse
+import com.krish.headsup.model.LoginResponse
 import com.krish.headsup.model.Message
+import com.krish.headsup.model.RegistrationResponse
 import com.krish.headsup.model.SendMessageToConversationResponse
 import com.krish.headsup.model.SendMessageToUserResponse
 import com.krish.headsup.model.UpdateAvatarResponse
@@ -30,3 +32,7 @@ data class MessagesResult(val data: GetMessagesByConversationIdResponse) : Resul
 data class AvatarResult(val data: UpdateAvatarResponse) : Result()
 
 data class UserSearchResult(val data: UserSearchResponse) : Result()
+
+data class RegistrationResult(val data: RegistrationResponse) : Result()
+
+data class LoginResult(val data: LoginResponse) : Result()
