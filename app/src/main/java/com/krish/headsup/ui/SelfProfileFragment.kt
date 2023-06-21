@@ -60,7 +60,8 @@ class SelfProfileFragment :
         }
 
         val headerAdapter = SelfProfileHeaderAdapter(
-            onEditProfileClick = {},
+            onEditProfileClick = { onPressEditProfile() },
+            onSettingButtonClick = { onPressSetting() },
             sharedViewModel = sharedViewModel,
         )
 
@@ -194,5 +195,17 @@ class SelfProfileFragment :
             val result = viewModel.unlikePost(postId)
             onResult(result)
         }
+    }
+
+    private fun onPressSetting() {
+        val action = SelfProfileFragmentDirections.actionProfileFragmentToSettingFragment()
+        val navController = NavHostFragment.findNavController(this)
+        navController.navigate(action)
+    }
+
+    private fun onPressEditProfile() {
+        val action = SelfProfileFragmentDirections.actionProfileFragmentToEditProfileFragment()
+        val navController = NavHostFragment.findNavController(this)
+        navController.navigate(action)
     }
 }

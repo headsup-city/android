@@ -9,10 +9,11 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -20,9 +21,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.snackbar.Snackbar
+import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentEditProfileBinding
-import com.krish.headsup.utils.NetworkUtil
+import com.krish.headsup.ui.components.CustomAvatarImageView
+import com.krish.headsup.utils.glide.CustomCacheKeyGenerator
+import com.krish.headsup.utils.glide.GlideApp
 import com.krish.headsup.viewmodel.EditProfileViewModel
 import com.krish.headsup.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,17 +46,8 @@ class EditProfileFragment : Fragment() {
     ): View {
         binding = FragmentEditProfileBinding.inflate(inflater, container, false)
 
-        binding.profilePictureOverlay.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    binding.profilePictureOverlay.visibility = View.VISIBLE
-                }
-                MotionEvent.ACTION_UP -> {
-                    binding.profilePictureOverlay.visibility = View.INVISIBLE
-                    // Start activity for result here to get new image
-                }
-            }
-            true
+        binding.changePasswordButton.setOnClickListener {
+            showChangePasswordDialog()
         }
 
         return binding.root
@@ -61,60 +57,62 @@ class EditProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Handle back button click
-        binding.backButton.setOnClickListener {
-            // Go back to the previous screen
-        }
+        val navController = NavHostFragment.findNavController(this)
 
         var initialUsername: String? = null
+        var initialPhoneNumber: String? = null
 
-        viewModel.initializeScreen(sharedViewModel.user.value)
+        binding.backButton.setOnClickListener {
+            navController.navigateUp()
+        }
 
         binding.userName.doAfterTextChanged {
-            binding.saveProfileButton.isEnabled = it.toString() != initialUsername
+            val hasChanged = it.toString() != initialUsername || binding.phoneNumber.text.toString() != initialPhoneNumber
+            binding.saveProfileButton.isEnabled = hasChanged
+        }
+
+        binding.phoneNumber.doAfterTextChanged {
+            val hasChanged = it.toString() != initialPhoneNumber || binding.userName.text.toString() != initialUsername
+            binding.saveProfileButton.isEnabled = hasChanged
         }
 
         binding.saveProfileButton.setOnClickListener {
-            binding.saveProfileButton.isEnabled = false
-            binding.saveProfileButton.text = "Updating..." // show that something is happening
             val newName = binding.userName.text.toString()
-            if (newName.isBlank()) {
-                Toast.makeText(requireContext(), "Name cannot be blank", Toast.LENGTH_LONG).show()
-            } else {
-                viewModel.updateUserProfile(newName)
-            }
+            val newPhoneNumber = binding.phoneNumber.text.toString()
+            viewModel.updateUserProfile(newName, newPhoneNumber)
         }
 
-        binding.profilePictureOverlay.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    binding.profilePictureOverlay.visibility = View.VISIBLE
-                }
-                MotionEvent.ACTION_UP -> {
-                    binding.profilePictureOverlay.visibility = View.INVISIBLE
-                    checkPermissionForImage()
-                }
-            }
-            true
+        binding.profilePicture.setOnClickListener {
+            checkPermissionForImage()
         }
+
+        viewModel.initializeScreen(sharedViewModel.user.value)
 
         viewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
                 binding.userName.setText(it.name)
+                binding.phoneNumber.setText(it.mobileNumber)
+                binding.emailLabel.text = it.email
+
+                GlideApp.with(binding.profilePicture.context)
+                    .load(it.avatarUri)
+                    .signature(CustomCacheKeyGenerator(it.avatarUri ?: ""))
+                    .placeholder(CustomAvatarImageView.defaultAvatar)
+                    .circleCrop()
+                    .into(binding.profilePicture)
+
                 initialUsername = it.name
-                // Load image here
-                // Glide.with(this).load(user.profileImageUrl).into(binding.profilePicture)
+                initialPhoneNumber = it.mobileNumber
             }
         }
 
-        // Error handling and user feedback
         viewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
             if (errorMessage != null) {
-                // Show a Snackbar with a retry button
                 Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_INDEFINITE)
                     .setAction("Retry") {
                         val newName = binding.userName.text.toString()
-                        viewModel.updateUserProfile(newName)
+                        val newPhoneNumber = binding.phoneNumber.text.toString()
+                        viewModel.updateUserProfile(newName, newPhoneNumber)
                     }.show()
                 viewModel.clearErrorMessage()
             }
@@ -122,8 +120,6 @@ class EditProfileFragment : Fragment() {
 
         viewModel.successMessage.observe(viewLifecycleOwner) { successMessage ->
             if (successMessage != null) {
-                // Toast.makeText(context, successMessage, Toast.LENGTH_LONG).show()
-                // Instead of showing a toast, navigate back to the previous screen
                 viewModel.clearSuccessMessage()
             }
         }
@@ -131,7 +127,6 @@ class EditProfileFragment : Fragment() {
 
     private val pickImageResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
             val imageUri: Uri? = result.data?.data
             if (imageUri != null) {
                 viewModel.updateAvatar(imageUri)
@@ -140,15 +135,34 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun pickImageFromGallery() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
+        val intent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         pickImageResultLauncher.launch(intent)
     }
+
+    private fun checkPermissionForImage() {
+        Log.d("EditProfileFragment", "Checking permission for image")
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            Log.d("EditProfileFragment", "Permission denied, requesting it")
+            requestPermissions(
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                PERMISSION_CODE
+            )
+        } else {
+            Log.d("EditProfileFragment", "Permission already granted, picking image")
+            pickImageFromGallery()
+        }
+    }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
             PERMISSION_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission was granted, pick image from gallery
+                    pickImageFromGallery()
+                } else {
+                    // Permission denied, show an explanatory dialog or snackbar
                     AlertDialog.Builder(requireContext())
                         .setMessage("This permission is required to choose an avatar.")
                         .setPositiveButton("Grant") { _, _ ->
@@ -156,37 +170,38 @@ class EditProfileFragment : Fragment() {
                         }
                         .setNegativeButton("Cancel", null)
                         .show()
-                } else {
-                    // Permission was granted, so you can continue with opening the image selection
-                    pickImageFromGallery()
                 }
             }
         }
     }
 
-    private fun checkPermissionForImage() {
-        if ((ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
-        ) {
-            // Permission denied, request it
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                PERMISSION_CODE
-            )
-        } else {
-            // Permission granted and now check for internet connectivity
-            if (NetworkUtil.isInternetAvailable(requireContext())) {
-                // If connected, call pickImageFromGallery()
-                pickImageFromGallery()
-            } else {
-                // If not connected, show a message
-                Toast.makeText(requireContext(), "Please check your internet connection and try again", Toast.LENGTH_LONG).show()
+    private fun showChangePasswordDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_change_password, null)
+        val oldPassword = dialogView.findViewById<EditText>(R.id.oldPassword)
+        val newPassword = dialogView.findViewById<EditText>(R.id.newPassword)
+        val confirmPassword = dialogView.findViewById<EditText>(R.id.confirmPassword)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setPositiveButton("Change") { _, _ ->
+                val oldPasswordText = oldPassword.text.toString()
+                val newPasswordText = newPassword.text.toString()
+                val confirmPasswordText = confirmPassword.text.toString()
+
+                if (newPasswordText == confirmPasswordText) {
+                    // Call ViewModel to change password
+                    viewModel.changePassword(oldPasswordText, newPasswordText)
+                } else {
+                    Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_SHORT).show()
+                }
             }
-        }
+            .setNegativeButton("Cancel", null)
+            .create()
+        dialog.show()
     }
 
+
     companion object {
-        private const val IMAGE_PICK_CODE = 1000
         private const val PERMISSION_CODE = 1001
     }
 }

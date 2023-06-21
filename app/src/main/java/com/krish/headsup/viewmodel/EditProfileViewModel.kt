@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.krish.headsup.model.UpdatePasswordRequest
 import com.krish.headsup.model.UpdateUserRequest
 import com.krish.headsup.model.User
 import com.krish.headsup.repositories.UserRepository
@@ -45,7 +46,7 @@ class EditProfileViewModel @Inject constructor(
         }
     }
 
-    fun updateUserProfile(newName: String) {
+    fun updateUserProfile(newName: String, newPhoneNumber: String) {
         viewModelScope.launch {
             try {
                 val accessToken = tokenManager.getTokenStore()?.access?.token
@@ -116,6 +117,34 @@ class EditProfileViewModel @Inject constructor(
             } catch (e: Exception) { errorMessage.value = "Failed to update profile: ${e.message}" }
         }
     }
+
+    fun changePassword(oldPassword: String, newPassword: String) {
+        viewModelScope.launch {
+            try {
+
+
+            val accessToken = tokenManager.getTokenStore()?.access?.token
+            val currentUser = user.value
+            if (!accessToken.isNullOrEmpty() && currentUser != null) {
+            val updatePasswordRequest = UpdatePasswordRequest(oldPassword, newPassword)
+            val result = userRepository.changePassword(accessToken, currentUser.id, updatePasswordRequest)
+
+            when (result) {
+                is UserResult -> {
+                    // Handle success
+                }
+                is Result.Error -> {
+                    // Handle error
+                    errorMessage.postValue(result.exception.message)
+                }
+
+                else -> {}
+            }}
+        }catch(e:Exception){
+                errorMessage.postValue("Failed to update password")}
+        }
+    }
+
 
     fun clearErrorMessage() {
         errorMessage.value = null

@@ -88,7 +88,6 @@ class HomeFragment :
         // Set an OnClickListener for the optional convo button
         convoButton.visibility = View.VISIBLE
         convoButton.setOnClickListener {
-            // Handle button click
             val action = HomeFragmentDirections.actionHomeFragmentToConversationFragment()
             val navController = NavHostFragment.findNavController(this)
             navController.navigate(action)

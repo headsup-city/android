@@ -30,14 +30,25 @@
         android:label="Login"
         tools:layout="@layout/fragment_login">
         <action
+            android:id="@+id/action_loginFragment_to_forgotPasswordFragment"
+            app:destination="@id/forgotPasswordFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="false" />
+        <action
             android:id="@+id/action_loginFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
+            app:destination="@id/registerFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_loginFragment_to_termsFragment"
-            app:destination="@id/termsFragment" />
+            app:destination="@id/termsFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_loginFragment_to_privacyFragment"
-            app:destination="@id/privacyFragment" />
+            app:destination="@id/privacyFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="false" />
     </fragment>
 
 

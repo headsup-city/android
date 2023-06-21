@@ -12,15 +12,21 @@ import com.krish.headsup.utils.glide.GlideApp
 
 class SelfProfileHeaderViewHolder(
     itemView: View,
-    private val onEditProfileClick: () -> Unit
+    private val onEditProfileClick: () -> Unit,
+    private val onSettingButtonClick: () -> Unit,
 ) : RecyclerView.ViewHolder(itemView) {
     private val authorAvatar: CustomAvatarImageView = itemView.findViewById(R.id.authorAvatar)
     private val editProfileButton: ImageButton = itemView.findViewById(R.id.editProfileButton)
+    private val settingButton: ImageButton = itemView.findViewById(R.id.settingButton)
     private val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
 
     init {
         editProfileButton.setOnClickListener {
             onEditProfileClick()
+        }
+
+        settingButton.setOnClickListener {
+            onSettingButtonClick()
         }
     }
 

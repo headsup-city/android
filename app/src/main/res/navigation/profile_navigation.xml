@@ -68,6 +68,16 @@
             app:destination="@+id/videoPostFragment"
             app:popUpTo="@id/selfProfileFragment"
             app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_profileFragment_to_settingFragment"
+            app:destination="@+id/settingFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@+id/editProfileFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/settingFragment"

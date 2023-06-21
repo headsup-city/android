@@ -9,6 +9,7 @@ import com.krish.headsup.viewmodel.SharedViewModel
 
 class SelfProfileHeaderAdapter(
     private val onEditProfileClick: () -> Unit,
+    private val onSettingButtonClick: () -> Unit,
     private val sharedViewModel: SharedViewModel,
 ) :
     RecyclerView.Adapter<SelfProfileHeaderViewHolder>() {
@@ -16,7 +17,7 @@ class SelfProfileHeaderAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelfProfileHeaderViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.header_self_profile, parent, false)
-        return SelfProfileHeaderViewHolder(view, onEditProfileClick)
+        return SelfProfileHeaderViewHolder(view, onEditProfileClick, onSettingButtonClick)
     }
 
     override fun onBindViewHolder(holder: SelfProfileHeaderViewHolder, position: Int) {

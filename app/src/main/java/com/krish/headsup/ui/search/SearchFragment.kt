@@ -2,6 +2,7 @@ package com.krish.headsup.ui.search
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,6 +16,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.krish.headsup.R
 import com.krish.headsup.adapters.SearchAdapter
 import com.krish.headsup.databinding.FragmentSearchBinding
 import com.krish.headsup.viewmodel.SearchViewModel
@@ -46,10 +49,31 @@ class SearchFragment : Fragment() {
 
         setupViews()
         observeViewModel()
+
+        val rootView = view.rootView
+        rootView.viewTreeObserver.addOnGlobalLayoutListener {
+            val rect = Rect()
+            rootView.getWindowVisibleDisplayFrame(rect)
+            val screenHeight = rootView.height
+            val keypadHeight = screenHeight - rect.bottom
+
+            val isKeyboardOpen = keypadHeight > screenHeight * 0.15
+            val bottomNavigation = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)
+            bottomNavigation?.visibility = if (isKeyboardOpen) View.GONE else View.VISIBLE
+        }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "InternalInsetResource")
     private fun setupViews() {
+        val statusBarHeight: Int
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        statusBarHeight = if (resourceId > 0) {
+            resources.getDimensionPixelSize(resourceId)
+        } else {
+            // Convert 24dp to pixels as default status bar height if resource id not found
+            (24 * resources.displayMetrics.density).toInt()
+        }
+        binding.constraintLayout.setPadding(0, statusBarHeight, 0, 0)
 
         binding.coordinatorLayout.setOnClickListener {
             if (binding.searchInput.isFocused) {

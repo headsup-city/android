@@ -84,4 +84,7 @@
     <string name="username">Username</string>
     <string name="save_profile">Save Profile</string>
     <string name="profile_picture">Profile picture</string>
+    <string name="change_password">Change Password</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="save">Save</string>
 </resources>
