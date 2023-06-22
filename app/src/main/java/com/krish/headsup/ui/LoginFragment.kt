@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
@@ -79,12 +80,13 @@ class LoginFragment : Fragment() {
         }
 
         loginViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                binding.loginButton.isEnabled = false
-                // Show loading indicator
-            } else {
-                binding.loginButton.isEnabled = true
-                // Hide loading indicator
+            binding.loginButton.visibility = if(isLoading)View.GONE else View.VISIBLE
+            binding.loadingProgressBar.visibility = if(isLoading)View.VISIBLE else View.GONE
+        }
+
+        loginViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+            if (!error.isNullOrEmpty()) {
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -94,12 +96,10 @@ class LoginFragment : Fragment() {
         val password = binding.passwordEditText.text.toString()
 
         if (emailOrPhone.isBlank() || password.isBlank()) {
-            binding.errorMessageTextView.visibility = View.VISIBLE
-            binding.errorMessageTextView.text = "Email/Phone and password cannot be empty."
+            Toast.makeText(context, "Email/Phone and password cannot be empty.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Call the ViewModel's loginUser method instead
         loginViewModel.loginUser(emailOrPhone, password)
     }
 

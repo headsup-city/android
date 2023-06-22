@@ -1,5 +1,6 @@
 package com.krish.headsup.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,9 +21,8 @@ class LoginViewModel @Inject constructor(
     private val tokenManager: TokenManager,
     private val authManager: AuthManager
 ) : ViewModel() {
-
-    val authState = authManager.authState
     val isLoading = MutableLiveData<Boolean>()
+    val errorMessage = MutableLiveData<String>()
 
     fun loginUser(emailOrPhone: String, password: String) {
         isLoading.value = true
@@ -40,11 +40,11 @@ class LoginViewModel @Inject constructor(
                     }
                 } else {
                     isLoading.value = false
-                    authManager.updateAuthState(AuthState.NO_USER)
+                    errorMessage.value = "Please enter a correct password"
                 }
             } catch (e: Exception) {
                 isLoading.value = false
-                authManager.updateAuthState(AuthState.NO_USER)
+                errorMessage.value = "Network error, please try again"
             }
         }
     }

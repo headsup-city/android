@@ -58,16 +58,6 @@
             android:textColor="@android:color/white"
             android:textColorHint="@color/gray_600" />
 
-
-        <TextView
-            android:id="@+id/errorMessageTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:textColor="@android:color/holo_red_dark"
-            android:visibility="gone" />
-
         <Button
             android:id="@+id/forgotPasswordButton"
             android:layout_width="wrap_content"
@@ -89,6 +79,15 @@
             android:text="@string/log_in"
             android:textAllCaps="false"
             android:textColor="@android:color/white" />
+
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:indeterminate="true"
+            android:visibility="gone" />
 
     </LinearLayout>
 
