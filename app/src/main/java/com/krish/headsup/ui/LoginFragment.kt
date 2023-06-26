@@ -80,8 +80,8 @@ class LoginFragment : Fragment() {
         }
 
         loginViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.loginButton.visibility = if(isLoading)View.GONE else View.VISIBLE
-            binding.loadingProgressBar.visibility = if(isLoading)View.VISIBLE else View.GONE
+            binding.loginButton.visibility = if (isLoading)View.GONE else View.VISIBLE
+            binding.loadingProgressBar.visibility = if (isLoading)View.VISIBLE else View.GONE
         }
 
         loginViewModel.errorMessage.observe(viewLifecycleOwner) { error ->

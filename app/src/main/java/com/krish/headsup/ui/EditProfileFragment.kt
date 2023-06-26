@@ -7,12 +7,16 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,7 +25,6 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
-import com.google.android.material.snackbar.Snackbar
 import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentEditProfileBinding
 import com.krish.headsup.ui.components.CustomAvatarImageView
@@ -47,6 +50,11 @@ class EditProfileFragment : Fragment() {
 
         binding.changePasswordButton.setOnClickListener {
             showChangePasswordDialog()
+        }
+
+        binding.root.setOnTouchListener { _, _ ->
+            hideKeyboard()
+            false
         }
 
         return binding.root
@@ -107,18 +115,24 @@ class EditProfileFragment : Fragment() {
 
         viewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
             if (errorMessage != null) {
-                Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Retry") {
-                        val newName = binding.userName.text.toString()
-                        val newPhoneNumber = binding.phoneNumber.text.toString()
-                        viewModel.updateUserProfile(newName, newPhoneNumber)
-                    }.show()
+                val toast = Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG)
+                toast.show()
+                Handler(Looper.getMainLooper()).postDelayed({ toast.cancel() }, 5000)
                 viewModel.clearErrorMessage()
             }
         }
 
         viewModel.successMessage.observe(viewLifecycleOwner) { successMessage ->
             if (successMessage != null) {
+                val toast = Toast.makeText(requireContext(), successMessage, Toast.LENGTH_LONG)
+                toast.show()
+                Handler(Looper.getMainLooper()).postDelayed({ toast.cancel() }, 5000)
+                val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
+                var view = activity?.currentFocus
+                if (view == null) {
+                    view = View(activity)
+                }
+                imm?.hideSoftInputFromWindow(view.windowToken, 0)
                 viewModel.clearSuccessMessage()
             }
         }
@@ -128,7 +142,13 @@ class EditProfileFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             val imageUri: Uri? = result.data?.data
             if (imageUri != null) {
-                viewModel.updateAvatar(imageUri)
+                AlertDialog.Builder(requireContext())
+                    .setMessage("Do you want to upload this image?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        viewModel.updateAvatar(imageUri)
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
             }
         }
     }
@@ -141,37 +161,41 @@ class EditProfileFragment : Fragment() {
     private fun checkPermissionForImage() {
         Log.d("EditProfileFragment", "Checking permission for image")
 
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-            Log.d("EditProfileFragment", "Permission denied, requesting it")
-            requestPermissions(
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                PERMISSION_CODE
-            )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED) {
+                Log.d("EditProfileFragment", "Permission denied, requesting it")
+                requestPermissionLauncher.launch(arrayOf(Manifest.permission.READ_MEDIA_IMAGES))
+            } else {
+                Log.d("EditProfileFragment", "Permission already granted, picking image")
+                pickImageFromGallery()
+            }
         } else {
-            Log.d("EditProfileFragment", "Permission already granted, picking image")
-            pickImageFromGallery()
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) {
-            PERMISSION_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission was granted, pick image from gallery
-                    pickImageFromGallery()
-                } else {
-                    // Permission denied, show an explanatory dialog or snackbar
-                    AlertDialog.Builder(requireContext())
-                        .setMessage("This permission is required to choose an avatar.")
-                        .setPositiveButton("Grant") { _, _ ->
-                            startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", requireContext().packageName, null)))
-                        }
-                        .setNegativeButton("Cancel", null)
-                        .show()
-                }
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                Log.d("EditProfileFragment", "Permission denied, requesting it")
+                requestPermissionLauncher.launch(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
+            } else {
+                Log.d("EditProfileFragment", "Permission already granted, picking image")
+                pickImageFromGallery()
             }
         }
     }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            val isGranted = permissions.entries.all { it.value }
+            if (isGranted) {
+                // Permission has been granted, continue with picking image
+                pickImageFromGallery()
+            } else {
+                AlertDialog.Builder(requireContext())
+                    .setMessage("This permission is required to choose an avatar.")
+                    .setPositiveButton("Grant") { _, _ ->
+                        startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", requireContext().packageName, null)))
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
+        }
 
     private fun showChangePasswordDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_change_password, null)
@@ -190,12 +214,28 @@ class EditProfileFragment : Fragment() {
                     // Call ViewModel to change password
                     viewModel.changePassword(oldPasswordText, newPasswordText)
                 } else {
-                    Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_SHORT).show()
+                    val toast = Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_LONG)
+                    toast.show()
+
+                    // Dismiss the toast after 1 second
+                    Handler(Looper.getMainLooper()).postDelayed({ toast.cancel() }, 1000)
                 }
             }
             .setNegativeButton("Cancel", null)
+            .setOnDismissListener {
+                hideKeyboard()
+            }
             .create()
         dialog.show()
+    }
+
+    private fun hideKeyboard() {
+        val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
+        var view = activity?.currentFocus
+        if (view == null) {
+            view = View(activity)
+        }
+        imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     companion object {

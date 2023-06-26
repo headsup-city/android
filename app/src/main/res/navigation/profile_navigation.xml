@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/profile_navigation"
     app:startDestination="@+id/selfProfileFragment">
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="com.krish.headsup.ui.EditProfileFragment"
-        android:label="EditProfile" />
+        android:label="EditProfile"
+        tools:layout="@layout/fragment_edit_profile" />
     <fragment
         android:id="@+id/imagePostFragment"
         android:name="com.krish.headsup.ui.ImagePostFragment"
-        android:label="ImagePost">
+        android:label="ImagePost"
+        tools:layout="@layout/fragment_image_post">
         <argument
             android:name="post"
             app:argType="com.krish.headsup.model.Post" />
@@ -18,11 +21,13 @@
     <fragment
         android:id="@+id/privacyFragment"
         android:name="com.krish.headsup.ui.PrivacyFragment"
-        android:label="Privacy" />
+        android:label="Privacy"
+        tools:layout="@layout/fragment_privacy" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.krish.headsup.ui.ProfileFragment"
-        android:label="Profile">
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
         <argument
             android:name="userId"
             android:defaultValue="@null"
@@ -52,7 +57,8 @@
     <fragment
         android:id="@+id/selfProfileFragment"
         android:name="com.krish.headsup.ui.SelfProfileFragment"
-        android:label="Profile">
+        android:label="Profile"
+        tools:layout="@layout/fragment_self_profile">
         <action
             android:id="@+id/action_selfProfileFragment_to_imagePostFragment"
             app:destination="@+id/imagePostFragment"
@@ -82,23 +88,40 @@
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.krish.headsup.ui.SettingFragment"
-        android:label="Setting" />
+        android:label="Setting"
+        tools:layout="@layout/fragment_setting">
+        <action
+            android:id="@+id/action_settingFragment_to_termsFragment"
+            app:destination="@+id/termsFragment"
+            app:popUpTo="@id/settingFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_settingFragment_to_privacyFragment"
+            app:destination="@+id/privacyFragment"
+            app:popUpTo="@id/settingFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
     <fragment
         android:id="@+id/termsFragment"
         android:name="com.krish.headsup.ui.TermsFragment"
-        android:label="Terms" />
+        android:label="Terms"
+        tools:layout="@layout/fragment_terms" />
     <fragment
         android:id="@+id/textPostFragment"
         android:name="com.krish.headsup.ui.TextPostFragment"
-        android:label="TextPost">
+        android:label="TextPost"
+        tools:layout="@layout/fragment_text_post">
         <argument
             android:name="post"
-            app:argType="com.krish.headsup.model.Post" />
+            app:argType="com.krish.headsup.model.Post"
+            app:popUpTo="@id/textPostFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/videoPostFragment"
         android:name="com.krish.headsup.ui.VideoPostFragment"
-        android:label="VideoPost">
+        android:label="VideoPost"
+        tools:layout="@layout/fragment_video_post">
         <argument
             android:name="post"
             app:argType="com.krish.headsup.model.Post" />
@@ -106,7 +129,8 @@
     <fragment
         android:id="@+id/messagingFragment"
         android:name="com.krish.headsup.ui.MessagingFragment"
-        android:label="Messaging">
+        android:label="Messaging"
+        tools:layout="@layout/fragment_messaging">
         <argument
             android:name="convoId"
             android:defaultValue="@null"
@@ -118,5 +142,4 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
-
 </navigation>

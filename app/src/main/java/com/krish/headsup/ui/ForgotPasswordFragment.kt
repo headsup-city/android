@@ -73,7 +73,6 @@ class ForgotPasswordFragment : Fragment() {
             } else {
                 Toast.makeText(context, "Please enter an email", Toast.LENGTH_SHORT).show()
             }
-
         }
 
         backButton.setOnClickListener {
@@ -96,5 +95,4 @@ class ForgotPasswordFragment : Fragment() {
             inputMethodManager.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
     }
-
 }

@@ -6,6 +6,7 @@ import com.krish.headsup.model.UpdateUserRequest
 import com.krish.headsup.services.api.UserApi
 import com.krish.headsup.utils.AvatarResult
 import com.krish.headsup.utils.Result
+import com.krish.headsup.utils.UnitResult
 import com.krish.headsup.utils.UserResult
 import com.krish.headsup.utils.UserSearchResult
 import okhttp3.MultipartBody
@@ -94,7 +95,7 @@ class UserRepository @Inject constructor(private val userApi: UserApi) {
         return try {
             val response = userApi.deleteUser(token)
             if (response.isSuccessful && response.body() != null) {
-                UserResult(response.body()!!)
+                UnitResult(data = Unit)
             } else {
                 Result.Error(Exception("Failed to delete user"))
             }
