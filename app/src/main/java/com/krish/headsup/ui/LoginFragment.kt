@@ -53,7 +53,7 @@ class LoginFragment : Fragment() {
             }
         }
 
-        binding.arrowCircleButton.setOnClickListener {
+        binding.backButton.setOnClickListener {
             navController.navigateUp()
         }
 

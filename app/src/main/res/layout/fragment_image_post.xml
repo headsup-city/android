@@ -23,7 +23,6 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <!-- Back button -->
                 <ImageButton
                     android:id="@+id/backButton"
                     android:layout_width="32dp"
@@ -34,8 +33,6 @@
                     android:contentDescription="@string/back_button"
                     android:scaleType="fitCenter"
                     android:src="@drawable/arrow_back_outline_white" />
-
-                <!-- Profile picture -->
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/authorAvatarCardView"
