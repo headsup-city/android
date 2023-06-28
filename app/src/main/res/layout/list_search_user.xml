@@ -10,7 +10,7 @@
         android:id="@+id/authorAvatarCardView"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="16dp"z
         android:paddingHorizontal="16dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
@@ -22,8 +22,8 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/comment_avatar_author"
             android:scaleType="centerCrop"
-            app:defaultAvatarPaddingTop="4dp"
-            android:src="@drawable/person_sharp"/>
+            android:src="@drawable/person_sharp"
+            app:defaultAvatarPaddingTop="4dp" />
 
     </androidx.cardview.widget.CardView>
 

@@ -125,8 +125,8 @@
         android:id="@+id/retryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_retry"
         android:contentDescription="@string/retry"
+        android:src="@drawable/ic_retry"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -178,16 +178,15 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/send_message"
                 android:rotation="270"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/send_outline"
-                app:tint="@color/white"
-                android:contentDescription="@string/send_message" />
+                app:tint="@color/white" />
 
         </FrameLayout>
 
     </LinearLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

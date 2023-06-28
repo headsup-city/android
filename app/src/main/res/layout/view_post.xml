@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:layout_marginTop="12dp"
+    android:orientation="vertical"
     tools:context=".ui.components.PostView">
 
     <LinearLayout
@@ -59,7 +59,6 @@
 
     </LinearLayout>
 
-
     <ImageView
         android:id="@+id/postImage"
         android:layout_width="match_parent"
@@ -80,10 +79,9 @@
         android:id="@+id/postText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
         android:layout_marginHorizontal="8dp"
+        android:paddingTop="8dp"
         android:textSize="14sp" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -118,7 +116,7 @@
                 android:contentDescription="@string/like"
                 android:scaleType="fitCenter"
                 android:src="@drawable/heart_filled"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="16dp"

@@ -23,7 +23,6 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <!-- Back button -->
                 <ImageButton
                     android:id="@+id/backButton"
                     android:layout_width="32dp"
@@ -35,7 +34,6 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/arrow_back_outline_white" />
 
-                <!-- Profile picture -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/authorAvatarCardView"
                     android:layout_width="32dp"
@@ -61,7 +59,6 @@
                     android:layout_marginStart="8dp"
                     android:orientation="vertical">
 
-                    <!-- User's name -->
                     <TextView
                         android:id="@+id/authorName"
                         android:layout_width="wrap_content"
@@ -69,7 +66,6 @@
                         android:textColor="@color/white"
                         android:textSize="16sp" />
 
-                    <!-- Post date -->
                     <TextView
                         android:id="@+id/postDate"
                         android:layout_width="wrap_content"
@@ -84,7 +80,6 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
 
-                <!-- Three dots -->
                 <ImageButton
                     android:id="@+id/postMenu"
                     android:layout_width="32dp"

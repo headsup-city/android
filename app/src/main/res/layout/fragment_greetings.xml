@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,13 +9,13 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@string/background_image_description"
         android:scaleType="centerCrop"
         android:src="@drawable/greetings_image"
-        android:contentDescription="@string/background_image_description"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/buttons_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/buttons_layout" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:layout_width="match_parent"
@@ -29,16 +28,15 @@
         android:id="@+id/logoImageView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon"
         android:contentDescription="@string/logo_description"
-        app:layout_constraintTop_toTopOf="parent"
+        android:maxHeight="200dp"
+        android:src="@drawable/icon"
         app:layout_constraintBottom_toTopOf="@id/buttons_layout"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.75"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3"
-        android:maxHeight="200dp" />
-
+        app:layout_constraintWidth_percent="0.75" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,78 +45,75 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/textViewDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:gravity="start"
             android:text="@string/greeting_screen_message"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:gravity="start"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@id/buttons_layout"
             app:layout_constraintEnd_toEndOf="@id/buttons_layout"
-            app:layout_constraintWidth_percent="0.92"
+            app:layout_constraintStart_toStartOf="@id/buttons_layout"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.7"
-            />
+            app:layout_constraintWidth_percent="0.92" />
 
 
         <com.krish.headsup.ui.components.RoundedButton
             android:id="@+id/buttonRegister"
             android:layout_width="0dp"
             android:layout_height="45dp"
+            android:layout_marginTop="12dp"
             android:text="@string/register"
-            android:textStyle="bold"
+            android:textAllCaps="false"
             android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:buttonColor="@color/black"
             app:cornerRadius="3dp"
-            android:layout_marginTop="12dp"
-            app:layout_constraintTop_toBottomOf="@id/textViewDescription"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.92"
-            android:textAllCaps="false"
-            android:textSize="18sp"
-            app:layout_constraintVertical_chainStyle="spread" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewDescription"
+            app:layout_constraintVertical_chainStyle="spread"
+            app:layout_constraintWidth_percent="0.92" />
 
 
         <com.krish.headsup.ui.components.RoundedButton
             android:id="@+id/buttonLogin"
             android:layout_width="0dp"
             android:layout_height="45dp"
+            android:layout_marginTop="12dp"
             android:text="@string/login"
-            android:textStyle="bold"
+            android:textAllCaps="false"
             android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:buttonColor="@color/white"
             app:cornerRadius="3dp"
-            app:layout_constraintTop_toBottomOf="@id/buttonRegister"
-            android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.92"
-            android:textAllCaps="false"
-            android:textSize="18sp"
-            app:layout_constraintVertical_chainStyle="spread" />
-
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonRegister"
+            app:layout_constraintVertical_chainStyle="spread"
+            app:layout_constraintWidth_percent="0.92" />
 
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/buttonGoogleSignIn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/buttonLogin"
             android:layout_marginTop="9dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.94"
-            android:textSize="18sp"
             android:textColor="#FFFFFF"
-            android:textStyle="bold" />
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonLogin"
+            app:layout_constraintWidth_percent="0.94" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -4,9 +4,8 @@
     android:id="@+id/headerContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="45dp"
-    android:paddingTop="20dp"
-    android:paddingRight="20dp"
+    android:paddingStart="32dp"
+    android:paddingEnd="8dp"
     android:paddingBottom="16dp">
 
     <androidx.cardview.widget.CardView
@@ -58,7 +57,7 @@
         android:layout_height="48dp"
         android:layout_alignParentEnd="true"
         android:backgroundTint="@color/transparent"
-        android:padding="8dp"
+        android:padding="12dp"
         android:scaleType="fitCenter"
         android:src="@drawable/feather_settings" />
 
