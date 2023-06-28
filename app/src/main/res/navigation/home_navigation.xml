@@ -6,7 +6,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.krish.headsup.ui.HomeFragment"
-        android:label="Home" >
+        android:label="Home">
         <action
             android:id="@+id/action_homeFragment_to_imagePostFragment"
             app:destination="@+id/imagePostFragment"
