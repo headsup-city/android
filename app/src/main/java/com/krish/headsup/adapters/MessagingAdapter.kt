@@ -10,6 +10,7 @@ import com.krish.headsup.databinding.MessagingListBinding
 import com.krish.headsup.model.ChatItem
 import com.krish.headsup.ui.viewholders.ChatDateViewHolder
 import com.krish.headsup.ui.viewholders.MessagingViewHolder
+import com.krish.headsup.utils.convertToTimeFormat
 
 class MessagingAdapter(private val selfUserId: String?) : ListAdapter<ChatItem, RecyclerView.ViewHolder>(
     ChatItemDiffCallback()
@@ -46,7 +47,7 @@ class MessagingAdapter(private val selfUserId: String?) : ListAdapter<ChatItem, 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
-            is ChatItem.MessageItem -> (holder as MessagingViewHolder).bind(item.message)
+            is ChatItem.MessageItem -> (holder as MessagingViewHolder).bind(item.message, shouldShowTime(position))
             is ChatItem.HeaderItem -> (holder as ChatDateViewHolder).bind(item.date)
         }
     }
@@ -66,5 +67,21 @@ class MessagingAdapter(private val selfUserId: String?) : ListAdapter<ChatItem, 
         override fun areContentsTheSame(oldItem: ChatItem, newItem: ChatItem): Boolean {
             return oldItem == newItem
         }
+    }
+
+    private fun shouldShowTime(position: Int): Boolean {
+        val currentMessage = getItem(position)
+        val previousMessage = if (position != 0) getItem(position - 1) else null
+
+        // Check if they're both MessageItems and if they have the same author and createdAt
+        if (currentMessage is ChatItem.MessageItem && previousMessage is ChatItem.MessageItem) {
+            if (currentMessage.message.author.id == previousMessage.message.author.id &&
+                convertToTimeFormat(currentMessage.message.createdAt) == convertToTimeFormat(previousMessage.message.createdAt)
+            ) {
+                return false
+            }
+        }
+
+        return true
     }
 }

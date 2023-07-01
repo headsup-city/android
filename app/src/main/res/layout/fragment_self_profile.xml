@@ -43,7 +43,7 @@
         android:id="@+id/emptyPostsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_posts_yet"
+        android:text="@string/so_empty_start_posting_now"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

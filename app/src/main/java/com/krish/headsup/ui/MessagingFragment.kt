@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.TouchDelegate
@@ -12,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -63,13 +65,19 @@ class MessagingFragment : Fragment() {
 
         binding.sendButton.setOnClickListener {
             val text = binding.messageInput.text.toString().trim()
-            if (text.isNotEmpty()) {
-                if (convoId != null) {
-                    viewModel.sendMessageToConversation(convoId, text)
-                } else if (userId != null) {
-                    viewModel.sendMessageToUser(userId, text)
+            if (binding.messageInput.isFocused) {
+                if (text.isNotEmpty()) {
+                    if (convoId != null) {
+                        viewModel.sendMessageToConversation(convoId, text)
+                    } else if (userId != null) {
+                        viewModel.sendMessageToUser(userId, text)
+                    }
+                    binding.messageInput.text?.clear()
                 }
-                binding.messageInput.text.clear()
+            } else {
+                binding.messageInput.requestFocus()
+                val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(binding.messageInput, InputMethodManager.SHOW_IMPLICIT)
             }
         }
 
@@ -125,15 +133,12 @@ class MessagingFragment : Fragment() {
             navController.navigateUp()
         }
 
-        binding.root.setOnTouchListener { _, _ ->
-            hideKeyboard()
-            false
-        }
-
         binding.recyclerView.setOnTouchListener { _, motionEvent ->
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
                     initialY = motionEvent.y
+                    hideKeyboard()
+                    binding.messageInput.clearFocus()
                 }
                 MotionEvent.ACTION_UP -> {
                     finalY = motionEvent.y
@@ -187,6 +192,14 @@ class MessagingFragment : Fragment() {
                 }
             }
         }
+
+        binding.messageInputLayout.setOnClickListener {
+            binding.messageInput.requestFocus()
+            val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(binding.messageInput, InputMethodManager.SHOW_IMPLICIT)
+        }
+
+        setupSwipeDownListener()
 
         // Increase touchable area of the sendButton
         increaseTouchableArea(binding.sendButton, R.dimen.size_32_button_inc)
@@ -252,6 +265,32 @@ class MessagingFragment : Fragment() {
         val currentFocusedView = activity?.currentFocus
         currentFocusedView?.let {
             inputMethodManager.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            it.clearFocus()
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupSwipeDownListener() {
+        val gestureDetector = GestureDetector(
+            context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onDown(e: MotionEvent): Boolean {
+                    return true
+                }
+
+                override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+                    if (e1.y < e2.y) {
+                        hideKeyboard()
+                        return true
+                    }
+                    return false
+                }
+            }
+        )
+
+        binding.messageInputLayout.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            false
         }
     }
 

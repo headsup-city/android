@@ -72,3 +72,12 @@ fun isSameDay(calendar1: Calendar, calendar2: Calendar): Boolean {
     return calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR) &&
         calendar1.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR)
 }
+
+fun convertToTimeFormat(dateTime: String): String {
+    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+    formatter.timeZone = TimeZone.getTimeZone("UTC")
+    val date = formatter.parse(dateTime)
+    val timeFormatter = SimpleDateFormat("h:mm a", Locale.getDefault())
+    timeFormatter.timeZone = TimeZone.getDefault()
+    return timeFormatter.format(date)
+}

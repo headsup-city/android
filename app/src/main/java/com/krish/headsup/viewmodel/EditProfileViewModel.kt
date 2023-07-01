@@ -41,6 +41,9 @@ class EditProfileViewModel @Inject constructor(
 
     val successMessage = MutableLiveData<String?>()
 
+    private val _notifyProfileUpdate = MutableLiveData<Boolean>(false)
+    val notifyProfileUpdate: LiveData<Boolean> get() = _notifyProfileUpdate
+
     fun initializeScreen(selfUser: User?) {
         if (selfUser != null) {
             _user.postValue(selfUser)
@@ -57,6 +60,7 @@ class EditProfileViewModel @Inject constructor(
                     when (val result = userRepository.updateUser(accessToken, currentUser.id, request)) {
                         is UserResult -> {
                             successMessage.value = "Profile updated successfully"
+                            _notifyProfileUpdate.postValue(true)
                         }
                         is Result.Error -> {
                             errorMessage.value = result.exception.message
@@ -112,6 +116,7 @@ class EditProfileViewModel @Inject constructor(
                         is AvatarResult -> {
                             file.delete()
                             successMessage.value = "Profile picture updated successfully"
+                            _notifyProfileUpdate.postValue(true)
                         }
                         is Result.Error -> {
                             errorMessage.value = result.exception.message
@@ -159,5 +164,9 @@ class EditProfileViewModel @Inject constructor(
 
     fun clearSuccessMessage() {
         successMessage.value = null
+    }
+
+    fun resetNotifyProfileUpdate() {
+        _notifyProfileUpdate.value = false
     }
 }

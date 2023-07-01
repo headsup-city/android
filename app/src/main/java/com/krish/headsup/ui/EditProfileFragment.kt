@@ -28,14 +28,20 @@ import androidx.navigation.fragment.NavHostFragment
 import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentEditProfileBinding
 import com.krish.headsup.ui.components.CustomAvatarImageView
+import com.krish.headsup.utils.TokenManager
 import com.krish.headsup.utils.glide.CustomCacheKeyGenerator
 import com.krish.headsup.utils.glide.GlideApp
 import com.krish.headsup.viewmodel.EditProfileViewModel
 import com.krish.headsup.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class EditProfileFragment : Fragment() {
+
+    @Inject
+    lateinit var tokenManager: TokenManager
+
     private val viewModel: EditProfileViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var binding: FragmentEditProfileBinding
@@ -95,6 +101,16 @@ class EditProfileFragment : Fragment() {
 
         viewModel.initializeScreen(sharedViewModel.user.value)
 
+        viewModel.notifyProfileUpdate.observe(viewLifecycleOwner) { isUpdated ->
+            if (isUpdated) {
+                val accessToken = tokenManager.getTokenStore()?.access?.token
+                if (!accessToken.isNullOrEmpty()) {
+                    sharedViewModel.fetchUserData(accessToken)
+                    viewModel.resetNotifyProfileUpdate()
+                }
+            }
+        }
+
         viewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
                 binding.userName.setText(it.name)
@@ -145,6 +161,10 @@ class EditProfileFragment : Fragment() {
                 AlertDialog.Builder(requireContext())
                     .setMessage("Do you want to upload this image?")
                     .setPositiveButton("Yes") { _, _ ->
+                        GlideApp.with(binding.profilePicture.context)
+                            .load(imageUri)
+                            .circleCrop()
+                            .into(binding.profilePicture)
                         viewModel.updateAvatar(imageUri)
                     }
                     .setNegativeButton("Cancel", null)

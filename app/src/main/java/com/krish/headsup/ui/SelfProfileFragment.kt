@@ -123,7 +123,7 @@ class SelfProfileFragment :
                 is LoadState.NotLoading -> {
                     binding.retryButton.visibility = View.GONE
                     binding.loadingProgressBar.visibility = View.GONE
-                    binding.emptyPostsTextView.visibility = View.VISIBLE
+                    binding.emptyPostsTextView.visibility = if (postAdapter.itemCount == 0) View.VISIBLE else View.GONE
                 }
                 is LoadState.Error -> {
                     binding.retryButton.visibility = View.VISIBLE
