@@ -10,6 +10,7 @@ import com.krish.headsup.paging.UserPostPagingSource
 import com.krish.headsup.services.api.PostApi
 import com.krish.headsup.services.api.ReportApi
 import com.krish.headsup.services.api.ReportPostArgsType
+import com.krish.headsup.utils.PostResult
 import com.krish.headsup.utils.Result
 import com.krish.headsup.utils.UnitResult
 import kotlinx.coroutines.flow.Flow
@@ -115,6 +116,19 @@ class PostRepository @Inject constructor(private val postApi: PostApi, private v
             val response = reportApi.reportPost(requestBody, "Bearer $accessToken")
             if (response.isSuccessful) {
                 UnitResult(Unit)
+            } else {
+                Result.Error(Exception("API request failed: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun deletePost(accessToken: String, postId: String): Result {
+        return try {
+            val response = postApi.deletePost("Bearer $accessToken", postId)
+            if (response.isSuccessful) {
+                PostResult(response.body()!!)
             } else {
                 Result.Error(Exception("API request failed: ${response.message()}"))
             }

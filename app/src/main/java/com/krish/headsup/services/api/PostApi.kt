@@ -69,7 +69,7 @@ interface PostApi {
     ): Response<Unit>
 
     @DELETE("/v1/post/{id}")
-    suspend fun deleteAPost(
+    suspend fun deletePost(
         @Header("Authorization") token: String,
         @Path("id") id: String
     ): Response<Post>

@@ -32,7 +32,7 @@ class ProfileFragment :
     PostView.OnCommentClickListener,
     PostView.OnAuthorClickListener,
     PostView.OnLikeButtonClickListener,
-    PostView.OnReportClickListener {
+    PostView.PostMenuActionListener {
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private val viewModel: ProfileViewModel by viewModels()
@@ -267,6 +267,12 @@ class ProfileFragment :
     override fun onReportClick(post: Post) {
         lifecycleScope.launch {
             viewModel.reportPost(post.id)
+        }
+    }
+
+    override fun onDeleteClick(post: Post) {
+        lifecycleScope.launch {
+            viewModel.deletePost(post.id)
         }
     }
 }

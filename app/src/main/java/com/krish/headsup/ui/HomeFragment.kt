@@ -3,6 +3,8 @@ package com.krish.headsup.ui
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +40,7 @@ class HomeFragment :
     PostView.OnCommentClickListener,
     PostView.OnAuthorClickListener,
     PostView.OnLikeButtonClickListener,
-    PostView.OnReportClickListener {
+    PostView.PostMenuActionListener {
 
     private var latitude: Double? = null
     private var longitude: Double? = null
@@ -160,7 +162,6 @@ class HomeFragment :
     }
 
     private fun checkLocationPermission() {
-        Log.d("DebugSelf", "Getting location")
         when {
             ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -178,7 +179,6 @@ class HomeFragment :
     }
 
     override fun onLocationSuccess(latitude: Double, longitude: Double) {
-        // Use latitude and longitude for the API call
         this.latitude = latitude
         this.longitude = longitude
         viewModel.loadPosts(latitude, longitude)
@@ -191,14 +191,17 @@ class HomeFragment :
         // Retry location fetching automatically for a few times
         if (getLocationRetryCount < MAX_GET_LOCATION_RETRY_COUNT) {
             getLocationRetryCount++
-            checkLocationPermission()
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                checkLocationPermission()
+            }, 5000)
         } else {
             binding.swipeRefreshLayout.isRefreshing = false
             binding.loadingProgressBar.visibility = View.GONE
             if (arePostsEmpty) {
-                binding.retryButton.visibility = View.VISIBLE // Show the retry button
+                binding.retryButton.visibility = View.VISIBLE
             } else {
-                binding.retryButton.visibility = View.GONE // Hide the retry button
+                binding.retryButton.visibility = View.GONE
             }
             getLocationRetryCount = 0
         }
@@ -246,6 +249,12 @@ class HomeFragment :
     override fun onReportClick(post: Post) {
         lifecycleScope.launch {
             viewModel.reportPost(post.id)
+        }
+    }
+
+    override fun onDeleteClick(post: Post) {
+        lifecycleScope.launch {
+            viewModel.deletePost(post.id)
         }
     }
 

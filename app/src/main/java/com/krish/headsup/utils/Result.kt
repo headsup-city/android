@@ -4,6 +4,7 @@ import com.krish.headsup.model.Conversation
 import com.krish.headsup.model.GetMessagesByConversationIdResponse
 import com.krish.headsup.model.LoginResponse
 import com.krish.headsup.model.Message
+import com.krish.headsup.model.Post
 import com.krish.headsup.model.RegistrationResponse
 import com.krish.headsup.model.SendMessageToConversationResponse
 import com.krish.headsup.model.SendMessageToUserResponse
@@ -18,6 +19,8 @@ sealed class Result {
 data class ConversationResult(val data: Conversation) : Result()
 
 data class UserResult(val data: User) : Result()
+
+data class PostResult(val data: Post) : Result()
 
 data class MessageResult(val data: Message) : Result()
 

@@ -21,6 +21,7 @@
             android:id="@+id/authorAvatarCardView"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginStart="8dp"
             android:paddingHorizontal="16dp"
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
@@ -198,12 +199,20 @@
         android:text="@string/this_post_was_reported"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/deletedTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="32dp"
+        android:gravity="center"
+        android:text="@string/this_post_was_deleted"
+        android:visibility="gone" />
+
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="0.6dp"
         android:layout_marginTop="12dp"
         android:background="@color/redish_gray_1000" />
-
 
 </LinearLayout>

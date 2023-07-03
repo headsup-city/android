@@ -30,7 +30,7 @@ class SelfProfileFragment :
     PostView.OnCommentClickListener,
     PostView.OnAuthorClickListener,
     PostView.OnLikeButtonClickListener,
-    PostView.OnReportClickListener {
+    PostView.PostMenuActionListener {
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private val viewModel: SelfProfileViewModel by viewModels()
@@ -212,7 +212,13 @@ class SelfProfileFragment :
 
     override fun onReportClick(post: Post) {
         lifecycleScope.launch {
-//            viewModel.reportPost(post.id)
+            viewModel.reportPost(post.id)
+        }
+    }
+
+    override fun onDeleteClick(post: Post) {
+        lifecycleScope.launch {
+            viewModel.deletePost(post.id)
         }
     }
 }

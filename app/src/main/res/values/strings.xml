@@ -102,4 +102,6 @@
     <string name="so_empty_start_posting_now">So empty, Start posting now!</string>
     <string name="report">Report</string>
     <string name="this_post_was_reported">This post was reported</string>
+    <string name="delete">Delete</string>
+    <string name="this_post_was_deleted">This post was deleted</string>
 </resources>

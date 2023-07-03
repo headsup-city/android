@@ -8,6 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.krish.headsup.model.Post
 import com.krish.headsup.repositories.PostRepository
+import com.krish.headsup.utils.PostResult
 import com.krish.headsup.utils.Result
 import com.krish.headsup.utils.TokenManager
 import com.krish.headsup.utils.UnitResult
@@ -43,8 +44,7 @@ class HomeViewModel @Inject constructor(
             try {
                 val accessToken = tokenManager.getTokenStore()?.access?.token
                 if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
-                    val result = postRepository.likePost(accessToken, postId)
-                    when (result) {
+                    when (postRepository.likePost(accessToken, postId)) {
                         is UnitResult -> {
                             return@withContext true
                         }
@@ -67,8 +67,7 @@ class HomeViewModel @Inject constructor(
             try {
                 val accessToken = tokenManager.getTokenStore()?.access?.token
                 if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
-                    val result = postRepository.unlikePost(accessToken, postId)
-                    when (result) {
+                    when (postRepository.unlikePost(accessToken, postId)) {
                         is UnitResult -> {
                             return@withContext true
                         }
@@ -91,9 +90,31 @@ class HomeViewModel @Inject constructor(
             try {
                 val accessToken = tokenManager.getTokenStore()?.access?.token
                 if (!accessToken.isNullOrEmpty() && postId.isNotEmpty()) {
-                    val result = postRepository.reportPost(accessToken, postId)
-                    when (result) {
+                    when (postRepository.reportPost(accessToken, postId)) {
                         is UnitResult -> {
+                            return@withContext true
+                        }
+                        is Result.Error -> {
+                            return@withContext false
+                        }
+                        else -> { return@withContext false }
+                    }
+                } else {
+                    return@withContext false
+                }
+            } catch (e: Exception) {
+                return@withContext false
+            }
+        }
+    }
+
+    suspend fun deletePost(postId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val accessToken = tokenManager.getTokenStore()?.access?.token
+                if (!accessToken.isNullOrEmpty() && postId.isNotEmpty()) {
+                    when (postRepository.deletePost(accessToken, postId)) {
+                        is PostResult -> {
                             return@withContext true
                         }
                         is Result.Error -> {

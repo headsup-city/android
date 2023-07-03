@@ -10,6 +10,7 @@ import com.krish.headsup.model.Post
 import com.krish.headsup.model.User
 import com.krish.headsup.repositories.PostRepository
 import com.krish.headsup.repositories.UserRepository
+import com.krish.headsup.utils.PostResult
 import com.krish.headsup.utils.Result
 import com.krish.headsup.utils.TokenManager
 import com.krish.headsup.utils.UnitResult
@@ -125,6 +126,52 @@ class SelfProfileViewModel @Inject constructor(
                         else -> {
                             return@withContext false
                         }
+                    }
+                } else {
+                    return@withContext false
+                }
+            } catch (e: Exception) {
+                return@withContext false
+            }
+        }
+    }
+
+    suspend fun reportPost(postId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val accessToken = tokenManager.getTokenStore()?.access?.token
+                if (!accessToken.isNullOrEmpty() && postId.isNotEmpty()) {
+                    when (postRepository.reportPost(accessToken, postId)) {
+                        is UnitResult -> {
+                            return@withContext true
+                        }
+                        is Result.Error -> {
+                            return@withContext false
+                        }
+                        else -> { return@withContext false }
+                    }
+                } else {
+                    return@withContext false
+                }
+            } catch (e: Exception) {
+                return@withContext false
+            }
+        }
+    }
+
+    suspend fun deletePost(postId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val accessToken = tokenManager.getTokenStore()?.access?.token
+                if (!accessToken.isNullOrEmpty() && postId.isNotEmpty()) {
+                    when (postRepository.deletePost(accessToken, postId)) {
+                        is PostResult -> {
+                            return@withContext true
+                        }
+                        is Result.Error -> {
+                            return@withContext false
+                        }
+                        else -> { return@withContext false }
                     }
                 } else {
                     return@withContext false

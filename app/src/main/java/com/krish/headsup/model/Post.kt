@@ -47,7 +47,7 @@ data class Post(
     val updatedAt: String?,
 
     // Local field
-    var isReportedLocal: Boolean? = false
+    var postStateLocal: PostState? = null
 ) : Parcelable
 
 @Parcelize
@@ -58,3 +58,8 @@ data class Location(
     @SerializedName("coordinates")
     val coordinates: List<Double>?
 ) : Parcelable
+
+enum class PostState {
+    REPORTED,
+    DELETED
+}

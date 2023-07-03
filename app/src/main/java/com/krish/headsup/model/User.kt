@@ -61,7 +61,7 @@ data class User(
     val reportedComments: List<String>?,
 
     @SerializedName("likedPosts")
-    val likedPosts: List<String>?,
+    val likedPosts: MutableList<String>?,
 
     @SerializedName("likedComments")
     val likedComments: List<String>?,

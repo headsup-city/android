@@ -2,7 +2,6 @@ package com.krish.headsup.ui.components
 
 import android.content.Context
 import android.content.Intent
-import android.view.MenuInflater
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -16,6 +15,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.krish.headsup.R
 import com.krish.headsup.model.Post
+import com.krish.headsup.model.PostState
+import com.krish.headsup.utils.ViewUtils
 import com.krish.headsup.utils.dpToPx
 import com.krish.headsup.utils.getRelativeTime
 import com.krish.headsup.utils.glide.CustomCacheKeyGenerator
@@ -28,12 +29,13 @@ class PostView(
     private val onCommentClickListener: OnCommentClickListener,
     private val onAuthorClickListener: OnAuthorClickListener,
     private val likeButtonClickListener: OnLikeButtonClickListener,
-    private val onReportClickListener: OnReportClickListener,
+    private val postMenuActionListener: PostMenuActionListener,
     private val lifecycleOwner: LifecycleOwner,
     private val sharedViewModel: SharedViewModel
 ) : RecyclerView.ViewHolder(itemView) {
     private val context: Context = itemView.context
     private var mutablePost: Post? = null
+    private val viewUtils = ViewUtils()
 
     private val postBody: LinearLayout = itemView.findViewById(R.id.postBody)
     private val postHeader: LinearLayout = itemView.findViewById(R.id.postHeader)
@@ -51,24 +53,19 @@ class PostView(
     private val shareButton: ImageView = itemView.findViewById(R.id.shareButton)
     private val menuButton: ImageButton = itemView.findViewById(R.id.menuButton)
     private val reportedTextView: TextView = itemView.findViewById(R.id.reportedTextView)
+    private val deletedTextView: TextView = itemView.findViewById(R.id.deletedTextView)
 
     fun bind(post: Post?) {
         mutablePost = post
-        // Reset all views to their initial state
-        likeCountText.visibility = View.GONE
-        commentCountText.visibility = View.GONE
-        postImage.visibility = View.GONE
-        postText.visibility = View.GONE
-        customVideoPlayer.visibility = View.GONE
-        reportedTextView.visibility = View.GONE
 
-        if (post?.isReportedLocal == true) {
-            showReportedText()
+        resetViews(post?.postStateLocal)
+
+        if (post?.postStateLocal == PostState.DELETED || post?.postStateLocal == PostState.REPORTED) {
+            // Do not need to process anything if post is deleted or reported
             return
         }
 
         mutablePost?.let {
-            // Load the author's avatar using Glide
             if (CustomAvatarImageView.defaultAvatar == null) {
                 CustomAvatarImageView.defaultAvatar = ContextCompat.getDrawable(context, R.drawable.default_avatar)
             }
@@ -171,13 +168,20 @@ class PostView(
             alreadyLikedButton.visibility = View.VISIBLE
             mutablePost = post?.copy(likeCount = post.likeCount?.plus(1))
             updateLikeCountText()
+
             if (post != null) {
                 likeButtonClickListener.onLikeButtonClick(post.id) { isLiked ->
                     if (!isLiked) {
                         likeButton.visibility = View.VISIBLE
                         alreadyLikedButton.visibility = View.GONE
-                        mutablePost = post?.copy(likeCount = post.likeCount?.minus(1))
+                        mutablePost = post.copy(likeCount = post.likeCount?.minus(1))
                         updateLikeCountText()
+                    }else{
+                        val updatedUser = sharedViewModel.user.value?.copy()
+                        post.id?.let { it1 -> updatedUser?.likedPosts?.add(it1) }
+                        if (updatedUser != null) {
+                            sharedViewModel.updateUser(updatedUser)
+                        }
                     }
                 }
             }
@@ -188,21 +192,29 @@ class PostView(
             alreadyLikedButton.visibility = View.GONE
             mutablePost = post?.copy(likeCount = post.likeCount?.minus(1))
             updateLikeCountText()
+
             if (post != null) {
                 likeButtonClickListener.onUnlikeButtonClick(post.id) { isUnliked ->
                     if (!isUnliked) {
                         likeButton.visibility = View.GONE
                         alreadyLikedButton.visibility = View.VISIBLE
-                        mutablePost = post?.copy(likeCount = post.likeCount?.plus(1))
+                        mutablePost = post.copy(likeCount = post.likeCount?.plus(1))
                         updateLikeCountText()
+
+                }else{
+                    val updatedUser = sharedViewModel.user.value?.copy()
+                    updatedUser?.likedPosts?.remove(post.id)
+                    if (updatedUser != null) {
+                        sharedViewModel.updateUser(updatedUser)
                     }
-                }
+                }}
             }
         }
 
         shareButton.setOnClickListener {
             sharePost(post)
         }
+
     }
 
     private fun updateLikeCountText() {
@@ -224,8 +236,9 @@ class PostView(
         fun onUnlikeButtonClick(postId: String, onResult: (Boolean) -> Unit)
     }
 
-    interface OnReportClickListener {
+    interface PostMenuActionListener {
         fun onReportClick(post: Post)
+        fun onDeleteClick(post: Post)
     }
 
     private fun sharePost(post: Post?) {
@@ -257,8 +270,15 @@ class PostView(
     private fun showPopupMenu(view: View) {
         val wrapper = ContextThemeWrapper(context, R.style.PostPopupMenu)
         val popup = PopupMenu(wrapper, view)
-        val inflater: MenuInflater = popup.menuInflater
-        inflater.inflate(R.menu.post_popup_menu, popup.menu)
+
+        sharedViewModel.user.value?.let { user ->
+            if (user.id == mutablePost?.author?.id) {
+                popup.inflate(R.menu.post_author_popup_menu)
+            } else {
+                popup.inflate(R.menu.post_viewer_popup_menu)
+            }
+        }
+
         popup.show()
 
         popup.setOnMenuItemClickListener { menuItem ->
@@ -271,9 +291,9 @@ class PostView(
                                 .setTitle("Report Post")
                                 .setMessage("Do you want to report this post by $authorName?")
                                 .setPositiveButton("Report") { _, _ ->
-                                    onReportClickListener.onReportClick(post)
-                                    post.isReportedLocal = true
-                                    showReportedText()
+                                    postMenuActionListener.onReportClick(post)
+                                    post.postStateLocal = PostState.REPORTED
+                                    resetViews(PostState.REPORTED)
                                 }
                                 .setNegativeButton("Cancel", null)
                                 .create()
@@ -283,12 +303,64 @@ class PostView(
                     }
                     true
                 }
+                R.id.delete -> {
+                    mutablePost?.let { post ->
+                        val dialog = AlertDialog.Builder(context)
+                            .setTitle("Delete Post")
+                            .setMessage("Do you really want to delete this post?")
+                            .setPositiveButton("Delete") { _, _ ->
+                                postMenuActionListener.onDeleteClick(post)
+                                post.postStateLocal = PostState.DELETED
+                                resetViews(PostState.DELETED)
+                            }
+                            .setNegativeButton("Cancel", null)
+                            .create()
+
+                        dialog.show()
+                    }
+                    true
+                }
                 else -> false
             }
         }
     }
 
-    private fun showReportedText() {
+    private fun resetViews(state: PostState?) {
+        when (state) {
+            PostState.REPORTED -> {
+                hideAllViews()
+                reportedTextView.visibility = View.VISIBLE
+            }
+
+            PostState.DELETED -> {
+                hideAllViews()
+                deletedTextView.visibility = View.VISIBLE
+            }
+
+            else -> {
+                authorAvatar.visibility = View.VISIBLE
+                authorName.visibility = View.VISIBLE
+                postDate.visibility = View.VISIBLE
+                likeButton.visibility = View.VISIBLE
+                alreadyLikedButton.visibility = View.VISIBLE
+                commentButton.visibility = View.VISIBLE
+                shareButton.visibility = View.VISIBLE
+                menuButton.visibility = View.VISIBLE
+                postHeader.visibility = View.VISIBLE
+                postBody.visibility = View.VISIBLE
+                likeCountText.visibility = View.GONE
+                commentCountText.visibility = View.GONE
+                postImage.visibility = View.GONE
+                postText.visibility = View.GONE
+                customVideoPlayer.visibility = View.GONE
+                reportedTextView.visibility = View.GONE
+                deletedTextView.visibility = View.GONE
+                viewUtils.increaseTouchableArea(menuButton, R.dimen.size_32_button_inc)
+            }
+        }
+    }
+
+    private fun hideAllViews() {
         authorAvatar.visibility = View.GONE
         authorName.visibility = View.GONE
         postDate.visibility = View.GONE
@@ -304,7 +376,8 @@ class PostView(
         menuButton.visibility = View.GONE
         postHeader.visibility = View.GONE
         postBody.visibility = View.GONE
-        reportedTextView.visibility = View.VISIBLE
+        reportedTextView.visibility = View.GONE
+        deletedTextView.visibility = View.GONE
     }
 
     fun onDetachedFromWindow() {
