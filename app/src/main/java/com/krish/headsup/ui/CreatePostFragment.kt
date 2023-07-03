@@ -91,6 +91,10 @@ class CreatePostFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            hideKeyboard(it)
+
+            progressBar.visibility = View.VISIBLE
+
             val data = MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("caption", postText)
@@ -104,25 +108,26 @@ class CreatePostFragment : Fragment() {
             ) {
                 // Request location permissions
                 requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                progressBar.visibility = View.GONE
                 return@setOnClickListener
             }
 
             fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener { location: Location? ->
                     location?.let {
-                        data.addFormDataPart("longitude", location.longitude.toString()) // Adjust the form data part name
-                        data.addFormDataPart("latitude", location.latitude.toString()) // Adjust the form data part name
+                        data.addFormDataPart("longitude", location.longitude.toString())
+                        data.addFormDataPart("latitude", location.latitude.toString())
                     }
 
                     // Disable the input and button while API is being called
                     postEditText.isEnabled = false
                     postButton.isEnabled = false
 
-                    val requestBody = data.build() // Build the MultipartBody here
-                    viewModel.createPrimaryPost(requestBody) // Pass the MultipartBody to the createPrimaryPost function
+                    val requestBody = data.build()
+                    viewModel.createPrimaryPost(requestBody)
                 }
                 .addOnFailureListener {
-                    // Handle location fetch error
+                    progressBar.visibility = View.GONE
                     Toast.makeText(context, "Failed to get location. Please try again.", Toast.LENGTH_SHORT).show()
                 }
         }
@@ -168,5 +173,10 @@ class CreatePostFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         listener = null
+    }
+
+    private fun hideKeyboard(view: View) {
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }

@@ -121,8 +121,8 @@ class HomeFragment :
         viewModel.currentPostResult.observe(viewLifecycleOwner) { pagingDataFlow ->
             viewModel.viewModelScope.launch {
                 pagingDataFlow?.collectLatest { pagingData ->
-                    // Update the adapter's data with the new posts and notify the adapter
                     adapter.submitData(pagingData)
+                    (binding.recyclerView.layoutManager as LinearLayoutManager).scrollToPosition(0)
                     if (adapter.itemCount == 0) {
                         arePostsEmpty = true
                     } else {
@@ -134,29 +134,28 @@ class HomeFragment :
         }
 
         adapter.addLoadStateListener { loadState ->
-            // Show loading indicator at center of the screen or at the top depending on posts' presence.
-            val isRefreshing = loadState.refresh is LoadState.Loading
-            binding.swipeRefreshLayout.isRefreshing = isRefreshing && !arePostsEmpty
-            binding.loadingProgressBar.visibility = if (isRefreshing && arePostsEmpty) View.VISIBLE else View.GONE
-
-            // If there is an error, show a toast or the retry button depending on posts' presence.
-            val isError = loadState.refresh is LoadState.Error
-            if (isError) {
-                if (arePostsEmpty) {
-                    // There was an error refreshing (i.e., initial load), show the retry button and hide the ProgressBar
-                    binding.retryButton.visibility = View.VISIBLE
-                    binding.loadingProgressBar.visibility = View.GONE
-                } else {
-                    // Posts are present, hide the retry button and ProgressBar, and show a toast
+            when (loadState.refresh) {
+                is LoadState.Loading -> {
+                    binding.swipeRefreshLayout.isRefreshing = !arePostsEmpty
+                    binding.loadingProgressBar.visibility = if (arePostsEmpty) View.VISIBLE else View.GONE
                     binding.retryButton.visibility = View.GONE
-                    binding.swipeRefreshLayout.isRefreshing = false
-                    Toast.makeText(context, "An error occurred while refreshing", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                // No error, hide the retry button and both ProgressBars
-                binding.retryButton.visibility = View.GONE
-                binding.loadingProgressBar.visibility = View.GONE
-                binding.swipeRefreshLayout.isRefreshing = false
+                is LoadState.Error -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                    binding.loadingProgressBar.visibility = View.GONE
+                    binding.retryButton.visibility = if (arePostsEmpty) View.VISIBLE else View.GONE
+                    if (!arePostsEmpty) {
+                        Toast.makeText(context, "An error occurred while refreshing", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                is LoadState.NotLoading -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                    binding.loadingProgressBar.visibility = View.GONE
+                    binding.retryButton.visibility = View.GONE
+                    binding.recyclerView.post {
+                        (binding.recyclerView.layoutManager as LinearLayoutManager).scrollToPosition(0)
+                    }
+                }
             }
         }
     }

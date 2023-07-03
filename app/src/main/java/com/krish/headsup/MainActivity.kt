@@ -206,7 +206,7 @@ class MainActivity : AppCompatActivity(), OnPostCreatedListener {
 
     override fun onPostCreated() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        bottomNavigationView.selectedItemId = R.id.homeTab // replace with actual ID
+        bottomNavigationView.selectedItemId = R.id.homeTab
     }
 
     private fun switchNavHostFragment(fragmentManager: FragmentManager, navHostFragments: SparseArray<NavHostFragment>, index: Int) {

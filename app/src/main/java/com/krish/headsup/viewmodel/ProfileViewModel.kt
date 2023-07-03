@@ -232,7 +232,9 @@ class ProfileViewModel @Inject constructor(
                         is Result.Error -> {
                             return@withContext false
                         }
-                        else -> { return@withContext false }
+                        else -> {
+                            return@withContext false
+                        }
                     }
                 } else {
                     return@withContext false
