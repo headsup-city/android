@@ -37,7 +37,8 @@ class HomeFragment :
     LocationCallback,
     PostView.OnCommentClickListener,
     PostView.OnAuthorClickListener,
-    PostView.OnLikeButtonClickListener {
+    PostView.OnLikeButtonClickListener,
+    PostView.OnReportClickListener {
 
     private var latitude: Double? = null
     private var longitude: Double? = null
@@ -101,6 +102,7 @@ class HomeFragment :
         }
 
         val adapter = PostPagingDataAdapter(
+            this,
             this,
             this,
             this,
@@ -238,6 +240,12 @@ class HomeFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             val result = viewModel.unlikePost(postId)
             onResult(result)
+        }
+    }
+
+    override fun onReportClick(post: Post) {
+        lifecycleScope.launch {
+            viewModel.reportPost(post.id)
         }
     }
 

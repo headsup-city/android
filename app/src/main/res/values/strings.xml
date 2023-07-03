@@ -100,4 +100,6 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="start_posting_now">Start posting now!</string>
     <string name="so_empty_start_posting_now">So empty, Start posting now!</string>
+    <string name="report">Report</string>
+    <string name="this_post_was_reported">This post was reported</string>
 </resources>

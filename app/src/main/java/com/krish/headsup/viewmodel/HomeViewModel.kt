@@ -85,4 +85,28 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+    suspend fun reportPost(postId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val accessToken = tokenManager.getTokenStore()?.access?.token
+                if (!accessToken.isNullOrEmpty() && postId.isNotEmpty()) {
+                    val result = postRepository.reportPost(accessToken, postId)
+                    when (result) {
+                        is UnitResult -> {
+                            return@withContext true
+                        }
+                        is Result.Error -> {
+                            return@withContext false
+                        }
+                        else -> { return@withContext false }
+                    }
+                } else {
+                    return@withContext false
+                }
+            } catch (e: Exception) {
+                return@withContext false
+            }
+        }
+    }
 }

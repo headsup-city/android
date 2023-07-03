@@ -2,10 +2,15 @@ package com.krish.headsup.ui.components
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import android.view.MenuInflater
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -23,12 +28,15 @@ class PostView(
     private val onCommentClickListener: OnCommentClickListener,
     private val onAuthorClickListener: OnAuthorClickListener,
     private val likeButtonClickListener: OnLikeButtonClickListener,
+    private val onReportClickListener: OnReportClickListener,
     private val lifecycleOwner: LifecycleOwner,
     private val sharedViewModel: SharedViewModel
 ) : RecyclerView.ViewHolder(itemView) {
     private val context: Context = itemView.context
     private var mutablePost: Post? = null
 
+    private val postBody: LinearLayout = itemView.findViewById(R.id.postBody)
+    private val postHeader: LinearLayout = itemView.findViewById(R.id.postHeader)
     private val authorAvatar: CustomAvatarImageView = itemView.findViewById(R.id.authorAvatar)
     private val authorName: TextView = itemView.findViewById(R.id.authorName)
     private val postDate: TextView = itemView.findViewById(R.id.postDate)
@@ -41,6 +49,8 @@ class PostView(
     private val commentButton: ImageView = itemView.findViewById(R.id.commentButton)
     private val commentCountText: TextView = itemView.findViewById(R.id.commentCount)
     private val shareButton: ImageView = itemView.findViewById(R.id.shareButton)
+    private val menuButton: ImageButton = itemView.findViewById(R.id.menuButton)
+    private val reportedTextView: TextView = itemView.findViewById(R.id.reportedTextView)
 
     fun bind(post: Post?) {
         mutablePost = post
@@ -50,6 +60,12 @@ class PostView(
         postImage.visibility = View.GONE
         postText.visibility = View.GONE
         customVideoPlayer.visibility = View.GONE
+        reportedTextView.visibility = View.GONE
+
+        if (post?.isReportedLocal == true) {
+            showReportedText()
+            return
+        }
 
         mutablePost?.let {
             // Load the author's avatar using Glide
@@ -78,7 +94,9 @@ class PostView(
                         postImage.visibility = View.VISIBLE
 
                         // Calculate the height based on the aspect ratio
-                        val aspectRatio = it.attachment?.height?.toFloat()?.div(it.attachment?.width ?: 1) ?: 0f
+                        val aspectRatio = it.attachment.height?.toFloat()?.div(
+                            it.attachment.width ?: 1
+                        ) ?: 0f
                         val calculatedHeight = (screenWidth * aspectRatio).toInt()
 
                         // Set the maxHeight constraint
@@ -128,7 +146,6 @@ class PostView(
             }
         }
 
-        // Inside the bind function in PostView class, after setting the author's name
         authorName.setOnClickListener {
             if (post != null) {
                 post.author?.id?.let { userId -> onAuthorClickListener.onAuthorClick(userId) }
@@ -139,6 +156,10 @@ class PostView(
             if (post != null) {
                 post.author?.id?.let { userId -> onAuthorClickListener.onAuthorClick(userId) }
             }
+        }
+
+        menuButton.setOnClickListener {
+            showPopupMenu(it)
         }
 
         commentButton.setOnClickListener {
@@ -184,7 +205,6 @@ class PostView(
         }
     }
 
-    // Add this function to your PostView class
     private fun updateLikeCountText() {
         likeCountText.visibility = if (mutablePost?.likeCount != null && mutablePost?.likeCount!! > 0) View.VISIBLE else View.GONE
         likeCountText.text = mutablePost?.likeCount?.toString()
@@ -204,6 +224,10 @@ class PostView(
         fun onUnlikeButtonClick(postId: String, onResult: (Boolean) -> Unit)
     }
 
+    interface OnReportClickListener {
+        fun onReportClick(post: Post)
+    }
+
     private fun sharePost(post: Post?) {
         post?.let {
             val url = "https://www.headsup.city/post-description/${it.id}"
@@ -215,7 +239,7 @@ class PostView(
                     message = "${it.caption} $url"
                 }
                 "EVENT" -> {
-                    message = "${it.event?.description} $url" // Assuming there's an 'event' property in your Post data class
+                    message = "${it.event?.description} $url"
                 }
             }
 
@@ -230,9 +254,60 @@ class PostView(
         }
     }
 
+    private fun showPopupMenu(view: View) {
+        val wrapper = ContextThemeWrapper(context, R.style.PostPopupMenu)
+        val popup = PopupMenu(wrapper, view)
+        val inflater: MenuInflater = popup.menuInflater
+        inflater.inflate(R.menu.post_popup_menu, popup.menu)
+        popup.show()
+
+        popup.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.report -> {
+                    // Handle Report action
+                    mutablePost?.let { post ->
+                        post.author?.name?.let { authorName ->
+                            val dialog = AlertDialog.Builder(context)
+                                .setTitle("Report Post")
+                                .setMessage("Do you want to report this post by $authorName?")
+                                .setPositiveButton("Report") { _, _ ->
+                                    onReportClickListener.onReportClick(post)
+                                    post.isReportedLocal = true
+                                    showReportedText()
+                                }
+                                .setNegativeButton("Cancel", null)
+                                .create()
+
+                            dialog.show()
+                        }
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun showReportedText() {
+        authorAvatar.visibility = View.GONE
+        authorName.visibility = View.GONE
+        postDate.visibility = View.GONE
+        postImage.visibility = View.GONE
+        postText.visibility = View.GONE
+        customVideoPlayer.visibility = View.GONE
+        likeButton.visibility = View.GONE
+        alreadyLikedButton.visibility = View.GONE
+        likeCountText.visibility = View.GONE
+        commentButton.visibility = View.GONE
+        commentCountText.visibility = View.GONE
+        shareButton.visibility = View.GONE
+        menuButton.visibility = View.GONE
+        postHeader.visibility = View.GONE
+        postBody.visibility = View.GONE
+        reportedTextView.visibility = View.VISIBLE
+    }
+
     fun onDetachedFromWindow() {
-        Log.d("PostView", "onDetachedFromWindow called for ViewHolder: $this")
-        // Release the CustomVideoPlayer when the view is detached
         customVideoPlayer.resetPlayer()
     }
 }

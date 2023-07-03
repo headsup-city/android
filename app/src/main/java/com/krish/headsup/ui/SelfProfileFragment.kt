@@ -29,7 +29,8 @@ class SelfProfileFragment :
     Fragment(),
     PostView.OnCommentClickListener,
     PostView.OnAuthorClickListener,
-    PostView.OnLikeButtonClickListener {
+    PostView.OnLikeButtonClickListener,
+    PostView.OnReportClickListener {
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private val viewModel: SelfProfileViewModel by viewModels()
@@ -68,7 +69,7 @@ class SelfProfileFragment :
         val postAdapter = ProfilePostAdapter(
             this,
             this,
-            this,
+            this, this,
             viewLifecycleOwner,
             sharedViewModel,
         )
@@ -207,5 +208,11 @@ class SelfProfileFragment :
         val action = SelfProfileFragmentDirections.actionProfileFragmentToEditProfileFragment()
         val navController = NavHostFragment.findNavController(this)
         navController.navigate(action)
+    }
+
+    override fun onReportClick(post: Post) {
+        lifecycleScope.launch {
+//            viewModel.reportPost(post.id)
+        }
     }
 }

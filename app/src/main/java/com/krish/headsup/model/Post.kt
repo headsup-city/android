@@ -44,7 +44,10 @@ data class Post(
     val createdAt: String?,
 
     @SerializedName("updatedAt")
-    val updatedAt: String?
+    val updatedAt: String?,
+
+    // Local field
+    var isReportedLocal: Boolean? = false
 ) : Parcelable
 
 @Parcelize

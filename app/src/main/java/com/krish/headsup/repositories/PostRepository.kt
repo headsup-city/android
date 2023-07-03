@@ -8,13 +8,15 @@ import com.krish.headsup.model.Post
 import com.krish.headsup.paging.PostPagingSource
 import com.krish.headsup.paging.UserPostPagingSource
 import com.krish.headsup.services.api.PostApi
+import com.krish.headsup.services.api.ReportApi
+import com.krish.headsup.services.api.ReportPostArgsType
 import com.krish.headsup.utils.Result
 import com.krish.headsup.utils.UnitResult
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import javax.inject.Inject
 
-class PostRepository @Inject constructor(private val postApi: PostApi) {
+class PostRepository @Inject constructor(private val postApi: PostApi, private val reportApi: ReportApi) {
 
     private var postPagingSource: PostPagingSource? = null
     private var userPostPagingSource: UserPostPagingSource? = null
@@ -97,6 +99,20 @@ class PostRepository @Inject constructor(private val postApi: PostApi) {
     suspend fun unlikePost(accessToken: String, postId: String): Result {
         return try {
             val response = postApi.unlikePost("Bearer $accessToken", postId)
+            if (response.isSuccessful) {
+                UnitResult(Unit)
+            } else {
+                Result.Error(Exception("API request failed: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun reportPost(accessToken: String, postId: String): Result {
+        val requestBody = ReportPostArgsType(postId)
+        return try {
+            val response = reportApi.reportPost(requestBody, "Bearer $accessToken")
             if (response.isSuccessful) {
                 UnitResult(Unit)
             } else {

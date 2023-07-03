@@ -156,8 +156,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providePostRepository(postApi: PostApi): PostRepository {
-        return PostRepository(postApi)
+    fun providePostRepository(postApi: PostApi, reportApi: ReportApi): PostRepository {
+        return PostRepository(postApi, reportApi)
     }
 
     @Provides

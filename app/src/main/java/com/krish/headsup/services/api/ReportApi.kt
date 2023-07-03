@@ -10,13 +10,13 @@ data class ReportCommentArgsType(val commentId: String)
 
 interface ReportApi {
 
-    @POST("report/post")
+    @POST("/v1/report/post")
     suspend fun reportPost(
         @Body args: ReportPostArgsType,
         @Header("Authorization") token: String
     ): Response<Unit>
 
-    @POST("report/comment")
+    @POST("/v1/report/comment")
     suspend fun reportComment(
         @Body args: ReportCommentArgsType,
         @Header("Authorization") token: String

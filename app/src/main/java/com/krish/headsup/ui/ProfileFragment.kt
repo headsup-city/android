@@ -31,7 +31,8 @@ class ProfileFragment :
     Fragment(),
     PostView.OnCommentClickListener,
     PostView.OnAuthorClickListener,
-    PostView.OnLikeButtonClickListener {
+    PostView.OnLikeButtonClickListener,
+    PostView.OnReportClickListener {
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private val viewModel: ProfileViewModel by viewModels()
@@ -85,6 +86,7 @@ class ProfileFragment :
         )
 
         val postAdapter = ProfilePostAdapter(
+            this,
             this,
             this,
             this,
@@ -259,6 +261,12 @@ class ProfileFragment :
             lifecycleScope.launch {
                 viewModel.unFollowUser(userIdToFollow)
             }
+        }
+    }
+
+    override fun onReportClick(post: Post) {
+        lifecycleScope.launch {
+            viewModel.reportPost(post.id)
         }
     }
 }
