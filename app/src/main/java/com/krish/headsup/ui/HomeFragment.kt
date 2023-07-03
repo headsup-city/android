@@ -61,7 +61,7 @@ class HomeFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -162,11 +162,11 @@ class HomeFragment :
     }
 
     private fun checkLocationPermission() {
-        when {
+        when (PackageManager.PERMISSION_GRANTED) {
             ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
+            ) -> {
                 // Permission granted, get the location here
                 val locationUtils = LocationUtils(requireContext(), this)
                 locationUtils.getLiveLocation()

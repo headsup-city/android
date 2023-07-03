@@ -176,9 +176,9 @@ class PostView(
                         alreadyLikedButton.visibility = View.GONE
                         mutablePost = post.copy(likeCount = post.likeCount?.minus(1))
                         updateLikeCountText()
-                    }else{
+                    } else {
                         val updatedUser = sharedViewModel.user.value?.copy()
-                        post.id?.let { it1 -> updatedUser?.likedPosts?.add(it1) }
+                        post.id.let { it1 -> updatedUser?.likedPosts?.add(it1) }
                         if (updatedUser != null) {
                             sharedViewModel.updateUser(updatedUser)
                         }
@@ -200,21 +200,20 @@ class PostView(
                         alreadyLikedButton.visibility = View.VISIBLE
                         mutablePost = post.copy(likeCount = post.likeCount?.plus(1))
                         updateLikeCountText()
-
-                }else{
-                    val updatedUser = sharedViewModel.user.value?.copy()
-                    updatedUser?.likedPosts?.remove(post.id)
-                    if (updatedUser != null) {
-                        sharedViewModel.updateUser(updatedUser)
+                    } else {
+                        val updatedUser = sharedViewModel.user.value?.copy()
+                        updatedUser?.likedPosts?.remove(post.id)
+                        if (updatedUser != null) {
+                            sharedViewModel.updateUser(updatedUser)
+                        }
                     }
-                }}
+                }
             }
         }
 
         shareButton.setOnClickListener {
             sharePost(post)
         }
-
     }
 
     private fun updateLikeCountText() {

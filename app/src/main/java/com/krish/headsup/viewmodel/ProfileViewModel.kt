@@ -108,7 +108,7 @@ class ProfileViewModel @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val accessToken = tokenManager.getTokenStore()?.access?.token
-                if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
+                if (!accessToken.isNullOrEmpty() && postId.isNotEmpty()) {
                     when (postRepository.likePost(accessToken, postId)) {
                         is UnitResult -> {
                             return@withContext true
@@ -131,7 +131,7 @@ class ProfileViewModel @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val accessToken = tokenManager.getTokenStore()?.access?.token
-                if (!accessToken.isNullOrEmpty() && !postId.isNullOrEmpty()) {
+                if (!accessToken.isNullOrEmpty() && postId.isNotEmpty()) {
                     when (postRepository.unlikePost(accessToken, postId)) {
                         is UnitResult -> {
                             return@withContext true
@@ -155,7 +155,7 @@ class ProfileViewModel @Inject constructor(
             try {
                 _isFollowing.postValue(false)
                 val accessToken = tokenManager.getTokenStore()?.access?.token
-                if (!accessToken.isNullOrEmpty() && !userId.isNullOrEmpty()) {
+                if (!accessToken.isNullOrEmpty() && userId.isNotEmpty()) {
                     val response = followRepository.followUser(userId, accessToken)
                     if (response.isSuccessful) {
                         updateUserFollowingList(userId, true)
@@ -177,7 +177,7 @@ class ProfileViewModel @Inject constructor(
             try {
                 _isFollowing.postValue(true)
                 val accessToken = tokenManager.getTokenStore()?.access?.token
-                if (!accessToken.isNullOrEmpty() && !userId.isNullOrEmpty()) {
+                if (!accessToken.isNullOrEmpty() && userId.isNotEmpty()) {
                     val response = followRepository.unFollowUser(userId, accessToken)
                     if (response.isSuccessful) {
                         updateUserFollowingList(userId, false)
