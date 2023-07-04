@@ -8,10 +8,17 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.krish.headsup.databinding.ConversationListBinding
 import com.krish.headsup.model.ConversationFull
+import com.krish.headsup.repositories.UserRepository
 import com.krish.headsup.ui.ConversationFragmentDirections
 import com.krish.headsup.ui.viewholders.ConversationViewHolder
+import com.krish.headsup.utils.TokenManager
+import com.krish.headsup.viewmodel.SharedViewModel
 
-class ConversationAdapter : PagingDataAdapter<ConversationFull, ConversationViewHolder>(
+class ConversationAdapter(
+    private val sharedViewModel: SharedViewModel,
+    private val tokenManager: TokenManager,
+    private val userRepository: UserRepository
+) : PagingDataAdapter<ConversationFull, ConversationViewHolder>(
     ConversationDiffCallback()
 ) {
 
@@ -20,7 +27,7 @@ class ConversationAdapter : PagingDataAdapter<ConversationFull, ConversationView
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConversationViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ConversationListBinding.inflate(layoutInflater, parent, false)
-        return ConversationViewHolder(binding)
+        return ConversationViewHolder(binding, sharedViewModel, tokenManager, userRepository)
     }
 
     override fun onBindViewHolder(holder: ConversationViewHolder, position: Int) {
@@ -34,6 +41,11 @@ class ConversationAdapter : PagingDataAdapter<ConversationFull, ConversationView
                 holder.itemView.findNavController().navigate(action)
             }
         }
+    }
+
+    override fun onViewRecycled(holder: ConversationViewHolder) {
+        super.onViewRecycled(holder)
+        holder.clear()
     }
 
     class ConversationDiffCallback : DiffUtil.ItemCallback<ConversationFull>() {

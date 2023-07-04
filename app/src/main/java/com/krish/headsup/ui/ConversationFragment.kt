@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
@@ -13,18 +14,29 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.krish.headsup.R
 import com.krish.headsup.adapters.ConversationAdapter
 import com.krish.headsup.databinding.FragmentConversationBinding
+import com.krish.headsup.repositories.UserRepository
+import com.krish.headsup.utils.TokenManager
 import com.krish.headsup.viewmodel.ConversationViewModel
+import com.krish.headsup.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ConversationFragment : Fragment() {
     private var _binding: FragmentConversationBinding? = null
     private val binding get() = _binding!!
 
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private val viewModel: ConversationViewModel by viewModels()
     private lateinit var adapter: ConversationAdapter
+
+    @Inject
+    lateinit var tokenManager: TokenManager
+
+    @Inject
+    lateinit var userRepository: UserRepository
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,7 +50,7 @@ class ConversationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = ConversationAdapter()
+        adapter = ConversationAdapter(sharedViewModel, tokenManager, userRepository)
         val navController = NavHostFragment.findNavController(this)
 
         binding.conversationListItem.apply {

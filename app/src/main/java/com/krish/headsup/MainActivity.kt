@@ -83,6 +83,8 @@ class MainActivity : AppCompatActivity(), OnPostCreatedListener {
                     val accessToken = tokenManager.getTokenStore()?.access?.token
                     accessToken?.let { sharedViewModel.fetchUserData(it) }
                 }
+                null -> {
+                }
             }
         }
 

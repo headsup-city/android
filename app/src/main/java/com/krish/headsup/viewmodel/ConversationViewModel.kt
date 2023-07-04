@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ConversationViewModel @Inject constructor(
-    private val repository: ConversationRepository,
+    private val conversationRepository: ConversationRepository,
     private val tokenManager: TokenManager,
 ) : ViewModel() {
 
@@ -22,6 +22,6 @@ class ConversationViewModel @Inject constructor(
 
     fun getConversations() {
         val token = tokenManager.getTokenStore()?.access?.token ?: return
-        conversations = repository.getConversations(token).cachedIn(viewModelScope)
+        conversations = conversationRepository.getConversations(token).cachedIn(viewModelScope)
     }
 }
