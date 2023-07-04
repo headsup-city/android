@@ -4,6 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -13,6 +22,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.krish.headsup.R
 import com.krish.headsup.adapters.ProfileHeaderAdapter
 import com.krish.headsup.adapters.ProfilePostAdapter
@@ -46,7 +56,6 @@ class ProfileFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -55,6 +64,10 @@ class ProfileFragment :
         super.onViewCreated(view, savedInstanceState)
         val viewUtils = ViewUtils()
 
+        val menuButton: ImageButton = view.findViewById(R.id.menuButton)
+        val unblockButton: Button = view.findViewById(R.id.unblockButton)
+        val userBlockedText: TextView = view.findViewById(R.id.userBlockedText)
+
         val userId = arguments?.getString("userId")
         val navController = NavHostFragment.findNavController(this)
 
@@ -62,13 +75,52 @@ class ProfileFragment :
             profileRecyclerview.layoutManager = LinearLayoutManager(requireContext())
             backButton.setOnClickListener { navController.navigateUp() }
             retryButton.setOnClickListener { viewModel.fetchUserData() }
+            binding.menuButton.setOnClickListener { showPopupMenu() }
             viewUtils.increaseTouchableArea(backButton, R.dimen.size_32_button_inc)
         }
 
-        if (userId != null) {
-            viewModel.initializeScreen(userId, sharedViewModel.user.value)
-        } else {
-            sharedViewModel.user.observe(viewLifecycleOwner) { user -> viewModel.initializeScreen(user.id, user) }
+        // Add this at the end of onViewCreated
+        sharedViewModel.user.observe(viewLifecycleOwner) { user ->
+            if (user?.block?.contains(userId) == true) {
+                // If the user is blocked, hide everything but the toolbar
+                view.findViewById<RecyclerView>(R.id.profileRecyclerview).visibility = View.GONE
+                view.findViewById<ImageView>(R.id.retryButton).visibility = View.GONE
+
+                // In the toolbar, hide the menu button and show the "This user is blocked" message and the "Unblock user" button
+                menuButton.visibility = View.GONE
+                unblockButton.visibility = View.VISIBLE
+                userBlockedText.visibility = View.VISIBLE
+
+                // When the "Unblock user" button is clicked, unblock the user
+                unblockButton.setOnClickListener {
+                    // Replace this with your actual function to unblock a user
+                    lifecycleScope.launch {
+                        val result = viewModel.unblockUser(userId!!)
+                        if (result) {
+                            val currentUser = sharedViewModel.user.value
+                            currentUser?.let { user ->
+                                val updatedBlockList = user.block?.filter { it != userId }
+                                sharedViewModel.updateUser(user.copy(block = updatedBlockList as MutableList<String>?))
+                            }
+                        } else {
+                            // handle error, e.g., show a Toast or SnackBar
+                        }
+                    }
+                }
+            } else {
+                // If the user is not blocked, show everything and hide the "Unblock user" button
+                view.findViewById<RecyclerView>(R.id.profileRecyclerview).visibility = View.VISIBLE
+                view.findViewById<ImageView>(R.id.retryButton).visibility = View.VISIBLE
+
+                menuButton.visibility = View.VISIBLE
+                unblockButton.visibility = View.GONE
+                userBlockedText.visibility = View.GONE
+                if (userId != null) {
+                    viewModel.initializeScreen(userId, user)
+                } else {
+                    viewModel.initializeScreen(user.id, user)
+                }
+            }
         }
 
         val headerAdapter = ProfileHeaderAdapter(
@@ -228,8 +280,54 @@ class ProfileFragment :
         }
     }
 
+    private fun showPopupMenu() {
+        val wrapper = ContextThemeWrapper(context, R.style.PostPopupMenu)
+        val popup = PopupMenu(wrapper, binding.menuButton) // use the menuButton as the anchor view
+        popup.inflate(R.menu.other_user_profile_menu)
+
+        popup.show()
+
+        popup.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.block -> {
+                    val dialog = AlertDialog.Builder(requireContext())
+                        .setMessage("Do you want to block this user?")
+                        .setPositiveButton("Block") { _, _ ->
+                            blockUser()
+                        }
+                        .setNegativeButton("Cancel", null)
+                        .create()
+
+                    dialog.show()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun blockUser() {
+        val userIdToBlock = viewModel.user.value?.id ?: return
+        lifecycleScope.launch {
+            try {
+                val currentUser = sharedViewModel.user.value
+                currentUser?.let { user ->
+                    val updatedBlockList = user.block?.toMutableList()?.apply {
+                        add(userIdToBlock)
+                    }
+                    sharedViewModel.updateUser(user.copy(block = updatedBlockList))
+                }
+                val result = viewModel.blockUser(userIdToBlock)
+                if (!result) {
+                    Toast.makeText(context, "Couldn't block, try again", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                // handle error
+            }
+        }
+    }
+
     override fun onAuthorClick(userId: String) {
-        // Implement the logic for handling post clicks here
     }
 
     override fun onLikeButtonClick(postId: String, onResult: (Boolean) -> Unit) {

@@ -245,6 +245,56 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    suspend fun blockUser(userId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val accessToken = tokenManager.getTokenStore()?.access?.token
+                if (!accessToken.isNullOrEmpty() && userId.isNotEmpty()) {
+                    when (userRepository.blockUser(accessToken, userId)) {
+                        is UserResult -> {
+                            return@withContext true
+                        }
+                        is Result.Error -> {
+                            return@withContext false
+                        }
+                        else -> {
+                            return@withContext false
+                        }
+                    }
+                } else {
+                    return@withContext false
+                }
+            } catch (e: Exception) {
+                return@withContext false
+            }
+        }
+    }
+
+    suspend fun unblockUser(userId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val accessToken = tokenManager.getTokenStore()?.access?.token
+                if (!accessToken.isNullOrEmpty() && userId.isNotEmpty()) {
+                    when (userRepository.unblockUser(accessToken, userId)) {
+                        is UserResult -> {
+                            return@withContext true
+                        }
+                        is Result.Error -> {
+                            return@withContext false
+                        }
+                        else -> {
+                            return@withContext false
+                        }
+                    }
+                } else {
+                    return@withContext false
+                }
+            } catch (e: Exception) {
+                return@withContext false
+            }
+        }
+    }
+
     private fun updateUserFollowingList(userId: String, follow: Boolean) {
         _followingUpdates.postValue(userId to follow)
     }

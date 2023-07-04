@@ -287,7 +287,6 @@ class PostView(
                     mutablePost?.let { post ->
                         post.author?.name?.let { authorName ->
                             val dialog = AlertDialog.Builder(context)
-                                .setTitle("Report Post")
                                 .setMessage("Do you want to report this post by $authorName?")
                                 .setPositiveButton("Report") { _, _ ->
                                     postMenuActionListener.onReportClick(post)
@@ -305,7 +304,6 @@ class PostView(
                 R.id.delete -> {
                     mutablePost?.let { post ->
                         val dialog = AlertDialog.Builder(context)
-                            .setTitle("Delete Post")
                             .setMessage("Do you really want to delete this post?")
                             .setPositiveButton("Delete") { _, _ ->
                                 postMenuActionListener.onDeleteClick(post)

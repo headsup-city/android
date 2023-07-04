@@ -46,7 +46,7 @@ data class User(
     val following: List<String>?,
 
     @SerializedName("block")
-    val block: List<String>?,
+    val block: MutableList<String>?,
 
     @SerializedName("noOfFollowing")
     val noOfFollowing: Int?,

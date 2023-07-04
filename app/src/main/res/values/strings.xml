@@ -104,4 +104,7 @@
     <string name="this_post_was_reported">This post was reported</string>
     <string name="delete">Delete</string>
     <string name="this_post_was_deleted">This post was deleted</string>
+    <string name="block">Block</string>
+    <string name="unblock">Unblock</string>
+    <string name="user_blocked">User blocked</string>
 </resources>
