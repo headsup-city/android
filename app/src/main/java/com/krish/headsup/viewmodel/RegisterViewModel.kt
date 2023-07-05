@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krish.headsup.model.AuthState
 import com.krish.headsup.model.RegistrationRequest
+import com.krish.headsup.model.SignUpSource
 import com.krish.headsup.services.api.AuthApi
 import com.krish.headsup.utils.TokenManager
 import com.krish.headsup.utils.UserPreferences
@@ -24,7 +25,7 @@ class RegisterViewModel @Inject constructor(
     fun registerUser(name: String, email: String, password: String) {
         authState.value = AuthState.LOADING
 
-        val signUpSource = mapOf("mobile" to "android")
+        val signUpSource = SignUpSource("android", "mobile")
 
         viewModelScope.launch {
             try {

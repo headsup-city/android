@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -85,6 +84,7 @@ class ProfileFragment :
                 // If the user is blocked, hide everything but the toolbar
                 view.findViewById<RecyclerView>(R.id.profileRecyclerview).visibility = View.GONE
                 view.findViewById<ImageView>(R.id.retryButton).visibility = View.GONE
+                view.findViewById<TextView>(R.id.emptyPostsTextView).visibility = View.GONE
 
                 // In the toolbar, hide the menu button and show the "This user is blocked" message and the "Unblock user" button
                 menuButton.visibility = View.GONE

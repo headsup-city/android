@@ -13,7 +13,7 @@ data class RegistrationRequest(
     val password: String,
 
     @SerializedName("signUpSource")
-    val signUpSource: Map<String, String>
+    val signUpSource: SignUpSource
 )
 data class RegistrationResponse(
     @SerializedName("tokens")
@@ -43,7 +43,7 @@ data class GoogleSignInRequest(
     val accessToken: String,
 
     @SerializedName("signUpSource")
-    val signUpSource: Map<String, String>
+    val signUpSource: SignUpSource
 )
 
 data class AppleSignInRequest(
@@ -60,7 +60,7 @@ data class AppleSignInRequest(
     val appleUserId: String,
 
     @SerializedName("signUpSource")
-    val signUpSource: Map<String, String>
+    val signUpSource: SignUpSource
 )
 
 data class PostCommentsResponse(
