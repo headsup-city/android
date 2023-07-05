@@ -141,8 +141,6 @@ class GreetingsFragment : Fragment() {
                     }
                 }
             }
-
-
         }
     }
 
