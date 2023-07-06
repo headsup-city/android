@@ -6,7 +6,6 @@
     tools:context=".ui.SettingFragment">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.krish.headsup.viewmodel.SettingViewModel" />

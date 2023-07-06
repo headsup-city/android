@@ -15,7 +15,6 @@
         app:contentInsetStartWithNavigation="0dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-        <!-- Left optional button -->
         <ImageButton
             android:id="@+id/toolbarLeftButton"
             android:layout_width="32dp"
@@ -29,7 +28,6 @@
             android:src="@drawable/arrow_back_outline_white"
             android:visibility="gone" />
 
-        <!-- Title with optional icon acting as a button -->
         <LinearLayout
             android:id="@+id/toolbarTitleContainer"
             android:layout_width="wrap_content"
@@ -69,7 +67,6 @@
 
         </LinearLayout>
 
-        <!-- Right optional button -->
         <ImageButton
             android:id="@+id/toolbarRightButton"
             android:layout_width="32dp"

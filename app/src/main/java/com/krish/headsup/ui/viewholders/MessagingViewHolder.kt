@@ -1,5 +1,6 @@
 package com.krish.headsup.ui.viewholders
 
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -9,8 +10,10 @@ import com.krish.headsup.R
 import com.krish.headsup.databinding.MessagingListBinding
 import com.krish.headsup.model.Message
 import com.krish.headsup.utils.convertToTimeFormat
-
-class MessagingViewHolder(private val binding: MessagingListBinding, private val selfUserId: String?) :
+class MessagingViewHolder(
+    private val binding: MessagingListBinding,
+    private val selfUserId: String?
+) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(message: Message, shouldShowTime: Boolean) {

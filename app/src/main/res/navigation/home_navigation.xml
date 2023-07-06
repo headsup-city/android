@@ -3,10 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/home_navigation"
     app:startDestination="@+id/homeFragment">
+
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.krish.headsup.ui.HomeFragment"
         android:label="Home">
+
         <action
             android:id="@+id/action_homeFragment_to_imagePostFragment"
             app:destination="@+id/imagePostFragment"
@@ -32,29 +34,35 @@
             app:destination="@+id/conversationFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="false" />
+
     </fragment>
     <fragment
         android:id="@+id/conversationFragment"
         android:name="com.krish.headsup.ui.ConversationFragment"
         android:label="Conversation">
+
         <action
             android:id="@+id/action_conversationFragment_to_messagingFragment"
             app:destination="@+id/messagingFragment"
             app:popUpTo="@id/conversationFragment"
             app:popUpToInclusive="false" />
+
     </fragment>
     <fragment
         android:id="@+id/imagePostFragment"
         android:name="com.krish.headsup.ui.ImagePostFragment"
         android:label="ImagePost">
+
         <argument
             android:name="post"
             app:argType="com.krish.headsup.model.Post" />
+
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.krish.headsup.ui.ProfileFragment"
         android:label="Profile">
+
         <argument
             android:name="userId"
             android:defaultValue="@null"
@@ -80,27 +88,40 @@
             app:destination="@+id/messagingFragment"
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="false" />
+
     </fragment>
     <fragment
         android:id="@+id/textPostFragment"
         android:name="com.krish.headsup.ui.TextPostFragment"
         android:label="TextPost">
+
         <argument
             android:name="post"
             app:argType="com.krish.headsup.model.Post" />
+
     </fragment>
     <fragment
         android:id="@+id/videoPostFragment"
         android:name="com.krish.headsup.ui.VideoPostFragment"
         android:label="VideoPost">
+
         <argument
             android:name="post"
             app:argType="com.krish.headsup.model.Post" />
+
     </fragment>
     <fragment
         android:id="@+id/messagingFragment"
         android:name="com.krish.headsup.ui.MessagingFragment"
         android:label="Messaging">
+        <deepLink
+            android:id="@+id/convoDeepLink"
+            android:autoVerify="true"
+            app:uri="https://www.headsup.city/conversation/{convoId}" />
+        <deepLink
+            android:id="@+id/convoDeepLinkNative"
+            android:autoVerify="true"
+            app:uri="headsup:///conversation/{convoId}" />
         <argument
             android:name="convoId"
             android:defaultValue="@null"
@@ -111,6 +132,37 @@
             android:defaultValue="@null"
             app:argType="string"
             app:nullable="true" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/deepLinkFragment"
+        android:name="com.krish.headsup.ui.DeepLinkFragment"
+        android:label="DeepLink">
+
+        <deepLink
+            android:id="@+id/postDeepLink"
+            android:autoVerify="true"
+            app:uri="https://www.headsup.city/post-description/{postId}" />
+        <deepLink
+            android:id="@+id/postDeepLinkNative"
+            android:autoVerify="true"
+            app:uri="headsup:///post-description/{postId}" />
+        <action
+            android:id="@+id/action_deepLinkFragment_to_imagePostFragment"
+            app:destination="@id/imagePostFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_deepLinkFragment_to_textPostFragment"
+            app:destination="@id/textPostFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_deepLinkFragment_to_videoPostFragment"
+            app:destination="@id/videoPostFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="false" />
+
     </fragment>
 
 </navigation>

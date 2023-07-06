@@ -44,6 +44,8 @@ class MessagingFragment : Fragment() {
     private var initialY = 0f
     private var finalY = 0f
 
+    private var isDataObserverRegistered = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,13 +57,16 @@ class MessagingFragment : Fragment() {
         val convoId = arguments?.getString("convoId")
         val userId = arguments?.getString("userId")
 
-        adapter = MessagingAdapter(sharedViewModel.user.value?.id)
+
+        sharedViewModel.user.observe(viewLifecycleOwner) { user ->
+            adapter = MessagingAdapter(user?.id)
+            binding.recyclerView.adapter = adapter
+        }
+
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext()).apply {
             stackFromEnd = false
             reverseLayout = true
         }
-
-        binding.recyclerView.adapter = adapter
 
         binding.sendButton.setOnClickListener {
             val text = binding.messageInput.text.toString().trim()
@@ -125,6 +130,7 @@ class MessagingFragment : Fragment() {
 
         sharedViewModel.user.observe(viewLifecycleOwner) { user ->
             viewModel.updateUser(user)
+            adapter.notifyDataSetChanged()
         }
 
         val navController = NavHostFragment.findNavController(this)
@@ -296,11 +302,17 @@ class MessagingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        adapter.registerAdapterDataObserver(dataObserver)
+        if (::adapter.isInitialized && !isDataObserverRegistered) {
+            adapter.registerAdapterDataObserver(dataObserver)
+            isDataObserverRegistered = true
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        adapter.unregisterAdapterDataObserver(dataObserver)
+        if (::adapter.isInitialized && isDataObserverRegistered) {
+            adapter.unregisterAdapterDataObserver(dataObserver)
+            isDataObserverRegistered = false
+        }
     }
 }

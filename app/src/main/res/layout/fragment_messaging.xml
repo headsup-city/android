@@ -109,6 +109,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/messageInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -129,14 +130,14 @@
         android:id="@+id/encouragingMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="@string/encouraging_message"
         android:textSize="15sp"
         android:visibility="gone"
-        android:gravity="center"
-        app:layout_constraintStart_toStartOf="@+id/start_guideline_encouraging_message"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/end_guideline_encouraging_message"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/start_guideline_encouraging_message"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/retryButton"
@@ -180,7 +181,7 @@
             android:paddingEnd="16dp"
             android:textColor="@android:color/white"
             android:textColorHint="@color/gray"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <FrameLayout
             android:layout_width="wrap_content"

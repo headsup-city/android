@@ -18,7 +18,6 @@
         android:indeterminateDrawable="@drawable/custom_circular_progress_bar"
         android:visibility="gone" />
 
-
     <ImageView
         android:id="@+id/playButton"
         android:layout_width="wrap_content"
