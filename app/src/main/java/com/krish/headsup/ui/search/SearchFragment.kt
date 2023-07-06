@@ -6,7 +6,6 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -153,8 +152,6 @@ class SearchFragment : Fragment() {
                     }
                 }
             } catch (e: Exception) {
-                // Handle the error here
-                Log.e("Debug", "Error occurred while collecting: ${e.localizedMessage}")
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.krish.headsup.paging
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.krish.headsup.model.Message
@@ -18,11 +17,9 @@ class MessagingPagingSource(
         val nextPage = params.key ?: 0
 
         return try {
-            Log.d("DebugSelf", "Calling getMessageByConvoId API with page: $nextPage")
             val response = messageApi.getMessageByConvoId(convoId, nextPage, accessToken)
             val data = response.body()?.results ?: emptyList()
             val totalPages = response.body()?.totalPages ?: 0
-            Log.d("DebugSelf", "Response received, totalPages: $totalPages, data: $data")
             val prevKey = null
             val nextKey = if (totalPages - 1 > nextPage) nextPage + 1 else null
 
@@ -32,10 +29,8 @@ class MessagingPagingSource(
                 nextKey = nextKey
             )
         } catch (e: IOException) {
-            Log.e("DebugSelf", "IO exception: $e")
             LoadResult.Error(e)
         } catch (e: HttpException) {
-            Log.e("DebugSelf", "HTTP exception: $e")
             LoadResult.Error(e)
         }
     }

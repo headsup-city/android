@@ -1,6 +1,5 @@
 package com.krish.headsup.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -79,14 +78,12 @@ class MessagingViewModel @Inject constructor(
     }
 
     private suspend fun getConversationById(convoId: String) {
-        Log.d("DebugSelf", "Running getConversationById")
         val accessToken = tokenManager.getTokenStore()?.access?.token ?: ""
         val result = convoRepository.getConvoById(accessToken, convoId)
         handleConversationResult(result, null)
     }
 
     private suspend fun getConversationByUserId(userId: String) {
-        Log.d("DebugSelf", "Running getConversationByUserId")
         val accessToken = tokenManager.getTokenStore()?.access?.token ?: ""
         val result = convoRepository.getConvoByUserId(accessToken, userId)
         handleConversationResult(result, userId)
@@ -103,7 +100,6 @@ class MessagingViewModel @Inject constructor(
                 if (!otherUserId.isNullOrEmpty()) {
                     getOtherUser(otherUserId)
                 }
-                Log.d("DebugSelf", "Get conversation api success")
             }
             is Result.Error -> {
                 // Log or display the error message, but don't do anything else
@@ -113,7 +109,6 @@ class MessagingViewModel @Inject constructor(
                 } else if (loadingStatus.value == LoadingStatus.Loading) {
                     _loadingStatus.value = LoadingStatus.Error
                 }
-                Log.d("DebugSelf", "Get conversation api failed")
             }
             else -> {
                 // Handle other cases or do nothing
@@ -128,7 +123,6 @@ class MessagingViewModel @Inject constructor(
             val result = userRepository.getUser(accessToken, otherUserId)
             when (result) {
                 is UserResult -> {
-                    Log.d("DebugSelf", "Got other users successfully")
                     // Successfully got the other user, update the LiveData
                     _otherUser.value = result.data
 
@@ -140,7 +134,6 @@ class MessagingViewModel @Inject constructor(
                     }
                 }
                 is Result.Error -> {
-                    Log.d("DebugSelf", "Getting other users error")
                     // Handle the error
                     _errorMessage.value = result.exception.message
                     if (loadingStatus.value == LoadingStatus.Loading) {
@@ -160,12 +153,10 @@ class MessagingViewModel @Inject constructor(
             val result = messageRepository.getInitialMessagesByConvoId(convoId, accessToken)
             when (result) {
                 is MessagesResult -> {
-                    Log.d("DebugSelf", "Got messages successfully")
                     _messages.value = result.data.results
                     _loadingStatus.value = LoadingStatus.Success
                 }
                 is Result.Error -> {
-                    Log.d("DebugSelf", "Got messages failed")
                     _errorMessage.value = result.exception.message
                     if (loadingStatus.value == LoadingStatus.Loading) {
                         _loadingStatus.value = LoadingStatus.Error

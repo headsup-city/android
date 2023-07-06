@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -179,22 +178,17 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun checkPermissionForImage() {
-        Log.d("EditProfileFragment", "Checking permission for image")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED) {
-                Log.d("EditProfileFragment", "Permission denied, requesting it")
                 requestPermissionLauncher.launch(arrayOf(Manifest.permission.READ_MEDIA_IMAGES))
             } else {
-                Log.d("EditProfileFragment", "Permission already granted, picking image")
                 pickImageFromGallery()
             }
         } else {
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                Log.d("EditProfileFragment", "Permission denied, requesting it")
                 requestPermissionLauncher.launch(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
             } else {
-                Log.d("EditProfileFragment", "Permission already granted, picking image")
                 pickImageFromGallery()
             }
         }

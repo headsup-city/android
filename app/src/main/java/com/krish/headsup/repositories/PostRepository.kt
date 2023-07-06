@@ -1,6 +1,5 @@
 package com.krish.headsup.repositories
 
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -79,7 +78,6 @@ class PostRepository @Inject constructor(private val postApi: PostApi, private v
                 Result.Error(Exception("Failed to create primary post"))
             }
         } catch (e: Exception) {
-            Log.d("DebugSelf", e.message.toString())
             Result.Error(e)
         }
     }

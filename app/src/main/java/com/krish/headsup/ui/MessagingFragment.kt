@@ -57,7 +57,6 @@ class MessagingFragment : Fragment() {
         val convoId = arguments?.getString("convoId")
         val userId = arguments?.getString("userId")
 
-
         sharedViewModel.user.observe(viewLifecycleOwner) { user ->
             adapter = MessagingAdapter(user?.id)
             binding.recyclerView.adapter = adapter

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,8 +35,6 @@ class GreetingsFragment : Fragment() {
     private val greetingsViewModel: GreetingsViewModel by viewModels()
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-
-    val TAG = "DebugSelf"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -131,7 +128,6 @@ class GreetingsFragment : Fragment() {
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account)
             } catch (e: ApiException) {
-                Log.w(TAG, "Google sign in failed", e)
                 when (e.statusCode) {
                     GoogleSignInStatusCodes.SIGN_IN_CANCELLED -> {
                         Toast.makeText(context, "Sign in was cancelled", Toast.LENGTH_LONG).show()
@@ -145,7 +141,6 @@ class GreetingsFragment : Fragment() {
     }
 
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount?) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct?.id)
 
         val accessToken = acct?.idToken
 

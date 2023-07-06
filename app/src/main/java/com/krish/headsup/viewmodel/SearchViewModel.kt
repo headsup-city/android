@@ -1,6 +1,5 @@
 package com.krish.headsup.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krish.headsup.model.User
@@ -48,12 +47,10 @@ class SearchViewModel @Inject constructor(
                         is Result.Error -> {
                             // You can emit an error here which can be caught by the UI to display an error message
                             searchResults.value = emptyList<User>()
-                            Log.e("SelfDebug", "Error occurred while searching")
                         }
                         else -> {
                             // You can emit an error here which can be caught by the UI to display an error message
                             searchResults.value = emptyList<User>()
-                            Log.e("SelfDebug", "Error occurred while searching")
                         }
                     }
                 }

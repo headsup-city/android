@@ -1,6 +1,5 @@
 package com.krish.headsup.ui.viewholders
 
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
