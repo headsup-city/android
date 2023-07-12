@@ -1,7 +1,9 @@
 package com.krish.headsup
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.SparseArray
 import android.view.View
 import android.view.WindowInsets
@@ -51,6 +53,7 @@ class MainActivity : AppCompatActivity(), OnPostCreatedListener {
 
         showStatusBar()
         updateAuthStateFromToken()
+        handleIntent(intent)
 
         val authNavHostFragment =
             supportFragmentManager.findFragmentById(R.id.authNavigation) as NavHostFragment
@@ -275,6 +278,19 @@ class MainActivity : AppCompatActivity(), OnPostCreatedListener {
             IconicsDrawable(this, FontAwesome.Icon.faw_user).apply {
                 sizeDp = 24
             }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        val url = intent?.getStringExtra("url")
+        if (url != null) {
+            // navigate to the appropriate screen based on the URL
+        }
+        Log.d("SelfDebug", "url: " + url.toString())
     }
 }
 

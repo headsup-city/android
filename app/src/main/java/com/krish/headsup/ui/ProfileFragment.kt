@@ -78,7 +78,6 @@ class ProfileFragment :
             viewUtils.increaseTouchableArea(backButton, R.dimen.size_32_button_inc)
         }
 
-        // Add this at the end of onViewCreated
         sharedViewModel.user.observe(viewLifecycleOwner) { user ->
             if (user?.block?.contains(userId) == true) {
                 // If the user is blocked, hide everything but the toolbar

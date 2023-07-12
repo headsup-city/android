@@ -22,6 +22,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.krish.headsup.R
 import com.krish.headsup.databinding.FragmentHomeBinding
 import com.krish.headsup.model.Post
@@ -68,6 +70,32 @@ class HomeFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        sharedViewModel.user.observe(viewLifecycleOwner) { user ->
+            // Get the current token
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(
+                OnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        // Get new FCM registration token
+                        val token = task.result
+
+                        // If the token is not null and the user is not null
+                        if (token != null && user != null && user.pushToken != null) {
+                            // If the user's push tokens does not already contain this token, then subscribe to push notifications
+                            if (!user.pushToken.contains(token)) {
+                                lifecycleScope.launch {
+                                    val isSubscribed = viewModel.subscribePushToken(token)
+                                    if (isSubscribed) {
+                                        val updatedUser = user.copy(pushToken = user.pushToken + token)
+                                        sharedViewModel.updateUser(updatedUser)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            )
+        }
 
         requestLocationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {

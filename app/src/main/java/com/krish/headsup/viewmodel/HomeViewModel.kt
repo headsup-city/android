@@ -1,5 +1,6 @@
 package com.krish.headsup.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.krish.headsup.model.Post
+import com.krish.headsup.model.PushTokenSubscriptionRequest
 import com.krish.headsup.repositories.PostRepository
+import com.krish.headsup.repositories.UserRepository
 import com.krish.headsup.utils.PostResult
 import com.krish.headsup.utils.Result
 import com.krish.headsup.utils.TokenManager
@@ -21,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val postRepository: PostRepository,
+    private val userRepository: UserRepository,
     private val tokenManager: TokenManager
 ) : ViewModel() {
 
@@ -59,6 +63,24 @@ class HomeViewModel @Inject constructor(
             } catch (e: Exception) {
                 return@withContext false
             }
+        }
+    }
+
+    suspend fun subscribePushToken(pushToken: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            val body = PushTokenSubscriptionRequest(pushToken = pushToken)
+            try {
+                val accessToken = tokenManager.getTokenStore()?.access?.token
+                if (!accessToken.isNullOrEmpty()) {
+                    val response = userRepository.subscribePushToken(accessToken, body)
+                    if (response is UnitResult) {
+                        return@withContext true
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("HomeViewModel", "Exception while subscribing push token", e)
+            }
+            return@withContext false
         }
     }
 

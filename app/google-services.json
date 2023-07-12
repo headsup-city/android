@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1041086999375",
+    "project_id": "headsup-354123",
+    "storage_bucket": "headsup-354123.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041086999375:android:38ab66b4455fbd6ccab33a",
+        "android_client_info": {
+          "package_name": "com.krish.headsup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041086999375-a6qtp6f5uoqvtp77uial26k2k49oipsm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.krish.headsup",
+            "certificate_hash": "66e094c95bd9ff5bd3e662341d2fb80c275d8b0d"
+          }
+        },
+        {
+          "client_id": "1041086999375-et38shcavu4egonqku4b7dkpu06mbd9t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkOQWP3_fv0uUfChqBKS9h3C3UpsksR8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1041086999375-et38shcavu4egonqku4b7dkpu06mbd9t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1041086999375-6pkqoc7nvt2v0kqqsdr6i638ifbgv8jn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.krish.headsup",
+                "app_store_id": "1629723024"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

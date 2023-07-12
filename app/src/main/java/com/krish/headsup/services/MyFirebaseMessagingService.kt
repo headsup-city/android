@@ -12,14 +12,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        // Handle the received message
-        // You can parse the remoteMessage and create a notification, or update your app's UI
     }
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        // Save the new token to your server or app preferences
-        sendRegistrationTokenToServer(token)
     }
 
     private fun sendRegistrationTokenToServer(token: String) {
