@@ -2,6 +2,7 @@ package com.krish.headsup.repositories
 
 import com.krish.headsup.model.AppleSignInRequest
 import com.krish.headsup.model.ForgotPasswordRequest
+import com.krish.headsup.model.GoogleSignInIdTokenRequest
 import com.krish.headsup.model.GoogleSignInRequest
 import com.krish.headsup.model.LoginRequest
 import com.krish.headsup.model.LogoutRequest
@@ -46,6 +47,19 @@ class AuthRepository @Inject constructor(private val authApi: AuthApi) {
     suspend fun signinWithGoogle(body: GoogleSignInRequest): Result {
         return try {
             val response = authApi.signinWithGoogle(body)
+            if (response.isSuccessful && response.body() != null) {
+                LoginResult(response.body()!!)
+            } else {
+                Result.Error(Exception("Failed to sign in with Google"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun signinWithGoogleIdToken(body: GoogleSignInIdTokenRequest): Result {
+        return try {
+            val response = authApi.signinWithGoogleIdToken(body)
             if (response.isSuccessful && response.body() != null) {
                 LoginResult(response.body()!!)
             } else {

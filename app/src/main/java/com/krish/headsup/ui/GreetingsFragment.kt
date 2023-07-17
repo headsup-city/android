@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -83,7 +84,7 @@ class GreetingsFragment : Fragment() {
 
     private fun configureGoogleSignIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("1041086999375-l714e630eikt7khe8u0mmn276ffksl3j.apps.googleusercontent.com")
+            .requestIdToken("1041086999375-et38shcavu4egonqku4b7dkpu06mbd9t.apps.googleusercontent.com")
             .requestEmail()
             .build()
 
@@ -134,6 +135,21 @@ class GreetingsFragment : Fragment() {
                     }
                     else -> {
                         Toast.makeText(context, "Sign in failed", Toast.LENGTH_LONG).show()
+                        Log.d(
+                            "DebugSelf",
+                            "message: " +
+                                e.message.toString() +
+                                ", statusCode: " +
+                                e.statusCode.toString() +
+                                ", localizedMessage: " +
+                                e.localizedMessage.toString() +
+                                ", cause: " +
+                                e.cause.toString() +
+                                ", status: " +
+                                e.status.toString() +
+                                ", stackTrace: " +
+                                e.stackTrace.toString()
+                        )
                     }
                 }
             }
@@ -143,6 +159,7 @@ class GreetingsFragment : Fragment() {
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount?) {
 
         val accessToken = acct?.idToken
+        Log.d("DebugSelf", "accessToken: " + accessToken.toString() + ", requestedScopes: " + acct?.requestedScopes.toString() + ", isExpired: " + acct?.isExpired.toString())
 
         if (accessToken != null) {
             greetingsViewModel.signInWithGoogle(accessToken)

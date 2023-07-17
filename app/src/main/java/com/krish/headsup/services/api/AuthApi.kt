@@ -2,6 +2,7 @@ package com.krish.headsup.services.api
 
 import com.krish.headsup.model.AppleSignInRequest
 import com.krish.headsup.model.ForgotPasswordRequest
+import com.krish.headsup.model.GoogleSignInIdTokenRequest
 import com.krish.headsup.model.GoogleSignInRequest
 import com.krish.headsup.model.LoginRequest
 import com.krish.headsup.model.LoginResponse
@@ -25,6 +26,9 @@ interface AuthApi {
 
     @POST("/v1/auth/signin-with-google")
     suspend fun signinWithGoogle(@Body body: GoogleSignInRequest): Response<LoginResponse>
+
+    @POST("/v1/auth/signin-with-google-id-token")
+    suspend fun signinWithGoogleIdToken(@Body body: GoogleSignInIdTokenRequest): Response<LoginResponse>
 
     @POST("/v1/auth/signin-with-apple")
     suspend fun signinWithApple(@Body body: AppleSignInRequest): Response<LoginResponse>

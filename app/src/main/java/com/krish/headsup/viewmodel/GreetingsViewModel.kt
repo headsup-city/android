@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krish.headsup.managers.AuthManager
 import com.krish.headsup.model.AuthState
-import com.krish.headsup.model.GoogleSignInRequest
+import com.krish.headsup.model.GoogleSignInIdTokenRequest
 import com.krish.headsup.model.SignUpSource
 import com.krish.headsup.repositories.AuthRepository
 import com.krish.headsup.utils.LoginResult
@@ -37,8 +37,8 @@ class GreetingsViewModel @Inject constructor(
             _apiError.postValue(false)
             try {
                 val signUpSource = SignUpSource("android", "mobile")
-                val signInRequest = GoogleSignInRequest(accessToken, signUpSource)
-                when (val signInResult = authRepository.signinWithGoogle(signInRequest)) {
+                val signInRequest = GoogleSignInIdTokenRequest(accessToken, signUpSource)
+                when (val signInResult = authRepository.signinWithGoogleIdToken(signInRequest)) {
                     is LoginResult -> {
                         userPreferences.saveUser(signInResult.data.user)
                         tokenManager.saveTokens(signInResult.data.tokens)

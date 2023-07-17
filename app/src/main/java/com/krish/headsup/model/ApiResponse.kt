@@ -40,7 +40,15 @@ data class LoginResponse(
 
 data class GoogleSignInRequest(
     @SerializedName("accessToken")
-    val accessToken: String,
+    val idToken: String,
+
+    @SerializedName("signUpSource")
+    val signUpSource: SignUpSource
+)
+
+data class GoogleSignInIdTokenRequest(
+    @SerializedName("idToken")
+    val idToken: String,
 
     @SerializedName("signUpSource")
     val signUpSource: SignUpSource

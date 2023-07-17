@@ -14,11 +14,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "1041086999375-69h1dcpj1vmori59cfal993aaerklev6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.krish.headsup",
+            "certificate_hash": "dfcdc3fded4c2491e2231a5d36caa95ec90890a4"
+          }
+        },
+        {
           "client_id": "1041086999375-a6qtp6f5uoqvtp77uial26k2k49oipsm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.krish.headsup",
             "certificate_hash": "66e094c95bd9ff5bd3e662341d2fb80c275d8b0d"
+          }
+        },
+        {
+          "client_id": "1041086999375-l714e630eikt7khe8u0mmn276ffksl3j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.krish.headsup",
+            "certificate_hash": "e0038ab7d804464a3883817d7e1feb1f55894568"
           }
         },
         {

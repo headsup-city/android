@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id("com.google.gms.google-services")
 }
 
 apply plugin: "org.jlleitschuh.gradle.ktlint"
@@ -118,7 +119,10 @@ dependencies {
 
     implementation 'com.vanniktech:android-image-cropper:4.5.0'
 
+    // Firebase
     implementation 'com.google.firebase:firebase-messaging:23.1.2'
+    implementation(platform("com.google.firebase:firebase-bom:32.1.1"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
 }
 
 kapt {
