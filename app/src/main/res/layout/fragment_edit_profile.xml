@@ -93,12 +93,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
-        <com.krish.headsup.ui.components.CustomAvatarImageView
-            android:id="@+id/profilePicture"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/authorAvatarCardView"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:scaleType="centerCrop"
-            app:defaultAvatarPaddingTop="6dp" />
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="50dp"
+            app:cardElevation="0dp"
+            app:cardPreventCornerOverlap="false">
+
+            <com.krish.headsup.ui.components.CustomAvatarImageView
+                android:id="@+id/profilePicture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/person_sharp"
+                app:defaultAvatarPaddingTop="16dp" />
+
+        </androidx.cardview.widget.CardView>
 
     </FrameLayout>
 
@@ -115,12 +127,13 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profilePictureFrame" />
 
-
     <EditText
         android:id="@+id/userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text"
+        android:hint="@string/username_placeholder"
+        android:textColorHint="@color/gray_500"
         android:paddingHorizontal="16dp"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
@@ -131,6 +144,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="phone"
+        android:hint="@string/mobile_number_placeholder"
+        android:textColorHint="@color/gray_500"
         android:paddingHorizontal="16dp"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"

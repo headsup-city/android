@@ -74,6 +74,11 @@ class EditProfileFragment : Fragment() {
         var initialUsername: String? = null
         var initialPhoneNumber: String? = null
 
+        GlideApp.with(binding.profilePicture.context)
+            .load(CustomAvatarImageView.defaultAvatar)
+            .circleCrop()
+            .into(binding.profilePicture)
+
         binding.backButton.setOnClickListener {
             navController.navigateUp()
         }

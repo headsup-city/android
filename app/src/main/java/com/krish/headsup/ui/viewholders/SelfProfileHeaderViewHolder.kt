@@ -31,6 +31,12 @@ class SelfProfileHeaderViewHolder(
     }
 
     fun bind(user: User) {
+        // Initial placeholder for avatar image
+        GlideApp.with(authorAvatar.context)
+            .load(CustomAvatarImageView.defaultAvatar)
+            .circleCrop()
+            .into(authorAvatar)
+
         GlideApp.with(authorAvatar.context)
             .load(user.avatarUri)
             .signature(CustomCacheKeyGenerator(user.avatarUri ?: ""))

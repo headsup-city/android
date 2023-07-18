@@ -108,4 +108,6 @@
     <string name="unblock">Unblock</string>
     <string name="user_blocked">User blocked</string>
     <string name="no_activity">No activity</string>
+    <string name="username_placeholder">username</string>
+    <string name="mobile_number_placeholder">Mobile number</string>
 </resources>
