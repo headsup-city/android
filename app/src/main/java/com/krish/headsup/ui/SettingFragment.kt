@@ -65,7 +65,7 @@ class SettingFragment : Fragment() {
             shareAppButton.setOnClickListener {
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, "http://play.google.com/store/apps/details?id=com.headsup.krish")
+                    putExtra(Intent.EXTRA_TEXT, "http://play.google.com/store/apps/details?id=com.krish.headsup")
                     type = "text/plain"
                 }
 
